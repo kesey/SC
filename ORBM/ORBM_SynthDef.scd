@@ -1652,17 +1652,18 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 
 ~samplerStereoSynthDef = SynthDef(\samplerStereo,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001, release = 1, curve = (-4), buffer = 0, rate = 1, startPos = 0, loop = 0, doneAction = 2;
 	var sig, env;
-	sig = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer) * rate, gate, BufFrames.kr(buffer)*startPos, loop, doneAction) * env;
-	env = EnvGen.kr(Env.asr(attack, 1, release, curve), gate - Done.kr(sig), 1, doneAction: doneAction);
+	sig = PlayBuf.ar(2, buffer, BufRateScale.kr(buffer) * rate, gate, BufFrames.kr(buffer)*startPos, loop, doneAction);
+	env = EnvGen.kr(Env.asr(attack, 1, release, curve), gate /*- Done.kr(sig)*/, 1, doneAction: doneAction);
+	sig = sig * env;
 	sig = Balance2.ar(sig[0], sig[1], pan, amp/*.curvelin(0, 1, 0, 1, log(10))*/);
 	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001, release = 1, curve = (-4), buffer = 0, rate = 1, startPos = 0, loop = 0, doneAction = 2;
 	var sig, env;
-	sig = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer) * rate, gate, BufFrames.kr(buffer)*startPos, loop, doneAction) * env;
+	sig = PlayBuf.ar(1, buffer, BufRateScale.kr(buffer) * rate, gate, BufFrames.kr(buffer)*startPos, loop, doneAction);
 	env = EnvGen.kr(Env.asr(attack, 1, release, curve), gate - Done.kr(sig), 1, doneAction: doneAction);
-
+	sig = sig * env;
 	sig = Pan2.ar(sig, pan, amp.curvelin(0, 1, 0, 1, log(10)));
 	OffsetOut.ar(out, sig);
 }).add;
