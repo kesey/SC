@@ -2153,17 +2153,22 @@ SynthDef(\nathanielVirgo, { arg out = 0, amp = 1, feedBack = 7.5, sawFreq1 = 32,
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\talters, { arg out = 0, amp = 1, gate = 1, doneAction = 2;
-	var sig, env;
-	env = Linen.kr(gate, 0.01, 1, 10, doneAction);
+~taltersSynthDef = SynthDef(\talters, { arg out = 0, amp = 1, attack = 0.01, release = 10, feedBack = 1, freq = 66, freqL1 = 0, freqL2 = 2, freqL3 = 4, freqL4 = 16, freqT1 = 0.01, freqT2 = 0.2, freqT3 = 0.12, freqCurve = (-4), decDens = 0.25, decTimeFreq = 0.1, decamp = 999, t_trig = 1, doneAction = 2;
+	var sig, env, input, freqenv;
+	env = Linen.kr(t_trig, attack, 1, release, doneAction);
+	input = LocalIn.ar(2) * feedBack;
+	freqenv = EnvGen.ar(Env([freqL1, freqL2, freqL3, freqL4], [freqT1, freqT2, freqT3], freqCurve), t_trig);
 	sig = ({
 		|k|
 		({
 			|i|
 			y = SinOsc;
-			y.ar((i*k*k), y.ar(i*k**i/[{4.rand}, {5.rand}]) * Decay.kr(Dust.kr(1/4**i), y.ar(0.1)+1*k+i, k*999))
-		}!4).product
-	}!8).sum;
+			y.ar(
+				(i*k*k) + freq * freqenv,
+				y.ar(i*k**i/[{4.rand}, {5.rand}]) * Decay.kr(Dust.kr(decDens**i), (y.ar(decTimeFreq)+1*k+i) * input, k*decamp))
+		}!3).product;
+	}!4).sum;
+	LocalOut.ar(sig);
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
