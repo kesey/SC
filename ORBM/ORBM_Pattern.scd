@@ -3102,6 +3102,63 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
+~song6Pattern9 = Pbind(
+	\instrument, \talters,
+	\dur, Pseq([2.5, 5, 2.5], inf),
+	\amp, 0.03,
+	\attack, 0.01,
+	\release, 9,
+	\feedBack, 1.5,
+	\freq, 20,
+	\freqL1, 0.15,
+	\freqL2, 3.21,
+	\freqL3, 5,
+	\freqL4, 5,
+	\freqT1, 0.07,
+	\freqT2, 0.76,
+	\freqT3, 0,
+	\freqCurve, -8.91,
+	\decDens, 0.37,
+	\decTimeFreq, 0.1,
+	\decamp, 894,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~taltersSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"t_trig", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
+					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true],
+					"feedBack", ["knob", ControlSpec(0.01, 10, step: 0.01, default: event.at(\feedBack)), true],
+					"freq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freq)), true],
+					"freqL1", ["knob", ControlSpec(0, 1000, step: 0.01, default: event.at(\freqL1)), true],
+					"freqL2", ["knob", ControlSpec(0, 1000, step: 0.01, default: event.at(\freqL2)), true],
+					"freqL3", ["knob", ControlSpec(0, 1000, step: 0.01, default: event.at(\freqL3)), true],
+					"freqL4", ["knob", ControlSpec(0, 1000, step: 0.01, default: event.at(\freqL4)), true],
+					"freqT1", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\freqT1)), true],
+					"freqT2", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\freqT2)), true],
+					"freqT3", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\freqT3)), true],
+					"freqCurve", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\freqCurve)), true],
+					"decDens", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\decDens)), true],
+					"decTimeFreq", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\decTimeFreq)), true],
+					"decamp", ["slider", ControlSpec(0, 2000, step: 0.1, default: event.at(\decamp)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
 
 ///////////////////// test pattern
 
