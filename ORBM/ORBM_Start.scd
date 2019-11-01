@@ -7,7 +7,7 @@
 // Server.supernova; // Switches the server program to supernova. Check ParGroup how to make use of multicore hardware with the supernova server.
 Server.scsynth; // This is the default server
 Server.default = s = Server.local;
-Server.program = Server.program + "-B 127.0.0.1"; // fix network security issue in scsynth and supernova works with SC 3.8 and after, needed until 3.10.2
+Server.program = Server.program + "-B 127.0.0.1"; // fix network security issue in scsynth and supernova. Works with SC 3.8 and after, needed until 3.10.2
 // s.makeWindow;
 /********Multi-Client Setups***********/
 // s.addr = NetAddr("168.192.1.20", 57110); // in case of distant server, args are IP and port number
@@ -33,7 +33,6 @@ s.options.recHeaderFormat = "aiff";
 // s.options.blockSize = 64;
 s.options.dump; // visualise server options
 // s.dumpOSC;
-// GUI.current; // Test which GUI library you are using by default
 
 ////////////////////////////////// 2. OSC config
 
@@ -138,5 +137,11 @@ s.waitForBoot({
 		"init complete".postln;
 	});
 });
+
+////////////////////////////////// 10. utilities
+
+// GUI.current; // Test which GUI library you are using by default
+// UGen.browse; // another kind of documentation
+// Class.browse;
 
 )
