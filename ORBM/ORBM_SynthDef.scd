@@ -2172,6 +2172,25 @@ SynthDef(\nathanielVirgo, { arg out = 0, amp = 1, feedBack = 7.5, sawFreq1 = 32,
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
+~talters1SynthDef = SynthDef(\talters1, { arg out = 0, amp = 1, attack = 0.01, release = 10, feedBack = 1, envL1 = 0, envL2 = 2, envL3 = 4, envL4 = 16, envT1 = 0.01, envT2 = 0.2, envT3 = 0.12, envCurve = (-4), decDens = 0.25, decTimeFreq = 0.1, decamp = 999, t_trig = 1, doneAction = 2;
+	var sig, env, input, modenv;
+	env = Linen.kr(t_trig, attack, 1, release, doneAction);
+	input = LocalIn.ar(2) * feedBack;
+	modenv = EnvGen.ar(Env([envL1, envL2, envL3, envL4], [envT1, envT2, envT3], envCurve), t_trig);
+	sig = ({
+		|k|
+		({
+			|i|
+			y = SinOsc;
+			y.ar(
+				(i*k*k) /*+ freq*/ * modenv,
+				y.ar(i*k**i/[{4.rand}, {5.rand}]) * Decay.kr(Dust.kr(decDens**i), (y.ar(decTimeFreq)+1*k+i) * modenv, k*decamp))
+		}!3).product;
+	}!4).sum;
+	LocalOut.ar(sig);
+	OffsetOut.ar(out, sig * env * amp);
+}).add;
+
 SynthDef(\bozkurt, { arg out = 0, amp = 1, att = 0.01, rel = 10, impFreq = 0.25, freq1 = 4, freq2 = 6, delTime = 0.3, decTime = 50, feedBack = 1, gate = 1, doneAction = 2;
 	var sig, env, input, ctrl;
 	env = Linen.kr(gate, att, 1, rel, doneAction);
