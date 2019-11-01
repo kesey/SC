@@ -1424,13 +1424,14 @@
 	~song6Part1 = {
 		"song6 part1".postln;
 		~song6InitPart.value;
-		20.0.wait;
+		40.0.wait;
 	};
 
 	~song6Part2 = {
 		"song6 part2".postln;
 		~song6InitPart.value;
 		Pdefn(\patt1_6_dur, Pseq([0.125, 0.5, 0.25, 0.25, Rest(0.125)/**/, 0.375, 0.25, 0.25, 0.125, 0.25/**/, 0.125, 0.5, Rest(0.25), 0.25, 0.125/**/, 0.375, 0.25, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);
+		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, 0.25, Rest(1), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), 0.75, 1, Rest(0.75), 0.5], inf)).quant_(~globalQuant);
 		20.0.wait;
 	};
 
@@ -1447,6 +1448,7 @@
 		Pdefn(\patt1_6_dur, Pseq([0.125, 0.25, 0.125, 0.25, 0.5/**/, 0.125, 0.25, 0.5, 0.125, 0.25/**/, 0.125, 0.25, 0.125, 0.5, 0.25/**/, 0.125, 0.5, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);
 		Pbindef(\unit2, \dur,  Pseq([Rest(1), 1, Rest(1.25), 1.5, Rest(0.25)/**/, Rest(1.5), 0.5, Rest(1.25), 1.5, Rest(0.25)], inf),
 		).quant_(~globalQuant);
+		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, 0.25, Rest(1), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), Rest(0.75), 1, 0.75, 0.5], inf)).quant_(~globalQuant);
 		20.0.wait;
 	};
 
@@ -1464,7 +1466,7 @@
 		Pbindef(\unit2, \dur,  Pseq([Rest(1), 1, Rest(1.25), 1.5, Rest(0.25)/**/, Rest(1.5), 0.5, Rest(1.25), 1.5, Rest(0.25)], inf),
 		).quant_(~globalQuant);
 		~changePattern.value(Pdef(\unit3), ~song6Pattern9);
-		20.0.wait;
+		40.0.wait;
 	};
 
 	// Synth + Fx Preset
@@ -1495,8 +1497,8 @@
 		~autoGuiControl.at("sinBass1021release").valueAction_(4);
 		~autoGuiControl.at("sinBass1021curve").valueAction_(0);
 		~autoGuiControl.at("sinBass1021envLevel1").valueAction_(0);
-		~autoGuiControl.at("sinBass1021envLevel2").valueAction_(67);
-		~autoGuiControl.at("sinBass1021envLevel3").valueAction_(67);
+		~autoGuiControl.at("sinBass1021envLevel2").valueAction_(66);
+		~autoGuiControl.at("sinBass1021envLevel3").valueAction_(66);
 		~autoGuiControl.at("sinBass1021envLevel4").valueAction_(42.5);
 		~autoGuiControl.at("sinBass1021envLevel5").valueAction_(65.7);
 		~autoGuiControl.at("sinBass1021envLevel6").valueAction_(0);
