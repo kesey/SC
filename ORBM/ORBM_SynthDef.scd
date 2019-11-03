@@ -2093,7 +2093,7 @@ SynthDef(\elifm, { arg freq = 500, mRatio = 1, cRatio = 1, index = 1, iScale = 5
 	var sig, env, envf, num, input;
 	num = 8;
 	input = LocalIn.ar(2) * feedBack;
-	envf = EnvGen.ar(Env([envfL1, envfL2, envfL3, envfL4], [envfT1, envfT2, envfT3], envfCure), t_trig, frqScale);
+	envf = EnvGen.ar(Env([envfL1, envfL2, envfL3, envfL4], [envfT1, envfT2, envfT3], envfCure), t_trig) * frqScale;
 	sig = Mix.arFill(
 		num,
 		{ arg i;
