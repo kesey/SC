@@ -1578,9 +1578,9 @@
 	~songInit.value;
 
 	loop {
-		~song6Part1.value;
+		/*~song6Part1.value;
 		~song6Part2.value;
-		~song6Part3.value;
+		~song6Part3.value;*/
 		~song6Part4.value;
 		~song6Part5.value;
 		/*~song6Part6.value;
