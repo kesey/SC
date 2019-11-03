@@ -3160,10 +3160,10 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );*/
 
-~song6Pattern9 = Pbind(
+/*~song6Pattern9 = Pbind(
 	\instrument, \talters1,
 	\dur, Pseq([2.5, 5, 2.5], inf),
-	\amp, 0.11,
+	\amp, 0.12,
 	\attack, 0.01,
 	\release, 9,
 	\feedBack, 2.01,
@@ -3208,6 +3208,64 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"decDens", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\decDens)), true],
 					"decTimeFreq", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\decTimeFreq)), true],
 					"decamp", ["slider", ControlSpec(0, 2000, step: 0.1, default: event.at(\decamp)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);*/
+
+~song6Pattern9 = Pbind(
+	\instrument, \polishFab,
+	\dur, 5, // Pseq([2.5, 5, 2.5], inf),
+	\amp, 0.36,
+	\attack, 11,
+	\release, 6,
+	\feedBack, 3.9,
+	\phmodFrq, 28,
+	\freq1, 50,
+	\freq2, 23,
+	\envfL1, 0,
+	\envfL2, 500,
+	\envfL3, 20,
+	\envfL4, 0,
+	\envfT1, 0.2,
+	\envfT2, 0.01,
+	\envfT3, 0.12,
+	\envfCure, -4,
+	\frqScale, 1,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~polishFabSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"t_trig", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"attack", ["slider", ControlSpec(0, 20, step: 0.01, default: event.at(\attack)), true],
+					"release", ["slider", ControlSpec(0, 20, step: 0.01, default: event.at(\release)), true],
+					"feedBack", ["knob", ControlSpec(0.01, 100, step: 0.1, default: event.at(\feedBack)), true],
+					"phmodFrq", ["knob", ControlSpec(0, 250, step: 1, default: event.at(\phmodFrq)), true],
+					"freq1", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\freq1)), true],
+					"freq2", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\freq2)), true],
+					"envfL1", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\envfL1)), true],
+					"envfL2", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\envfL2)), true],
+					"envfL3", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\envfL3)), true],
+					"envfL4", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\envfL4)), true],
+					"envfT1", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envfT1)), true],
+					"envfT2", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envfT2)), true],
+					"envfT3", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envfT3)), true],
+					"envfCure", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\envfCure)), true],
+					"frqScale", ["knob", ControlSpec(0, 2000, step: 0.01, default: event.at(\frqScale)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
