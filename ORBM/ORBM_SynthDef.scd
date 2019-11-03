@@ -2089,6 +2089,39 @@ SynthDef(\elifm, { arg freq = 500, mRatio = 1, cRatio = 1, index = 1, iScale = 5
     OffsetOut.ar(0, car);
 }).add;
 
+~polishFabSynthDef = SynthDef(\polishFab, { arg out = 0, amp = 0.2, attack = 11, release = 6, feedBack = 2, phmodFrq = 0.5, freq1 = 64, freq2 = 23, envfL1 = 0, envfL2 = 500, envfL3 = 20, envfL4 = 0, envfT1 = 0.2, envfT2 = 0.01, envfT3 = 0.12, envfCure = (-4), frqScale = 0.5, t_trig = 1, doneAction = 2;
+	var sig, env, envf, num, input;
+	num = 8;
+	input = LocalIn.ar(2) * feedBack;
+	envf = EnvGen.ar(Env([envfL1, envfL2, envfL3, envfL4], [envfT1, envfT2, envfT3], envfCure), t_trig, frqScale);
+	sig = Mix.arFill(
+		num,
+		{ arg i;
+			var oddHarm = i * 2 + 1;
+			var evenHarm = i * 2 + 2;
+			SinOsc.ar(
+				[freq1 * oddHarm, freq2 * evenHarm] + envf,
+				Latch.kr((input * (i + 1)) * pi, Impulse.kr((oddHarm / (3 * pi)) + phmodFrq)),
+				num.reciprocal
+			)
+			*
+			EnvGen.kr(
+				Env.sine(num / i)
+			)
+		}
+	);
+	env = EnvGen.kr(
+		Env.perc(attack, release),
+		t_trig,
+		doneAction: doneAction,
+		levelScale: 0.75
+	);
+	sig = sig * env;
+	LocalOut.ar(sig);
+	sig = Splay.ar(sig, 1, amp);
+	OffsetOut.ar(out, sig /** amp*/);
+}).add;
+
 ///////////////////////////////////////  Sequence
 
 SynthDef(\virgo, { arg out = 0, amp = 0.2, attack = 0.01, release = 1, feedback = 7.5, freq1 = 32, freq2 = 33, delaytime = 2, decaytime = 40, t_gate = 1, doneAction = 2;
@@ -2173,7 +2206,7 @@ SynthDef(\nathanielVirgo, { arg out = 0, amp = 1, feedBack = 7.5, sawFreq1 = 32,
 }).add;
 
 ~talters1SynthDef = SynthDef(\talters1, { arg out = 0, amp = 1, attack = 0.01, release = 10, feedBack = 1, envL1 = 0, envL2 = 2, envL3 = 4, envL4 = 16, envT1 = 0.01, envT2 = 0.2, envT3 = 0.12, envCurve = (-4), decDens = 0.25, decTimeFreq = 0.1, decamp = 999, t_trig = 1, doneAction = 2;
-	var sig, env, input, modenv;
+	var sig, env, input, modenv, harmk, ampk, ringk;
 	env = Linen.kr(t_trig, attack, 1, release, doneAction);
 	input = LocalIn.ar(2) * feedBack;
 	modenv = EnvGen.ar(Env([envL1, envL2, envL3, envL4], [envT1, envT2, envT3], envCurve), t_trig);
@@ -2183,8 +2216,8 @@ SynthDef(\nathanielVirgo, { arg out = 0, amp = 1, feedBack = 7.5, sawFreq1 = 32,
 			|i|
 			y = SinOsc;
 			y.ar(
-				(i*k*k) /*+ freq*/ * modenv,
-				y.ar(i*k**i/[{4.rand}, {5.rand}]) * Decay.kr(Dust.kr(decDens**i), (y.ar(decTimeFreq)+1*k+i) * modenv, k*decamp))
+				(i*k*k) * modenv,
+				y.ar(i*k**i/[modenv, (i*k)+modenv]) * Decay.kr(Dust.kr(decDens**i), (y.ar(decTimeFreq)+1*k+i) * modenv, k*decamp))
 		}!3).product;
 	}!4).sum;
 	LocalOut.ar(sig);

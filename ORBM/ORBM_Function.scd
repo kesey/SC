@@ -3,6 +3,11 @@
 ///////////////////////////////////////  Function
 
 // call on server boot
+~initAllocators = { arg server;
+	server.newBusAllocators;
+	server.newBufferAllocators;
+};
+
 ~makeBuffers = { // create a dictionary with folders names under the Audio folder in the first key and sample number in the next
 	b = Dictionary.new;
 	PathName(~path ++ "Audio").entries.do{ arg subfolder;
@@ -29,7 +34,6 @@
 	currentEnvironment.removeAll;
 	Pdef.removeAll;
 	Tdef.removeAll;
-	server.newBusAllocators;
 	server.freeAll;
 };
 

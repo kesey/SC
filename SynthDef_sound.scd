@@ -335,4 +335,36 @@ SynthDef(\tirgo, { arg out = 0, amp = 1, att = 0.01, rel = 5, blipFreqMod = 2, b
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
+SynthDef(\polishFab, { arg out = 0, amp = 0.2, attack = 11, release = 6, feedBack = 2, phmodFrq = 0.5, freq1 = 64, freq2 = 23, envfL1 = 0, envfL2 = 500, envfL3 = 20, envfL4 = 0, envfT1 = 0.2, envfT2 = 0.01, envfT3 = 0.12, envfCure = (-4), frqScale = 0.5, t_trig = 1, doneAction = 2;
+	var sig, env, envf, num, input;
+	num = 8;
+	input = LocalIn.ar(2) * feedBack;
+	envf = EnvGen.ar(Env([envfL1, envfL2, envfL3, envfL4], [envfT1, envfT2, envfT3], envfCure), t_trig, frqScale);
+	sig = Mix.arFill(
+		num,
+		{ arg i;
+			var oddHarm = i * 2 + 1;
+			var evenHarm = i * 2 + 2;
+			SinOsc.ar(
+				[freq1 * oddHarm, freq2 * evenHarm] + envf,
+				Latch.kr((input * (i + 1)) * pi, Impulse.kr((oddHarm / (3 * pi)) + phmodFrq)),
+				num.reciprocal
+			)
+			*
+			EnvGen.kr(
+				Env.sine(num / i)
+			)
+		}
+	);
+	env = EnvGen.kr(
+		Env.perc(attack, release),
+		t_trig,
+		doneAction: doneAction,
+		levelScale: 0.75
+	);
+	LocalOut.ar(sig);
+	sig = Splay.ar(sig, 1, amp) * env;
+	OffsetOut.ar(out, sig/* * env * amp*/);
+}).add;
+
 )
