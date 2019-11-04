@@ -11,10 +11,10 @@
 // =====================================================================
 
 
-/*		
+/*
 		---------------------------------------------------------------
  		Copyright (c) 2005-2008, ixi audio.
- 		This work is licensed under a Creative Commons 
+ 		This work is licensed under a Creative Commons
 		Attribution-NonCommercial-ShareAlike 2.0 England & Wales License.
  		http://creativecommons.org/licenses/by-nc-sa/2.0/uk/
 		---------------------------------------------------------------
@@ -30,9 +30,9 @@
 
 
 
-/* 
-The idea of subtractive synthesis is to use filters to filter out frequencies from 
-broadband sound sources (rich in frequencies). Whitenoise is the richest source as it 
+/*
+The idea of subtractive synthesis is to use filters to filter out frequencies from
+broadband sound sources (rich in frequencies). Whitenoise is the richest source as it
 distributes frequencies evenly across the spectra, but it might not fit for all purposes.
 */
 
@@ -45,11 +45,11 @@ distributes frequencies evenly across the spectra, but it might not fit for all 
 
 // whitenoise
 {WhiteNoise.ar(1)}.plot(1)
-{WhiteNoise.ar(1)}.play
+{MantissaMask.ar(SinOsc.ar(3330), mul: 0.1)}.play
 {WhiteNoise.ar(1)}.scope
 {WhiteNoise.ar(1)}.freqscope
 
-// pinknoise 
+// pinknoise
 {PinkNoise.ar(1)}.plot(1)
 {PinkNoise.ar(1)}.play
 {PinkNoise.ar(1)}.freqscope
@@ -88,7 +88,7 @@ distributes frequencies evenly across the spectra, but it might not fit for all 
 (
 fork{
 	100.do({
-		{LPF.ar(WhiteNoise.ar(1), MouseX.kr(200,20000, 1)) 
+		{LPF.ar(WhiteNoise.ar(1), MouseX.kr(200,20000, 1))
 			* EnvGen.ar(Env.perc(0.001,0.5), doneAction:2)}.play;
 		1.wait;
 	});
@@ -101,7 +101,7 @@ fork{
 (
 fork{
 	100.do({
-		{LPF.ar(Saw.ar(440), MouseX.kr(200,20000, 1)) 
+		{LPF.ar(Saw.ar(440), MouseX.kr(200,20000, 1))
 			* EnvGen.ar(Env.perc(0.001,0.5), doneAction:2)}.play;
 		1.wait;
 	});
@@ -143,12 +143,12 @@ fork{
 (
 {
 var signal = MidEQ.ar(WhiteNoise.ar(0.4), MouseX.kr(40,20000,1), MouseY.kr(0.01,1), 24);
-BPF.ar(signal, MouseX.kr(40,20000,1), MouseY.kr(0.01,1)) !2
+BPF.ar(WhiteNoise.ar(0.4), MouseX.kr(40,20000,1), MouseY.kr(0.01,1)) !2
 }.play;
 )
 
 // resonant filter
-{ Resonz.ar(WhiteNoise.ar(0.5), MouseX.kr(40,20000,1), 0.1)!2 }.play
+{ Resonz.ar(WhiteNoise.ar(0.5), MouseX.kr(40,20000,1), MouseY.kr(0.1, 1, 1))!2 }.play
 
 // a short impulse won't resonate
 { Resonz.ar(Dust.ar(0.5), 2000, 0.1) }.play
@@ -166,12 +166,12 @@ BPF.ar(signal, MouseX.kr(40,20000,1), MouseY.kr(0.01,1)) !2
 
 // ah that's better (using only one Dust to trigger the ring filters):
 (
-{ 
+{
 var trigger, freq;
 trigger = Dust.ar(3, 0.3);
 freq = 440;
-Ringz.ar(trigger, 440, 2, 0.3) 		+ 
-Ringz.ar(trigger, freq*2, 2, 0.3) 	+ 
+Ringz.ar(trigger, 440, 2, 0.3) 		+
+Ringz.ar(trigger, freq*2, 2, 0.3) 	+
 Ringz.ar(trigger, freq*3, 2, 0.3) !2
 }.play
 )

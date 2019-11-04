@@ -416,13 +416,14 @@ u.canvas.layout = VLayout();
 		"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -0.6), true],
 		"attack", ["knob", ControlSpec(0.01, 10, step: 0.01, default: 0.01), true],
 		"release", ["knob", ControlSpec(0.01, 10, step: 0.01, default: 0.01), true],
-		"noiseType", ["knob", ControlSpec(0, 4, step: 1, default: 0), true],
+		"noiseType", ["knob", ControlSpec(0, 5, step: 1, default: 0), true],
+		"nType5Chaos", ["knob", ControlSpec(0, 1.99, step: 0.01, default: 1.5), false],
 		"noiseLevel", ["knob", ControlSpec(0, 4, step: 0.01, default: 1), false],
+		"impSource", ["knob", ControlSpec(0, 1, step: 1, default: 0), false],
 		"impFreq", ["knob", ControlSpec(0, 19000, step: 1, default: 52.09), false],
-		"impPhase", ["slider", ControlSpec(0, 4, step: 0.01, default: 0), false],
 		"impLevel", ["knob", ControlSpec(0, 60, step: 0.01, default: 0), false]
 	]
-));
+));// drywet = -0.6, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
 
 ///////////////////////////////////////  SynthDef Window
 

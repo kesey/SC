@@ -2561,56 +2561,6 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ///////////////////// song6
 
-/*~song6Pattern1 = Pbind(
-	\instrument, \tweetSynth,
-	\dur, Pseq([2.5, 5, 1.25, 5, 2.5, 1.25, 2.5], inf), // 2.5+ 5+ 1.25+ 5+ 2.5+ 1.25+ 2.5
-	\amp, 0.42,
-	\freq, Pseq([Pn(36.5, 4), 35.5], inf),
-	\rate, Pseq([91, 8.5], inf),
-	\attack, 0.01,
-	\release, 10,
-	\sigatt, 0.01,
-	\sigdec, 3.16,
-	\thresh, 0.48,
-	\ratio, 0.82,
-	\revMix, 0.84,
-	\revRoom, 0.07,
-	\revDamp, 0.12,
-	\out, ~channelBus[1],
-	\function, Pfunc({ arg event;
-		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
-		currentInstr = event.at(\instrument);
-
-		if (currentInstr != ~pdefPrevInstr, {
-			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
-			instance = ~pdefName.asSymbol;
-			ccStart = ~pdefCcStart.asInt;
-			midiChan = ~pdefMidiChan.asInt;
-			{
-				~removePrev.value(synthWindowKey);
-				~autoGui.value(v, ~tweetSynthSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
-					"doneAction", ["none"],
-					"t_trig", ["none"],
-					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
-					"freq", ["knob", ControlSpec(0, 1000, step: 0.01, default: event.at(\freq)), true],
-					"rate", ["knob", ControlSpec(1, 120, step: 0.1, default: event.at(\rate)), true],
-					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
-					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true],
-					"sigatt", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\sigatt)), true],
-					"sigdec", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\sigdec)), true],
-					"thresh", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\thresh)), true],
-					"ratio", ["knob", ControlSpec(0, 2, step: 0.01, default: event.at(\ratio)), true],
-					"revMix", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\revMix)), true],
-					"revRoom", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\revRoom)), true],
-					"revDamp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\revDamp)), true]
-				]));
-			}.defer;
-			~pdefPrevInstr = currentInstr;
-		});
-		0;
-	})
-);*/
-
 ~song6Pattern1 = Pbind(
 	\instrument, \complexosc,
 	\dur, Pdefn(\patt1_6_dur),
@@ -3160,13 +3110,13 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );*/
 
-/*~song6Pattern9 = Pbind(
+~song6Pattern9 = Pbind(
 	\instrument, \talters1,
 	\dur, Pseq([2.5, 5, 2.5], inf),
-	\amp, 0.12,
+	\amp, 0.1,
 	\attack, 0.01,
 	\release, 9,
-	\feedBack, 2.01,
+	\feedBack, 1.14,
 	\envL1, 0,
 	\envL2, 0,
 	\envL3, 25.96,
@@ -3175,7 +3125,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\envT2, 0.79,
 	\envT3, 0.53,
 	\envCurve, -8.03,
-	\decDens, 10,
+	\decDens, 0.2,
 	\decTimeFreq, 10,
 	\decamp, 894,
 	\out, ~channelBus[1],
@@ -3214,27 +3164,27 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 		});
 		0;
 	})
-);*/
+);
 
-~song6Pattern9 = Pbind(
+/*~song6Pattern9 = Pbind(
 	\instrument, \polishFab,
 	\dur, 5, // Pseq([2.5, 5, 2.5], inf),
 	\amp, 0.36,
-	\attack, 11,
-	\release, 6,
-	\feedBack, 88.9,
-	\phmodFrq, 0.2,
-	\freq1, 50,
-	\freq2, 23,
-	\envfL1, 0,
-	\envfL2, 3,
-	\envfL3, 2,
-	\envfL4, 11,
-	\envfT1, 0.2,
-	\envfT2, 0.26,
-	\envfT3, 0.12,
-	\envfCure, -4,
-	\frqScale, 12.26,
+	\attack, 0.02,
+	\release, 0.93,
+	\feedBack, 0,
+	\phmodFrq, 9.2,
+	\freq1, 1866,
+	\freq2, 24,
+	\envfL1, 2,
+	\envfL2, 1,
+	\envfL3, 3,
+	\envfL4, 0,
+	\envfT1, 0,
+	\envfT2, 0.03,
+	\envfT3, 0.07,
+	\envfCure, 8.03,
+	\frqScale, 11.12,
 	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
@@ -3272,7 +3222,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 		});
 		0;
 	})
-);
+);*/
 
 ///////////////////// test pattern
 

@@ -1330,13 +1330,24 @@ var sig = LatoocarfianL.ar(
     OffsetOut.ar(0,sig*amp);
 }).add;*/
 
-~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, noiseType = 0, noiseLevel = 1, impFreq = 52.9, impPhase = 0, impLevel = 0;
-	var input, sig, inputAmp, envImp;
+~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
+	var input, sig, inputAmp, imp;
 	input = InFeedback.ar(in, 2);
 	inputAmp = Amplitude.kr(input, attack, release);
-	noiseType = noiseType.max(0).min(4);
-	sig = Select.ar(noiseType, [WhiteNoise.ar(inputAmp), BrownNoise.ar(inputAmp), GrayNoise.ar(inputAmp), PinkNoise.ar(inputAmp), ClipNoise.ar(inputAmp)]);
-	sig = (sig * noiseLevel) + (Impulse.ar(impFreq, impPhase, inputAmp) * impLevel);
+	noiseType = noiseType.max(0).min(5);
+	sig = Select.ar(noiseType, [
+		WhiteNoise.ar(inputAmp),
+		BrownNoise.ar(inputAmp),
+		GrayNoise.ar(inputAmp),
+		PinkNoise.ar(inputAmp),
+		ClipNoise.ar(inputAmp),
+		Crackle.ar(nType5Chaos, inputAmp)
+	]);
+	imp = Select.ar(impSource, [
+		Impulse.ar(impFreq, 0, inputAmp),
+		Dust.ar(impFreq, inputAmp)
+	]);
+	sig = (sig * noiseLevel) + (imp * impLevel);
 	sig = XFade2.ar(input, sig, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, sig);
@@ -2116,7 +2127,7 @@ SynthDef(\elifm, { arg freq = 500, mRatio = 1, cRatio = 1, index = 1, iScale = 5
 		doneAction: doneAction,
 		levelScale: 0.75
 	);
-	sig = sig * env;
+	sig = (sig[0] + sig[1]) * env;
 	LocalOut.ar(sig);
 	sig = Splay.ar(sig, 1, amp);
 	OffsetOut.ar(out, sig /** amp*/);
@@ -2217,7 +2228,7 @@ SynthDef(\nathanielVirgo, { arg out = 0, amp = 1, feedBack = 7.5, sawFreq1 = 32,
 			y = SinOsc;
 			y.ar(
 				(i*k*k) * modenv,
-				y.ar(i*k**i/[modenv, (i*k)+modenv]) * Decay.kr(Dust.kr(decDens**i), (y.ar(decTimeFreq)+1*k+i) * modenv, k*decamp))
+				y.ar(i*k**i/[modenv, (i*k)+modenv]) * Decay.kr(Dust.kr(decDens - input), (y.ar(decTimeFreq)+1*k+i) * modenv, k*decamp))
 		}!3).product;
 	}!4).sum;
 	LocalOut.ar(sig);
