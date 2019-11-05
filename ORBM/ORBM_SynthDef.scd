@@ -2133,6 +2133,29 @@ SynthDef(\elifm, { arg freq = 500, mRatio = 1, cRatio = 1, index = 1, iScale = 5
 	OffsetOut.ar(out, sig /** amp*/);
 }).add;
 
+SynthDef(\slatechre, { arg out = 0, amp = 1, attack = 0.01, release = 5, t_trig, doneAction = 2;
+	var env, note, snd, delaytime, damp, size, diff, feedback, localout;
+	env = Linen.kr(t_trig, attack, 1, release, doneAction);
+	note = Demand.kr(Impulse.kr(0) + Dust.kr(0.1), 0, Diwhite(60, 80, inf));
+	delaytime = Demand.kr(Impulse.kr(0) + Dust.kr(0.3), 0, Dwhite(0.1, 0.3, inf));
+	damp = Demand.kr(Impulse.kr(0) + Dust.kr(0.4), 0, Dwhite(0.2, 0.6, inf));
+	size = Demand.kr(Impulse.kr(0) + Dust.kr(0.3), 0, Dwhite(2, 10, inf));
+	diff = Demand.kr(Impulse.kr(0) + Dust.kr(0.2), 0, Dwhite(0.5, 1.0, inf));
+	feedback = Demand.kr(Impulse.kr(0) + Dust.kr(0.4), 0, Dwhite(0.8, 1.0, inf));
+	snd = SinOsc.ar(freq: [note, note+LFNoise1.kr(freq: 0.1).range(-0.25, 0.25)].midicps);
+	localout = Mix.ar(5.collect({ |i|
+		Pan2.ar(
+			in: Greyhole.ar(in: PitchShift.ar(in: snd, pitchRatio: i), delayTime: delaytime, damp: damp, size: size, diff: diff, feedback: feedback, modDepth: 0.1, modFreq: 5),
+			pos: LFNoise1.ar(freq: TRand.ar(10.reciprocal, 1, Impulse.kr(8.reciprocal))).range(-1,1),
+			level: (i+1).reciprocal
+		) * -20.dbamp;
+	}));
+	localout = Compander.ar(in: localout, control: localout, thresh: -6.dbamp, slopeAbove: 3.reciprocal);
+	LocalOut.ar(localout);
+	snd = LocalIn.ar(2);
+	OffsetOut.ar(out, (snd.tanh * env) * amp);
+}).add;
+
 ///////////////////////////////////////  Sequence
 
 SynthDef(\virgo, { arg out = 0, amp = 0.2, attack = 0.01, release = 1, feedback = 7.5, freq1 = 32, freq2 = 33, delaytime = 2, decaytime = 40, t_gate = 1, doneAction = 2;

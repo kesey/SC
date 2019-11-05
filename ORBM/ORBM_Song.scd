@@ -1527,7 +1527,7 @@
 		Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant);
 		Pbindef(\unit7, \dur, Pseq([Rest(0.125), 0.25, Pn(0.125, 4), Rest(0.25), 0.125, 0.125, Rest(0.25), 0.125, 0.25, Pn(0.125, 4)]*2, inf)).quant_(~globalQuant);
 		Pbindef(\unit8, \dur, Pseq([0.5, 0.25, Rest(0.125), 0.75, Rest(0.5), 0.125, 0.25], inf)).quant_(~globalQuant);
-		40.0.wait;
+		20.0.wait;
 	};
 
 	~song6Part8 = {
@@ -1535,12 +1535,12 @@
 		~song6InitPart.value;
 		Pbindef(\unit1,
 			\freq2, 0,
-	        \offset1, -1.09,
-			\offset2, 0.35,
+	        \offset1, -1.04, // -0.93,
+			\offset2, 0.08, // 0.35,
 			\fm2, 0.19,
 			\ring1, 1.25,
-			\feedBack, 0.37,
-			\amp, 0.03
+			\feedBack, 0.74,
+			\amp, 0.021
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
 		Pdefn(\patt1_6_dur, Pseq([0.125, 0.5, Rest(0.25), 0.25, Rest(0.125)/**/, 0.375, 0.25, 0.25, 0.125, Rest(0.25)], inf)).quant_(~globalQuant);
@@ -1548,7 +1548,7 @@
 		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, Rest(1.25), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), Rest(0.75), 1, 0.75, 0.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant);
 		Pbindef(\unit8, \dur, Pseq([0.5, Rest(0.25), 0.125, 0.75, Rest(0.5), 0.125, 0.25], inf)).quant_(~globalQuant);
-		80.0.wait;
+		40.0.wait;
 	};
 
 	// Synth + Fx Preset

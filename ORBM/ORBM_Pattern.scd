@@ -2589,7 +2589,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\fold, 0.9,
 	\wrap, 0.82,
 	\switch, 2,
-	\out, ~channelBus[0],
+	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
@@ -2810,7 +2810,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song6Pattern5 = Pbind(
 	\instrument, \kickMist,
 	\dur, Pseq([Rest(0.25), 0.5, 1, Rest(1.25), 1.25, Rest(0.75)/**/, Rest(0.25), 0.75, 0.75, Rest(1.25), 1.25, Rest(0.75)], inf), // 0.25+ 0.5+ 1+ 1.25+ 1.25+ 0.75+ 0.25+ 0.75+ 0.75+ 1.25+ 1.25+ 0.75 == 10
-	\level, 0.1,
+	\level, 0.07,
 	\tu, 0.8,
 	\noise, 1,
 	\env0L1, 0,

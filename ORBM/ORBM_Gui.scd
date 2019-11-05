@@ -475,20 +475,21 @@ v.canvas.layout = VLayout();
 
 ~autoGui.value(v, ~samplerStereoSynthDef, ~samplerStereo, 85, 0, Color.new255(205, 205, 0), Dictionary.newFrom(
 	List[
+		"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
+		"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 0.23), true],
 		"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), true],
 		"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.001), true],
+		"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
+		"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), true],
 		"buffer", ["List", Array.fill(b[\sampler_stereo].size, { arg i;
 			var filePath;
 			filePath = PathName.new(b[\sampler_stereo][i].path);
 			filePath.fileName.asString;
 		}), true],
-		"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
-		"loop", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
+
 		"rate", ["knob", ControlSpec(0.01, 24, step: 0.01, default: 0.21), true],
 		"startPos", ["slider", ControlSpec(0, 1, step: 0.01, default: 0), true],
-		"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
-		"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), false],
-		"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 0.23), true]
+		"loop", ["button", ControlSpec(0, 1, step: 1, default: 0), false]
 	]
 ));
 
@@ -497,11 +498,10 @@ v.canvas.layout = VLayout();
 		"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],
 		"amp", ["slider", ControlSpec(0, 10, step: 0.01, default: 1.34), true],
 		"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
-		"curve", ["knob", ControlSpec(-8, 8, step: 1, default: 0), true],
 		"loopNode", ["knob", ControlSpec(0, 4, step: 1, default: 0), true],
 		"attack", ["knob", ControlSpec(0, 10, step: 0.01, default: 0.2), true],
 		"release", ["knob", ControlSpec(0, 10, step: 0.01, default: 4), true],
-		"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), false],
+		"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), true],
 		"envLevel1", ["knob", ControlSpec(0, 80, step: 0.1, default: 0), true],
 		"envLevel2", ["knob", ControlSpec(0, 80, step: 0.1, default: 40), true],
 		"envLevel3", ["knob", ControlSpec(0, 80, step: 0.1, default: 32), true],
