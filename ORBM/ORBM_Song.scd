@@ -1495,15 +1495,16 @@
 			\feedBack, 0.6
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
-		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.5, 0.25, Rest(0.375)/**/, 0.375, 0.25, Rest(0.375), 0.25]*2, inf)).quant_(~globalQuant);
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.5, Rest(0.25), 0.375/**/, 0.375, 0.25, Rest(0.375), 0.25]*2, inf)).quant_(~globalQuant); // 0.125+ 0.5+ 0.25+ 0.375+ 0.375+ 0.25+ 0.375
 		Pbindef(\unit2, \dur,  Pseq([Rest(1), 1, Rest(1.25), 1.5, Rest(0.25)/**/, Rest(1.5), 0.5, Rest(1.25), 1.5, Rest(0.25)], inf),
 		).quant_(~globalQuant);
 		~changePattern.value(Pdef(\unit3), ~song6Pattern9);
 		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, Rest(2), 1, Rest(0.5)/*, 1, Rest(1), Rest(0.75), 1, 0.75, 0.5*/], inf)).quant_(~globalQuant);
-		Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant); // 0.25+ 0.75+ 1+ 1.25+ 1.25+ 0.75+ 0.25+ 1.25+ 1.5+ 1+ 0.75
+		~changePattern.value(Pdef(\unit5), ~song6Pattern10);
+		/*Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant); // 0.25+ 0.75+ 1+ 1.25+ 1.25+ 0.75+ 0.25+ 1.25+ 1.5+ 1+ 0.75*/
 		Pbindef(\unit7, \dur, Pseq([Rest(0.125), 0.25, Pn(0.125, 4), Rest(0.25), 0.125, 0.125, Rest(0.25), 0.125, 0.25, Pn(0.125, 4)], inf)).quant_(~globalQuant); // 0.125+0.25+ (0.125 *4)+ 0.25+ 0.125+ 0.125+ 0.25+ 0.125+ 0.25+ (0.125* 4)
 		Pbindef(\unit8, \dur, Pseq([0.5, 0.25, Rest(0.125), 0.75, Rest(0.5), 0.125, 0.25], inf)).quant_(~globalQuant);
-		20.0.wait;
+		40.0.wait;
 	};
 
 	~song6Part7 = {
@@ -1513,18 +1514,19 @@
 			\freq2, 0,
 	        \offset1, -1.09,
 			\offset2, 0.35,
-			\fm2, 0.19,
-			\ring1, 1.25,
-			\feedBack, 0.37,
-			\amp, 0.03
+			\fm2, 7.63,
+			\ring1, 0.17,
+			\feedBack, 0.74,
+			\amp, 0.02
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
-		Pdefn(\patt1_6_dur, Pseq([0.125, 0.5, 0.25, Rest(0.375)/**/, 0.375, 0.25, Rest(0.375), 0.25]*2, inf)).quant_(~globalQuant);
+		Pdefn(\patt1_6_dur, Pseq([0.25, 0.125, 0.125, 0.25, 0.125, 0.25, 0.125/**/, 0.125, 0.5, 0.25, 0.375/**/, 0.375, 0.25, 0.375, 0.25/**/, 0.125, 0.5, 0.25, 0.375], inf)).quant_(~globalQuant);
 		Pbindef(\unit2, \dur,  Pseq([Rest(1.5), 0.5, Rest(1.25), 1.5, Rest(0.25)/**/, Rest(1.5), 0.5, Rest(1.25), 1.5, Rest(0.25)], inf),
 		).quant_(~globalQuant);
 		~changePattern.value(Pdef(\unit3), ~song6Pattern9);
 		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, Rest(1.25), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), Rest(0.75), 1, 0.75, 0.5], inf)).quant_(~globalQuant);
-		Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant);
+		~changePattern.value(Pdef(\unit5), ~song6Pattern10);
+		Pbindef(\unit5, \dur, 5).quant_(~globalQuant);
 		Pbindef(\unit7, \dur, Pseq([Rest(0.125), 0.25, Pn(0.125, 4), Rest(0.25), 0.125, 0.125, Rest(0.25), 0.125, 0.25, Pn(0.125, 4)]*2, inf)).quant_(~globalQuant);
 		Pbindef(\unit8, \dur, Pseq([0.5, 0.25, Rest(0.125), 0.75, Rest(0.5), 0.125, 0.25], inf)).quant_(~globalQuant);
 		20.0.wait;
@@ -1537,9 +1539,10 @@
 			\freq2, 0,
 	        \offset1, -1.04, // -0.93,
 			\offset2, 0.08, // 0.35,
+			\pm1, 9.12,
 			\fm2, 0.19,
 			\ring1, 1.25,
-			\feedBack, 0.74,
+			\feedBack, 0.9,
 			\amp, 0.021
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
