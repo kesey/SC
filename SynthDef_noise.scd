@@ -370,4 +370,40 @@ SynthDef(\complexosc, { arg out = 0, amp = 1, feedBack = 1, envL1 = 0, envL2 = 2
     OffsetOut.ar(out, outlet * env * amp);
 }, [\kr ! 11, \ar ! 14, \kr, \tr, \ir].flatten).add;
 
+SynthDef(\salledutemps, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 4, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[((55/2)+ (tu * (Demand.kr(Impulse.kr(0), 0, Diwhite(0, 6))*2*(55/24))))*(2**(0..8))],Crackle.ar(2,0.005))*LFGauss.ar(dur,0.7,0,1)}!5;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
+SynthDef(\salledutemps1, { arg out = 0, amp = 1, tu = 1, dur = 9, myst = 55, attack = 1, release = 4, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[((myst/2)+ (tu + (tu * (Demand.kr(Impulse.kr(0), 0, Diwhite(0, 6))*2*(myst/24)))))*(2**(0..8))],Crackle.ar(2, 0.005))*LFGauss.ar(dur,0.7,0,1)}!5;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
+SynthDef(\corman, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 10, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[(tu * Demand.kr(Impulse.kr(0), 0, Diwhite(0, 98)))*(1..9)],Crackle.ar(2,0.01))*LFGauss.ar(dur,0.7,0,1)}!2;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
+SynthDef(\corman1, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 10, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[(tu + (tu * Demand.kr(Impulse.kr(0), 0, Diwhite(0, 98))))*(1..9)],Crackle.ar(2,0.01))*LFGauss.ar(dur,0.7,0,1)}!2;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
 )

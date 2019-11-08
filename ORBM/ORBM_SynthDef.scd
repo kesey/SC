@@ -1659,6 +1659,42 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
     OffsetOut.ar(out, outlet * env * amp);
 }, [\kr ! 11, \ar ! 14, \kr, \tr, \ir].flat).add;
 
+SynthDef(\salledutemps, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 4, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[((55/2)+ (tu * (Demand.kr(Impulse.kr(0), 0, Diwhite(0, 6))*2*(55/24))))*(2**(0..8))],Crackle.ar(2,0.005))*LFGauss.ar(dur,0.7,0,1)}!5;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
+SynthDef(\salledutemps1, { arg out = 0, amp = 1, tu = 1, dur = 9, myst = 55, attack = 1, release = 4, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[((myst/2)+ (tu + (tu * (Demand.kr(Impulse.kr(0), 0, Diwhite(0, 6))*2*(myst/24)))))*(2**(0..8))],Crackle.ar(2, 0.005))*LFGauss.ar(dur,0.7,0,1)}!5;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
+~cormanSynthDef = SynthDef(\corman, { arg out = 0, amp = 1, attack = 1, release = 10, tu = 1, dur = 9, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[(tu * Demand.kr(Impulse.kr(0), 0, Diwhite(0, 98)))*(1..9)],Crackle.ar(2,0.01))*LFGauss.ar(dur,0.7,0,1)}!2;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
+SynthDef(\corman1, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 10, gate = 1, doneAction = 2;
+	var sig, rand, env;
+	env = Linen.kr(gate, attack, 1, release, doneAction);
+	sig = {DynKlank.ar(`[(tu + (tu * Demand.kr(Impulse.kr(0), 0, Diwhite(0, 98))))*(1..9)],Crackle.ar(2,0.01))*LFGauss.ar(dur,0.7,0,1)}!2;
+	sig = sig * env;
+	sig = Splay.ar(sig);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
 ///////////////////////////////////////  Sampler
 
 ~samplerStereoSynthDef = SynthDef(\samplerStereo,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001, release = 1, curve = (-4), buffer = 0, rate = 1, startPos = 0, loop = 0, doneAction = 2;
@@ -1950,10 +1986,10 @@ SynthDef(\ressquares,{|out= 0 freq = 440 amp = 0.1 gate=1 cutoff=8000 rq=0.8 pan
 
 }).add;
 
-SynthDef(\glauk, { arg out = 0, amp = 1, attack = 0.01, release = 10, t_trig = 1, doneAction = 2;
+SynthDef(\glauk, { arg out = 0, amp = 1, attack = 0.01, release = 2, gate = 1, doneAction = 2;
 	var sig, env;
-	// env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
-	env = Linen.kr(t_trig, attack, 1, release, doneAction);
+	// env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+	env = Linen.kr(gate, attack, 1, release, doneAction);
 	sig = Splay.ar(
 		SinOsc.ar(
 			Array.fill(50,{\freq.asSpec.map(LFNoise2.kr(0.001))})
