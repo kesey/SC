@@ -82,6 +82,21 @@ SynthDef(\choruseffect, {arg in = 0, out = 0, gate = 1;
 
 }).add;
 
+SynthDef(\grainin, { arg in = 0, out = 0, drywet = 0.5, amp = 0.2, time = 0.1, freq = 20;
+	var sig, input;
+	input = In.ar(in, 2);
+	sig = GrainIn.ar(2, Dust.ar(freq), time, Mix.ar(input)*0.4);
+	XOut.ar(out, drywet, sig * amp);
+}).add;
+
+SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5, grainDur = 0.1, grainSpeed = 10;
+	var pan, granulizer, input;
+	input = In.ar(in, 2);
+	pan = LFNoise0.kr(grainSpeed, panWidth);
+	granulizer = GrainIn.ar(2, Impulse.kr(grainSpeed), grainDur, Mix.ar(input), pan);
+	XOut.ar(out, drywet, granulizer * amp);
+}).add;
+
 ///////////////////////////////////////  Pitch
 
 ~pitchShifterSynthDef = SynthDef(\pitchShifter, { arg in = 0, out = 0, drywet = 0.5, pitchRatio = 1, pitchDisper = 0, timeDisper = 0;
@@ -1659,7 +1674,7 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
     OffsetOut.ar(out, outlet * env * amp);
 }, [\kr ! 11, \ar ! 14, \kr, \tr, \ir].flat).add;
 
-SynthDef(\salledutemps, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 4, gate = 1, doneAction = 2;
+SynthDef(\salledutemps, { arg out = 0, amp = 1, attack = 1, release = 4, tu = 1, dur = 9, gate = 1, doneAction = 2;
 	var sig, rand, env;
 	env = Linen.kr(gate, attack, 1, release, doneAction);
 	sig = {DynKlank.ar(`[((55/2)+ (tu * (Demand.kr(Impulse.kr(0), 0, Diwhite(0, 6))*2*(55/24))))*(2**(0..8))],Crackle.ar(2,0.005))*LFGauss.ar(dur,0.7,0,1)}!5;
@@ -1668,7 +1683,7 @@ SynthDef(\salledutemps, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, rel
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\salledutemps1, { arg out = 0, amp = 1, tu = 1, dur = 9, myst = 55, attack = 1, release = 4, gate = 1, doneAction = 2;
+~salledutemps1SynthDef = SynthDef(\salledutemps1, { arg out = 0, amp = 1, attack = 1, release = 4, tu = 1, myst = 55, dur = 9, gate = 1, doneAction = 2;
 	var sig, rand, env;
 	env = Linen.kr(gate, attack, 1, release, doneAction);
 	sig = {DynKlank.ar(`[((myst/2)+ (tu + (tu * (Demand.kr(Impulse.kr(0), 0, Diwhite(0, 6))*2*(myst/24)))))*(2**(0..8))],Crackle.ar(2, 0.005))*LFGauss.ar(dur,0.7,0,1)}!5;

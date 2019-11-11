@@ -11,10 +11,10 @@
 // =====================================================================
 
 
-/*		
+/*
 		---------------------------------------------------------------
  		Copyright (c) 2005-2008, ixi audio.
- 		This work is licensed under a Creative Commons 
+ 		This work is licensed under a Creative Commons
 		Attribution-NonCommercial-ShareAlike 2.0 England & Wales License.
  		http://creativecommons.org/licenses/by-nc-sa/2.0/uk/
 		---------------------------------------------------------------
@@ -39,7 +39,7 @@
 
 // 1) =========  Allocating a buffer  ==========
 
-/* 
+/*
 A buffer is a globally available array of floating point numbers stored
 on the server. It can hold all kinds of data, most typically sampled audio.
 */
@@ -100,15 +100,15 @@ b.bufnum.postln; // let's check its bufnum
 (
 SynthDef(\playBuf,{ arg out = 0, bufnum;
 	var signal;
-	signal = PlayBuf.ar(1, bufnum, BufRateScale.kr(bufnum));
-	Out.ar(out, signal ! 2)
-}).load(s)
+	signal = PlayBuf.ar(2, bufnum, BufRateScale.kr(bufnum));
+	Out.ar(out, signal)
+}).add;
 )
 x = Synth(\playBuf, [\bufnum, b.bufnum]) // we pass in the number of the buffer
 
-x.free; // free the synth 
+x.free; // free the synth
 b.free; // free the buffer
-		
+
 // for many buffers, the typical thing to do is to load them into an array:
 b = Array.fill(10, {Buffer.read(s, "sounds/a11wlk01.wav")});
 
@@ -125,20 +125,20 @@ x = Synth(\playBuf, [\bufnum, b[2].bufnum])
 // it is better to use DiskIn (which reads the file from disk, ie. not loaded into RAM)
 
 // Then we still need a buffer (but we are cueing it, i.e. not filling)
-b = Buffer.cueSoundFile(s, "sounds/a11wlk01-44_1.aiff", 0, 1);
+b = Buffer.cueSoundFile(s, "/Users/Fabien/SC/Audio/airplane_cards/Cards Shuffling-SoundBible.com-565963092.wav", 0, 2);
 
 (
 SynthDef(\playcuedBuf,{ arg out = 0, bufnum;
 	var signal;
-	signal = DiskIn.ar(1, bufnum);
+	signal = DiskIn.ar(2, bufnum);
 	Out.ar(out, signal ! 2)
-}).load(s)
+}).add;
 )
 
-x = Synth(\playcuedBuf, [\bufnum, b.bufnum], s)
+x = Synth(\playcuedBuf, [\bufnum, b.bufnum], s);
 
 // NOTE: As of July 2007, you can also just pass the buffer and
-// not the bufnum to the DiskIn or the PlayBuf. 
+// not the bufnum to the DiskIn or the PlayBuf.
 // See: http://www.create.ucsb.edu/pipermail/sc-users/2007-July/035622.html
 
 
@@ -146,14 +146,14 @@ x = Synth(\playcuedBuf, [\bufnum, b.bufnum], s)
 
 // 4) =========  Recording into a buffer  ==========
 
-b = Buffer.alloc(s, 44100 * 8.0, 1); // 8 second mono buffer
+b = Buffer.alloc(s, 44100 * 8.0, 2); // 8 second mono buffer
 
 (
 SynthDef(\recBuf,{ arg out=0, bufnum=0;
 	var in;
-	in = AudioIn.ar(1);
+	in = SoundIn.ar([2, 3]);
 	RecordBuf.ar(in, bufnum);
-}).load(s);
+}).add;
 )
 
 // we record into the buffer
@@ -167,7 +167,7 @@ z.free;
 // if we like it, we can write it to disk as a soundfile:
 b.write("myBufRecording.aif", "AIFF", 'int16');
 
-// TIP: play with the recLevel and preLevel of a buffer
+// TIP: play with the recLevel and preLevel of a Buffer
 // to overdub into the buffer, creating layers of sound.
 // or perhaps "I'm Sitting in a Room" exercise a la Lucier.
 
@@ -187,12 +187,12 @@ SynthDef(\oscplayer,{ arg out = 0, bufnum;
 
 
 b = Buffer.alloc(s, 512, 1); // we allocate 512 samples (the buffer size must be the power of 2)
-b.sine1(1.0/[1,2,3,4], true, true, true);
+b.sine1(1/[1,2,3,4], true, true, true);
 b.plot // notise somthing strange?
 
 // check this:
 (
-b.getToFloatArray(action: { |array| Ê{ array[0, 2..].plot }.defer });
+b.getToFloatArray(action: { |array| { array[0, 2..].plot }.defer });
 )
 
 // let's listen to it
@@ -204,7 +204,7 @@ a.free;
 
 b = Buffer.alloc(s, 512, 1);
 b.sine1(1.0/Array.series(90,1,1)*2, false, true, true);
-b.getToFloatArray(action: { |array| Ê{ array[0, 2..].plot }.defer });
+b.getToFloatArray(action: { |array| { array[0, 2..].plot }.defer });
 
 // play it
 a = Synth(\oscplayer, [\bufnum, b.bufnum])
@@ -214,7 +214,7 @@ a.free;
 // fill it with random numbers
 b = Buffer.alloc(s, 512, 1);
 b.sine1(Array.fill(50, {1.0.rand}), true, true, true);
-b.getToFloatArray(action: { |array| Ê{ array[0, 2..].plot }.defer });
+b.getToFloatArray(action: { |array| { array[0, 2..].plot }.defer });
 
 
 // let's listen to it
@@ -224,7 +224,7 @@ a.free;
 
 
 // use an envelope to fill a buffer
-a = Env([0, 1, 0.2, 0.3, -1, 0.3, 0], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], \sin).plot;
+a = Env([0, 1, 0.2, 0.3, -1, 0.3, 0], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], \sin);
 
 // ENVELOPE turned into a SIGNAL and then into a WAVETABLE
 c = a.asSignal(512).asWavetable;
@@ -243,10 +243,9 @@ a.free;
 // and for the sake of exhaustibility, check out Signal as well:
 
 x = Signal.sineFill(512, [0,0,0,1]);
-[x, x.neg, x.abs, x.sign, x.squared, x.cubed, 
-x.asin.normalize, x.exp.normalize, x.distort].flop.flat.plot(numChannels: 9);
+[x, x.neg, x.abs, x.sign, x.squared, x.cubed, x.asin.normalize, x.exp.normalize, x.distort].flop.flat.plot(numChannels: 9);
 
-c = x.exp.normalize.asWavetable; // try the other unary operators on the signal
+c = x.distort.asWavetable; // try the other unary operators on the signal
 
 b = Buffer.alloc(s, 512);
 b.setn(0, c); // put the wavetable into the buffer so Osc can read it.
@@ -260,7 +259,7 @@ a.free;
 // 6) =========  Pitch and time changes  ==========
 
 
-b = Buffer.read(s, "sounds/a11wlk01-44_1.aiff");
+b = Buffer.read(s, "/Users/Fabien/SC/Audio/airplane_cards/Cards Shuffling-SoundBible.com-565963092.wav");
 
 // The most common way
 // here double rate (and pitch) results in half the length (time) of the file
@@ -268,7 +267,7 @@ b = Buffer.read(s, "sounds/a11wlk01-44_1.aiff");
 (
 SynthDef(\playBuf,{ arg out = 0, bufnum;
 	var signal;
-	signal = PlayBuf.ar(1, bufnum, MouseX.kr(0.2, 4), loop:1);
+	signal = PlayBuf.ar(2, bufnum, MouseX.kr(0.2, 4), loop:1);
 	Out.ar(out, signal ! 2)
 }).load(s)
 )
@@ -283,7 +282,7 @@ x.free
 (
 SynthDef(\playBufWPitchShift,{ arg out = 0, bufnum;
 	var signal;
-	signal = PlayBuf.ar(1, bufnum, 1, loop:1);
+	signal = PlayBuf.ar(2, bufnum, 1, loop:1);
 	signal = PitchShift.ar(
 		signal,	// stereo audio input
 		0.1, 			// grain size
@@ -309,14 +308,14 @@ x.free
 // Here we use BufRd (Buffer Read) to play the contents of a buffer at a given index
 // We use Phasor as index to move between the start and the end of the buffer.
 
-{ BufRd.ar(1, b.bufnum, Phasor.ar(0, 1, 0, BufFrames.kr(b))) }.play;
+{ BufRd.ar(2, b.bufnum, Phasor.ar(0, 1, 0, BufFrames.kr(b))) }.play;
 
 // use SinOsc to modulate the playrate
-{ BufRd.ar(1, b.bufnum, Phasor.ar(0, SinOsc.ar(1).range(0.5, 1.5), 0, BufFrames.kr(b))) }.play;
+{ BufRd.ar(2, b.bufnum, Phasor.ar(0, SinOsc.ar(1).range(0.5, 1.5), 0, BufFrames.kr(b))) }.play;
 
 // Write into buffer:
 (
-y = { arg rate=1; 
+y = { arg rate=1;
 	var signal;
 	signal = SinOsc.ar(LFNoise1.kr(2, 300, 400), 0, 0.1);
 	BufWr.ar(signal, b.bufnum, Phasor.ar(0, BufRateScale.kr(0) * rate, 0, BufFrames.kr(0)));
@@ -325,7 +324,7 @@ y = { arg rate=1;
 )
 
 // play it back
-{ BufRd.ar(1, b.bufnum, Phasor.ar(0, 1, 0, BufFrames.kr(b.bufnum))) }.play;
+{ BufRd.ar(2, b.bufnum, Phasor.ar(0, 1, 0, BufFrames.kr(b.bufnum))) }.play;
 
 y.free;
 
@@ -337,11 +336,11 @@ b = Buffer.read(s, "sounds/a11wlk01.wav");
 
 SynthDef(\xiiscratch, {arg bufnum, pitch=1, start=0, end;
 	var signal;
-	signal = BufRd.ar(1, bufnum, Lag.ar(K2A.ar(MouseX.kr(1, end)), 0.4));
+	signal = BufRd.ar(2, bufnum, Lag.ar(K2A.ar(MouseX.kr(1, end)), 0.4));
 	Out.ar(0, signal!2);
 }).play(s, [\bufnum, b.bufnum, \end, b.numFrames]);
 
-	
+
 
 
 

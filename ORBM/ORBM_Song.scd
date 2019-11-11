@@ -1500,7 +1500,7 @@
 		).quant_(~globalQuant);
 		~changePattern.value(Pdef(\unit3), ~song6Pattern9);
 		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, Rest(2), 1, Rest(0.5)/*, 1, Rest(1), Rest(0.75), 1, 0.75, 0.5*/], inf)).quant_(~globalQuant);
-		~changePattern.value(Pdef(\unit5), ~song6Pattern10);
+		~changePattern.value(Pdef(\unit5), ~song6Pattern11);
 		/*Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant); // 0.25+ 0.75+ 1+ 1.25+ 1.25+ 0.75+ 0.25+ 1.25+ 1.5+ 1+ 0.75*/
 		Pbindef(\unit7, \dur, Pseq([Rest(0.125), 0.25, Pn(0.125, 4), Rest(0.25), 0.125, 0.125, Rest(0.25), 0.125, 0.25, Pn(0.125, 4)], inf)).quant_(~globalQuant); // 0.125+0.25+ (0.125 *4)+ 0.25+ 0.125+ 0.125+ 0.25+ 0.125+ 0.25+ (0.125* 4)
 		Pbindef(\unit8, \dur, Pseq([0.5, 0.25, Rest(0.125), 0.75, Rest(0.5), 0.125, 0.25], inf)).quant_(~globalQuant);
@@ -1525,8 +1525,9 @@
 		).quant_(~globalQuant);
 		~changePattern.value(Pdef(\unit3), ~song6Pattern9);
 		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, Rest(1.25), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), Rest(0.75), 1, 0.75, 0.5], inf)).quant_(~globalQuant);
-		~changePattern.value(Pdef(\unit5), ~song6Pattern10);
+		~changePattern.value(Pdef(\unit5), ~song6Pattern11);
 		Pbindef(\unit5, \dur, 5).quant_(~globalQuant);
+		/*Pbindef(\unit5, \dur, Pseq([Rest(0.25), 0.5, 1.25, Rest(1.25), 1.25, Rest(0.75)/**/, 0.25, Rest(1.25), Rest(1.5), 1, Rest(0.75)], inf)).quant_(~globalQuant); // 0.25+ 0.75+ 1+ 1.25+ 1.25+ 0.75+ 0.25+ 1.25+ 1.5+ 1+ 0.75*/
 		Pbindef(\unit7, \dur, Pseq([Rest(0.125), 0.25, Pn(0.125, 4), Rest(0.25), 0.125, 0.125, Rest(0.25), 0.125, 0.25, Pn(0.125, 4)]*2, inf)).quant_(~globalQuant);
 		Pbindef(\unit8, \dur, Pseq([0.5, 0.25, Rest(0.125), 0.75, Rest(0.5), 0.125, 0.25], inf)).quant_(~globalQuant);
 		20.0.wait;
@@ -1542,7 +1543,7 @@
 			\pm1, 9.12,
 			\fm2, 0.19,
 			\ring1, 1.25,
-			\feedBack, 0.9,
+			\feedBack, 0.81, // 0.9,
 			\amp, 0.021
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
