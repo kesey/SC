@@ -3111,7 +3111,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song6Pattern10 = Pbind(
 	\instrument, \corman,
 	\dur, Pseq([5, 10, 5], inf),
-	\amp, 0.07,
+	\amp, 0.06,
 	\attack, 1,
 	\release, 10,
 	\tu, 1.4,
@@ -3135,6 +3135,43 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
 					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true],
 					"tu", ["knob", ControlSpec(0, 20000, step: 0.01, default: event.at(\tu)), true],
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
+~song6Pattern11 = Pbind(
+	\instrument, \salledutemps1,
+	\dur, Pseq([5, 10, 5], inf),
+	\amp, 0.17,
+	\attack, 1,
+	\release, 4,
+	\tu, 2546.57,
+	\myst, 1,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~salledutemps1SynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"gate", ["none"],
+					"dur", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
+					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true],
+					"tu", ["knob", ControlSpec(0, 20000, step: 0.01, default: event.at(\tu)), true],
+					"myst", ["knob", ControlSpec(0, 20, step: 0.01, default: event.at(\myst)), true],
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
