@@ -367,4 +367,28 @@ SynthDef(\polishFab, { arg out = 0, amp = 0.2, attack = 11, release = 6, feedBac
 	OffsetOut.ar(out, sig/* * env * amp*/);
 }).add;
 
+SynthDef.new(\Shai, { arg out = 0, amp=0.1, freq=440, atk=1, rel=8, doneAction = 2;
+	var sig, env;
+	sig = Mix.new(
+		Array.fill(56, { SinOsc.ar(freq + Line.kr(1536.0.rand,freq*1.5,8), 0, 0.05) })
+	);
+	env = EnvGen.kr(Env.new([0,1,0],[atk,rel],[1,-1]),doneAction: doneAction);
+	sig = sig*env*amp;
+	Out.ar(out, [sig, sig]);
+}).add;
+
+SynthDef.new(\Colleen3, { arg out = 0, amp=1, pan = 0, freq=110, atk=0.01, rel=2, lpf = 4000, lpfmin = 500, lpfmax = 16000, hpfmin = 1, hpfmax = 2000, doneAction = 2;
+	var sig, env;
+	freq = freq*(565/250)*PinkNoise.kr(0.01,1)*BrownNoise.kr(0.00,1)*0.36;
+	sig = LPF.ar(CombC.ar(Decay.ar(Impulse.ar(0), 0.2, BrownNoise.ar), 4/(BrownNoise.kr(XLine.kr(10,1,0.2),freq)), 4/(PinkNoise.kr(XLine.kr(10,1,0.2),freq)), 3, 0.4),lpf);
+	env = EnvGen.kr(Env.new([0,1,0],[atk,rel],[1,-1]),doneAction: doneAction);
+	env = env**2;
+	sig = sig + PinkNoise.ar(0.1);
+	sig = LPF.ar(sig, XLine.kr(lpfmin,lpfmax,rel/6));
+	sig = HPF.ar(sig, XLine.kr(hpfmin,hpfmax,rel/6));
+	sig = (sig*env*amp)*0.7;
+	sig = Pan2.ar(sig,pan);
+	Out.ar(out, sig);
+}).add;
+
 )

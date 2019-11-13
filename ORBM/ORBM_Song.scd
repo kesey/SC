@@ -1650,4 +1650,132 @@
 	}
 };
 
+~song7 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
+	t.tempo = 118 / 60;
+	t.beatsPerBar = 7;
+
+	// Part
+
+	~song7InitPart = {
+		~changePattern.value(Pdef(\unit1), ~song7Pattern1);
+		/*~changePattern.value(Pdef(\unit2), ~song7Pattern2);
+		~changePattern.value(Pdef(\unit3), ~song7Pattern3);*/
+		~changePattern.value(Pdef(\unit4), ~song7Pattern4);
+		~changePattern.value(Pdef(\unit5), ~song7Pattern5);
+		~changePattern.value(Pdef(\unit6), ~song7Pattern6);
+		~changePattern.value(Pdef(\unit7), ~song7Pattern7);
+		// ~changePattern.value(Pdef(\unit8), ~song7Pattern8);
+		/*Pdefn(\patt1_6_dur, Pseq([0.125, 0.25, 0.125, 0.25, 0.5/**/, 0.125, 0.25, 0.5, 0.125, 0.25/**/, 0.125, 0.25, 0.125, 0.5, 0.25/**/, 0.125, 0.5, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);*/
+		~resetAllControlBus.value;
+	};
+
+	~song7Part1 = {
+		"song7 part1".postln;
+		~song7InitPart.value;
+		14.0.wait;
+	};
+
+	~song7Part2 = {
+		"song7 part2".postln;
+		~song7InitPart.value;
+		Pdefn(\patt1_6_dur, Pseq([0.125, 0.5, 0.25, 0.25, Rest(0.125)/**/, 0.375, 0.25, 0.25, 0.125, 0.25/**/, 0.125, 0.5, Rest(0.25), 0.25, 0.125/**/, 0.375, 0.25, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);
+		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, 0.25, Rest(1), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), 0.75, 1, Rest(0.75), 0.5], inf)).quant_(~globalQuant);
+		28.0.wait;
+	};
+
+	// Synth + Fx Preset
+
+	{
+		// Synth
+
+		~autoGuiControl.at("samplerStereo1021amp").valueAction_(0.09);
+		~autoGuiControl.at("samplerStereo1021attack").valueAction_(2.89);
+		~autoGuiControl.at("samplerStereo1021release").valueAction_(3.16);
+		~autoGuiControl.at("samplerStereo1021curve").valueAction_(-4);
+		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(49);
+		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.87);
+		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.05);
+		~autoGuiControl.at("samplerStereo1021loop").valueAction_(0);
+
+		~autoGuiControl.at("sinBass1022amp").valueAction_(0.4);
+		~autoGuiControl.at("sinBass1022loopNode").valueAction_(0);
+		~autoGuiControl.at("sinBass1022attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass1022release").valueAction_(4);
+		~autoGuiControl.at("sinBass1022curve").valueAction_(0);
+		~autoGuiControl.at("sinBass1022envLevel1").valueAction_(0);
+		~autoGuiControl.at("sinBass1022envLevel2").valueAction_(66);
+		~autoGuiControl.at("sinBass1022envLevel3").valueAction_(66);
+		~autoGuiControl.at("sinBass1022envLevel4").valueAction_(42.5);
+		~autoGuiControl.at("sinBass1022envLevel5").valueAction_(65.7);
+		~autoGuiControl.at("sinBass1022envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass1022envTime1").valueAction_(0.35);
+		~autoGuiControl.at("sinBass1022envTime2").valueAction_(0.66);
+		~autoGuiControl.at("sinBass1022envTime3").valueAction_(0.24);
+		~autoGuiControl.at("sinBass1022envTime4").valueAction_(0.41);
+		~autoGuiControl.at("sinBass1022envTime5").valueAction_(0.19);
+
+		// aux 1
+
+		~autoGuiControl.at("noiseInjection1018drywet").valueAction_(-0.78);
+		~autoGuiControl.at("noiseInjection1018attack").valueAction_(0.04);
+		~autoGuiControl.at("noiseInjection1018release").valueAction_(0.67);
+		~autoGuiControl.at("noiseInjection1018noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection1018noiseLevel").valueAction_(0.31);
+		~autoGuiControl.at("noiseInjection1018impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection1018impLevel").valueAction_(4.99);
+
+		~autoGuiControl.at("distoCrossOver1017drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver1017amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver1017smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver1017level").valueAction_(0.44);
+
+		~autoGuiControl.at("distoInsideOut1016drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut1016level").valueAction_(0.02);
+
+		~autoGuiControl.at("waveShape1015mix").valueAction_(0.66);
+		~autoGuiControl.at("waveShape1015gain").valueAction_(29.9);
+
+		// aux 2
+
+		~autoGuiControl.at("quadDelay1014drywet").valueAction_(0.54);
+		~autoGuiControl.at("quadDelay1014feedBack").valueAction_(0.24);
+		~autoGuiControl.at("quadDelay1014sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay1014sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay1014sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay1014sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay1014amp3").valueAction_(0);
+		~autoGuiControl.at("quadDelay1014amp4").valueAction_(0);
+
+		~autoGuiControl.at("pitchShifter1013drywet").valueAction_(1);
+		~autoGuiControl.at("pitchShifter1013pitchRatio").valueAction_(0.28);
+		~autoGuiControl.at("pitchShifter1013pitchDisper").valueAction_(0.37);
+		~autoGuiControl.at("pitchShifter1013timeDisper").valueAction_(0.43);
+
+		~autoGuiControl.at("flanging1012drywet").valueAction_(0.43);
+		~autoGuiControl.at("flanging1012fgfreq").valueAction_(118.1);
+		~autoGuiControl.at("flanging1012fdback").valueAction_(0.17);
+
+		~autoGuiControl.at("verb1011drywet").valueAction_(0);
+		~autoGuiControl.at("verb1011feedback").valueAction_(0.41);
+		~autoGuiControl.at("verb1011room").valueAction_(0.8);
+		~autoGuiControl.at("verb1011damp").valueAction_(0.84);
+		~autoGuiControl.at("verb1011amount").valueAction_(1);
+
+		~channel.at(\level2).valueAction_(0.17);
+	}.defer;
+
+	~songInit.value;
+
+	loop {
+		~song7Part1.value;
+		/*~song7Part2.value;
+		~song7Part3.value;
+		~song7Part4.value;
+		~song7Part5.value;
+		~song7Part6.value;
+		~song7Part7.value;
+		~song7Part8.value;*/
+	}
+};
+
 )
