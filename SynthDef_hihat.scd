@@ -221,4 +221,21 @@ SynthDef(\ikedhat,{arg out = 0, amp = 1, pan = 0, envLevel1 = 0.0, envLevel2 = 1
   Out.ar(out, Pan2.ar(sig, pan, env*amp));
 }).add;
 
+SynthDef(\metro, {arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 2, tempo=1, theta = 0.5, rho = 0.8, filterfreq=1000, rq=1.0, doneAction = 2;
+	var env, signal, b1, b2;
+	env = EnvGen.kr(Env.linen(att, 1, rel), doneAction: doneAction);
+	b1 = 2.0 * rho * cos(theta);
+	b2 = rho.squared.neg;
+	signal = SOS.ar(Impulse.ar(tempo, 0, env), 1.0, 0.0, 0.0, b1, b2);
+	signal = RHPF.ar(signal, filterfreq, rq);
+	Out.ar(out, Pan2.ar(signal, pan, amp));
+}).add;
+
+SynthDef(\haty,{ arg out = 0, att = 0.001, rel = 0.1, curve = (-4), amp = 0.75, doneAction = 2;
+	var env, sig;
+	env = EnvGen.kr(Env.perc(att, rel, 1, curve), 1, doneAction: doneAction);
+	sig = HPF.ar((WhiteNoise.ar(0.5, 0.5) * env * amp), 4000);
+	Out.ar(out, [sig,sig]);
+}).add;
+
 )

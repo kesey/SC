@@ -472,4 +472,24 @@ SynthDef(\slatechre, { arg out = 0, amp = 1, attack = 0.01, release = 5, t_trig,
 	OffsetOut.ar(out, (snd.tanh * env) * amp);
 }).add;
 
+SynthDef.new(\Colleen, { arg out = 0, amp=1, pan = 0, atk=0.35, rel=2, freq=110, doneAction = 2;
+	var sig, env;
+	freq = 1*freq*(320/250)*PinkNoise.kr(0.05,1)*BrownNoise.kr(0.01,1)*2;
+	sig = LPF.ar(CombC.ar(Decay.ar(Impulse.ar(0), 0.2, BrownNoise.ar), 4/(BrownNoise.kr(XLine.kr(10,1,0.2),freq)), 4/(PinkNoise.kr(XLine.kr(10,1,0.2),freq)), 3, 0.4),4000);
+	env = EnvGen.kr(Env.new([0,1,0],[atk,rel],[1,-1]),doneAction: doneAction);
+	sig = sig + PinkNoise.ar(0.1);
+	sig = LPF.ar(sig, XLine.kr(100,700,rel*0.1));
+	sig = (sig*env*amp)*4;
+	sig = Pan2.ar(sig,pan);
+	Out.ar(out, sig);
+}).add;
+
+SynthDef.new(\Zeynep, { arg out = 0, freq=440, envL1 = 0, envL2 = 0.03, envL3 = 0.1, envL4 = 0.2, envL5 = 0, atk=1, rel=4, amp=1, dur=0.2, beats=1, doneAction = 2;
+	var sig, env;
+	sig = Resonz.ar(WhiteNoise.ar(0.5), freq, XLine.kr(0.1, 0.001, dur*beats))*50;
+	env = EnvGen.kr(Env.new([envL1,envL2,envL3,envL4,envL5],[atk,atk,dur,rel],[1,-1]),doneAction: doneAction);
+	sig = (sig*env*amp).tanh;
+	Out.ar(out, [sig, sig]);
+}).add;
+
 )

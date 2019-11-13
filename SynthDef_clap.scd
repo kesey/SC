@@ -107,17 +107,16 @@ var env, signal, attack, noise, hpf1, hpf2;
 	OffsetOut.ar(out, Pan2.ar(signal * amp, pan));
 }).add;
 
-SynthDef(\clapy, {
-	arg outBus=0, amp = 0.5, gain = 1.5;
+SynthDef(\clapy, { arg out = 0, amp = 0.5, att = 0.02, rel = 0.3, curve1 = 0, curve2 = (-4), gain = 1.5, doneAction = 2;
 	var env1, env2, sig, noise1, noise2;
 	env1 = EnvGen.ar(Env.new([0, 1, 0, 1, 0, 1, 0, 1, 0], [0.001, 0.013, 0, 0.01, 0, 0.01, 0, 0.03], [0, -3, 0, -3, 0, -3, 0, -4]));
-	env2 = EnvGen.ar(Env.new([0, 1, 0], [0.02, 0.3], [0, -4]), doneAction:2);
+	env2 = EnvGen.ar(Env.new([0, 1, 0], [att, rel], [curve1, curve2]), doneAction: doneAction);
 	noise1 = BPF.ar(HPF.ar(GrayNoise.ar(env1), 600), 2000, 3);
 	noise2 = BPF.ar(HPF.ar(GrayNoise.ar(env2), 1000), 1200, 0.7, 0.7);
 	sig = noise1 + noise2;
-	sig = sig * gain * 2;
-	sig = sig.softclip * amp;
-	OffsetOut.ar(outBus, [sig,sig]);
+	sig = sig * gain;
+	sig = 0.4 * sig.softclip * amp;
+	Out.ar(out, [sig,sig]);
 }).add;
 
 )

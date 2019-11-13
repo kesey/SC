@@ -434,14 +434,13 @@ SynthDef(\snareAw, {arg out = 0, amp = 0.1, sinfreq = 180, att = 0.01, rel = 0.2
 	Out.ar(out, Pan2.ar(sum, pan));
 }).add;
 
-SynthDef(\snarey,{
-	arg out = 0, amp=0.75, freq=120, gain=0.5, dur=0.3;
+SynthDef(\snarey,{ arg out = 0, amp=0.75, attack = 0.001, release = 0.3, freq=120, gain=0.5, doneAction = 2;
 	var env, sig, snare;
-	env = EnvGen.kr(Env.perc(0.001, dur, 1, -9), 1, doneAction:2);
+	env = EnvGen.kr(Env.perc(attack, release, 1, -9), 1, doneAction: doneAction);
 	sig = {(SinOsc.ar(freq) - WhiteNoise.ar(0.5, 0.5))!2};
 	sig = sig * gain;
 	sig = sig.softclip * amp * env;
-	OffsetOut.ar(out, [sig,sig]);
+	Out.ar(out, [sig,sig]);
 }).add;
 
 )

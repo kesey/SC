@@ -467,4 +467,19 @@ SynthDef(\Reverb, {arg in = 0, out = 0, predelaytime = 0.048, decaytimec = 5, de
 	XOut.ar(out, drywet, temp * level);
 }).add;
 
+SynthDef(\grainin, { arg in = 0, out = 0, drywet = 0.5, amp = 0.2, time = 0.1, freq = 20;
+	var sig, input;
+	input = In.ar(in, 2);
+	sig = GrainIn.ar(2, Dust.ar(freq), time, Mix.ar(input)*0.4);
+	XOut.ar(out, drywet, sig * amp);
+}).add;
+
+SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5, grainDur = 0.1, grainSpeed = 10;
+	var pan, granulizer, input;
+	input = In.ar(in, 2);
+	pan = LFNoise0.kr(grainSpeed, panWidth);
+	granulizer = GrainIn.ar(2, Impulse.kr(grainSpeed), grainDur, Mix.ar(input), pan);
+	XOut.ar(out, drywet, granulizer * amp);
+}).add;
+
 )
