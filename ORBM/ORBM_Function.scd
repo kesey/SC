@@ -92,29 +92,19 @@
 	});
 };
 
-// persist Pdef mute state at pattern change and check pattern type
 ~changePattern = { arg pdef, pattern;
-	var pdefNameSymbol, pdefNameString, type;
+	var pdefNameSymbol, pdefNameString;
+
 	pdefNameSymbol = pdef.key.asSymbol;
 	pdefNameString = pdefNameSymbol.asString;
-	type = pattern.patternpairs.asEvent.at(\type);
-	if (type.isNil, {
-		type = \note;
-	});
-	~patternType.put(pdefNameString, type);
 
-	~firstTime.keysDo({ arg key; // reset control bus creation
-		if(key.contains(pdefNameString), {
+	~firstTime.keysValuesDo({ arg key, value; // reset control bus creation
+		if((key.contains(pdefNameString) and: value.not), {
 			~firstTime.put(key, true);
 		});
 	});
 
 	Pdef(pdefNameSymbol, pattern).quant_(~globalQuant);
-	if (~activePdefMute.at(pdefNameString), {
-		Pbindef(pdefNameSymbol, \type, \rest).quant_(~globalQuant);
-	}, {
-		Pbindef(pdefNameSymbol, \type, type).quant_(~globalQuant);
-	});
 };
 
 ~songInit = {

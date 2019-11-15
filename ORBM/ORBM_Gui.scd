@@ -524,7 +524,7 @@ pdMuteMidiChan = pdMuteMidiChan.max(0).min(15);
 (pdMuteMidiChan).debug("units mute midi channel");
 
 ~mute = Dictionary.new;
-~activePdefMute = Dictionary.new;
+~muteState = Dictionary.new;
 
 pdefGuiView = CompositeView(bounds: (~pdefNumber * 62)@110)
 .scroll(autoScrolls: true)
@@ -535,11 +535,11 @@ pdefGuiView = CompositeView(bounds: (~pdefNumber * 62)@110)
 pdefGuiView.layout = HLayout();
 
 ~pdefNumber.do({ arg i;
-	var pdefNameString, pdefNameSymbol;
+	var pdefNameSymbol, pdefNameString;
 
-	pdefNameString = ("unit" ++ (i + 1)).asString;
-	pdefNameSymbol = pdefNameString.asSymbol;
-	~activePdefMute.put(pdefNameString, false);
+	pdefNameSymbol = ("unit" ++ (i + 1)).asSymbol;
+	pdefNameString = pdefNameSymbol.asString;
+	~muteState.put(pdefNameSymbol, 0);
 
 	~mute.put(pdefNameString,
 		Button()
@@ -549,23 +549,14 @@ pdefGuiView.layout = HLayout();
 			["unmute " ++ pdefNameString, Color.white, Color.new255(48, 48, 48)]
 		])
 		.action = { arg guiControl;
-			var type, state;
-			type = \rest;
 			if(guiControl.value > 0,
 				{
-					state = true;
+					~muteState.put(pdefNameSymbol, 1);
 				},
 				{
-					if(~patternType.includesKey(pdefNameString),
-						{ type = ~patternType.at(pdefNameString); }
-					);
-					state = false;
+					~muteState.put(pdefNameSymbol, 0);
 				}
 			);
-			if(Pdef(pdefNameSymbol).source.notNil,
-				{ Pbindef(pdefNameSymbol, \type, type).quant_(0.25); }
-			);
-			~activePdefMute.put(pdefNameString, state);
 		}
 	);
 

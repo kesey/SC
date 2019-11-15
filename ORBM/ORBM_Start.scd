@@ -48,21 +48,24 @@ s.options.dump; // visualise server options
 
 ////////////////////////////////// 4. MIDI config
 
-MIDIClient.init; // post a list of available devices
+MIDIClient.initialized.not.if {
+	MIDIClient.init; // post a list of available devices
 
-/*MIDIFunc.trace(true); // dumps all incoming MIDI messages
-MIDIFunc.trace(false);*/
+	/*MIDIFunc.trace(true); // dumps all incoming MIDI messages
+	MIDIFunc.trace(false);*/
 
-// MIDIIn.connectAll; // connect to all attached input sources
-// MIDIClient.sources; // list avalaible midi sources
-if (MIDIClient.sources[0].notNil, {
-	MIDIIn.connect(0, MIDIClient.sources[0]); // connect on first port with first device equivalent to MIDIIn.connect
-});
+	// MIDIIn.connectAll; // connect to all attached input sources
+	// MIDIClient.sources; // list avalaible midi sources
+	if (MIDIClient.sources[0].notNil, {
+		MIDIIn.connect(0, MIDIClient.sources[0]); // connect on first port with first device equivalent to MIDIIn.connect
+	});
 
-// MIDIClient.destinations; // list avalaible midi destinations
-if (MIDIClient.destinations[2].notNil, {
-	~midiOut = MIDIOut.new(2).latency_(s.latency); // 2 for MIDIClient.destinations[2]
-});
+	// MIDIClient.destinations; // list avalaible midi destinations
+	if (MIDIClient.destinations[2].notNil, {
+		~midiOut = MIDIOut.new(2).latency_(s.latency); // 2 for MIDIClient.destinations[2]
+	});
+
+};
 
 ////////////////////////////////// 5. initialize global variables
 
@@ -71,7 +74,6 @@ if (MIDIClient.destinations[2].notNil, {
 ~globalQuant = ~globalQuant.max(0.0625); // avoid 0
 ~synthWindow = Dictionary.new;
 ~autoGuiControl = Dictionary.new;
-~patternType = Dictionary.new;
 ~controlBus = Dictionary.new;
 ~active = Dictionary.new;
 ~firstTime = Dictionary.new;
@@ -108,11 +110,12 @@ s.waitForBoot({
 		s.sync; // wait for previous code compilation is done
 		this.executeFile(~path ++ "ORBM_Routing.scd");
 		s.sync;
-		this.executeFile(~path ++ "ORBM_Pattern.scd");
-		s.sync;
 
 		~pdefNumber = 8; // number of pdef or units
 		~pdefNumber = ~pdefNumber.max(1).min(12); // limit number of pdef
+
+		this.executeFile(~path ++ "ORBM_Gui.scd"); // ~pdefNumber need to exist before executing ORBM_Gui.scd
+		s.sync;
 
 		~sequencer = Dictionary.new;
 
@@ -122,7 +125,7 @@ s.waitForBoot({
 			name = ("unit" ++ (i + 1)).asSymbol;
 			~sequencer.put(name,
 				Penvir(
-					(pdefName: name, pdefPrevInstr: nil, pdefCcStart: 21, pdefMidiChan: i + 2),
+					(pdefName: name, pdefPrevInstr: nil, muteState: ~muteState, pdefCcStart: 21, pdefMidiChan: i + 2),
 					Pdef(name, ~initPattern);
 				)
 			);
@@ -130,7 +133,7 @@ s.waitForBoot({
 
 		p = Ppar(~listUnits.value(~sequencer), inf); // all units in parallel
 
-		this.executeFile(~path ++ "ORBM_Gui.scd"); // ~pdefNumber need to exist before executing ORBM_Gui.scd
+		this.executeFile(~path ++ "ORBM_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
 		s.sync;
 		this.executeFile(~path ++ "ORBM_Song.scd"); // Gui need to exist before executing ORBM_Song.scd
 		s.sync;

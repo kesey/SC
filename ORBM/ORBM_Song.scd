@@ -2,16 +2,32 @@
 
 ///////////////////////////////////////  Song
 
+~nodeId = Dictionary.new;
+~nodeIdStart = 1021;
+
+~nodeId.put("sinBass", ~nodeIdStart.asString);
+~nodeId.put("samplerStereo", (~nodeIdStart - 1).asString);
+~nodeId.put("inputSig1", (~nodeIdStart - 2).asString);
+~nodeId.put("inputSig2", (~nodeIdStart - 3).asString);
+~nodeId.put("noiseInjection", (~nodeIdStart - 4).asString);
+~nodeId.put("distoCrossOver", (~nodeIdStart - 5).asString);
+~nodeId.put("distoInsideOut", (~nodeIdStart - 6).asString);
+~nodeId.put("waveShape", (~nodeIdStart - 7).asString);
+~nodeId.put("quadDelay", (~nodeIdStart - 8).asString);
+~nodeId.put("pitchShifter", (~nodeIdStart - 9).asString);
+~nodeId.put("flanging", (~nodeIdStart - 10).asString);
+~nodeId.put("verb", (~nodeIdStart - 11).asString);
+
 ~defaultSong = { // ~globalQuant = 1; // !!! change globalQuant before song !!!
 	t.tempo = 60 / 60;
 	{
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.07);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.21);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(10);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(2);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.07);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.21);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(10);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(2);
 
-		~autoGuiControl.at("inputSig1020attack").valueAction_(6);
-		~autoGuiControl.at("inputSig1020release").valueAction_(3);
+		~autoGuiControl.at("inputSig" ++ ~nodeId.at("inputSig1") ++ "attack").valueAction_(6);
+		~autoGuiControl.at("inputSig" ++ ~nodeId.at("inputSig1") ++ "release").valueAction_(3);
 	}.defer;
 	~songInit.value;
 	loop {
@@ -202,17 +218,17 @@
 	t.tempo = 82 / 60;
 	t.beatsPerBar = 4;
 	{
-		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(22);
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.3);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.27);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(1.47);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(2.11);
-		~autoGuiControl.at("samplerStereo1021amp").valueAction_(0.8);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(22);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.3);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.27);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(1.47);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(2.11);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.8);
 
-		~autoGuiControl.at("noiseInjection1018drywet").valueAction_(-0.84);
-		~autoGuiControl.at("noiseInjection1018attack").valueAction_(0.01);
-		~autoGuiControl.at("noiseInjection1018release").valueAction_(2.17);
-		~autoGuiControl.at("noiseInjection1018noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.84);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.01);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(2.17);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
 		~mute.at("unit7").valueAction_(1);
 	}.defer;
 	~songInit.value;
@@ -315,46 +331,46 @@
 	t.tempo = 142 / 60;
 	//t.beatsPerBar = 7;
 	{
-		~autoGuiControl.at("samplerStereo1021amp").valueAction_(1);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(2.11);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(1);
-		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(2);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.2);
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.08);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(1);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(2.11);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(1);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(2);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.2);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.08);
 
-		~autoGuiControl.at("sinBass1022amp").valueAction_(0.4);
-		~autoGuiControl.at("sinBass1022attack").valueAction_(0.2);
-		~autoGuiControl.at("sinBass1022release").valueAction_(4);
-		~autoGuiControl.at("sinBass1022envLevel1").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel2").valueAction_(28);
-		~autoGuiControl.at("sinBass1022envLevel3").valueAction_(64);
-		~autoGuiControl.at("sinBass1022envLevel4").valueAction_(16);
-		~autoGuiControl.at("sinBass1022envLevel5").valueAction_(48.3);
-		~autoGuiControl.at("sinBass1022envLevel6").valueAction_(37.5);
-		~autoGuiControl.at("sinBass1022envTime1").valueAction_(0.1);
-		~autoGuiControl.at("sinBass1022envTime2").valueAction_(0.3);
-		~autoGuiControl.at("sinBass1022envTime3").valueAction_(0.5);
-		~autoGuiControl.at("sinBass1022envTime4").valueAction_(0.39);
-		~autoGuiControl.at("sinBass1022envTime5").valueAction_(0.14);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(28);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(64);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(16);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(48.3);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(37.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.1);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.3);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.39);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0.14);
 
-		~autoGuiControl.at("quadDelay1014drywet").valueAction_(0.4);
-		~autoGuiControl.at("quadDelay1014feedBack").valueAction_(0.2);
-		~autoGuiControl.at("quadDelay1014sync1").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync2").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync3").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync4").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014amp4").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.4);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.2);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
-		~autoGuiControl.at("pitchShifter1013drywet").valueAction_(0.7);
-		~autoGuiControl.at("pitchShifter1013pitchRatio").valueAction_(0.11);
-		~autoGuiControl.at("pitchShifter1013pitchDisper").valueAction_(0);
-		~autoGuiControl.at("pitchShifter1013timeDisper").valueAction_(0.02);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(0.7);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0.11);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0.02);
 
-		~autoGuiControl.at("flanging1012drywet").valueAction_(-0.02);
-		~autoGuiControl.at("flanging1012fgfreq").valueAction_(2);
-		~autoGuiControl.at("flanging1012fdback").valueAction_(0.12);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(-0.02);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(2);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.12);
 
-		~autoGuiControl.at("verb1011drywet").valueAction_(0);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(0);
 
 		~channel.at(\level2).valueAction_(0.08);
 	}.defer;
@@ -1031,70 +1047,70 @@
 	{
 		// Synth
 
-		~autoGuiControl.at("samplerStereo1021amp").valueAction_(0.12);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(0.58);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(1);
-		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(8);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.24);
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.03);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.12);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(0.58);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(1);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(8);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.24);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.03);
 
-		~autoGuiControl.at("sinBass1022amp").valueAction_(0.66);
-		~autoGuiControl.at("sinBass1022curve").valueAction_(0);
-		~autoGuiControl.at("sinBass1022attack").valueAction_(0.2);
-		~autoGuiControl.at("sinBass1022release").valueAction_(4);
-		~autoGuiControl.at("sinBass1022envLevel1").valueAction_(8.5);
-		~autoGuiControl.at("sinBass1022envLevel2").valueAction_(45.8);
-		~autoGuiControl.at("sinBass1022envLevel3").valueAction_(25);
-		~autoGuiControl.at("sinBass1022envLevel4").valueAction_(47);
-		~autoGuiControl.at("sinBass1022envLevel5").valueAction_(17.5);
-		~autoGuiControl.at("sinBass1022envLevel6").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envTime1").valueAction_(0.39);
-		~autoGuiControl.at("sinBass1022envTime2").valueAction_(0.64);
-		~autoGuiControl.at("sinBass1022envTime3").valueAction_(0.73);
-		~autoGuiControl.at("sinBass1022envTime4").valueAction_(0.35);
-		~autoGuiControl.at("sinBass1022envTime5").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(8.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(45.8);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(25);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(47);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(17.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.39);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.64);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.73);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.35);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0);
 
 		// aux 1
 
-		~autoGuiControl.at("noiseInjection1018drywet").valueAction_(-0.58);
-		~autoGuiControl.at("noiseInjection1018attack").valueAction_(1.02);
-		~autoGuiControl.at("noiseInjection1018release").valueAction_(0.01);
-		~autoGuiControl.at("noiseInjection1018noiseType").valueAction_(0);
-		~autoGuiControl.at("noiseInjection1018noiseLevel").valueAction_(1);
-		~autoGuiControl.at("noiseInjection1018impFreq").valueAction_(34);
-		~autoGuiControl.at("noiseInjection1018impLevel").valueAction_(5.73);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.58);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(1.02);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.01);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(1);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(5.73);
 
-		~autoGuiControl.at("distoCrossOver1017drywet").valueAction_(-1);
-		~autoGuiControl.at("distoCrossOver1017amp").valueAction_(0.14);
-		~autoGuiControl.at("distoCrossOver1017smooth").valueAction_(0.1);
-		~autoGuiControl.at("distoCrossOver1017level").valueAction_(0.44);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
 
-		~autoGuiControl.at("distoInsideOut1016drywet").valueAction_(-1);
-		~autoGuiControl.at("distoInsideOut1016level").valueAction_(0.02);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.02);
 
-		~autoGuiControl.at("waveShape1015mix").valueAction_(0.1);
-		~autoGuiControl.at("waveShape1015gain").valueAction_(29.9);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.1);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "gain").valueAction_(29.9);
 
 		// aux 2
 
-		~autoGuiControl.at("quadDelay1014drywet").valueAction_(0.54);
-		~autoGuiControl.at("quadDelay1014feedBack").valueAction_(0.24);
-		~autoGuiControl.at("quadDelay1014sync1").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync2").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync3").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync4").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014amp4").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.54);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.24);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
-		~autoGuiControl.at("pitchShifter1013drywet").valueAction_(0.43);
-		~autoGuiControl.at("pitchShifter1013pitchRatio").valueAction_(0.07);
-		~autoGuiControl.at("pitchShifter1013pitchDisper").valueAction_(0.01);
-		~autoGuiControl.at("pitchShifter1013timeDisper").valueAction_(0.43);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(0.43);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0.07);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.01);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0.43);
 
-		~autoGuiControl.at("flanging1012drywet").valueAction_(-0.92);
-		~autoGuiControl.at("flanging1012fgfreq").valueAction_(55.1);
-		~autoGuiControl.at("flanging1012fdback").valueAction_(0.87);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(-0.92);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(55.1);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.87);
 
-		~autoGuiControl.at("verb1011drywet").valueAction_(0.28);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(0.28);
 
 		~channel.at(\level2).valueAction_(0.17);
 	}.defer;
@@ -1311,77 +1327,77 @@
 	{
 		// Synth
 
-		~autoGuiControl.at("samplerStereo1021amp").valueAction_(0.14);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(0.58);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(1);
-		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(15);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.41);
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.03);
-		~autoGuiControl.at("samplerStereo1021loop").valueAction_(0);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(0.58);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(1);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(15);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.41);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.03);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
 
-		~autoGuiControl.at("sinBass1022amp").valueAction_(0.55);
-		~autoGuiControl.at("sinBass1022curve").valueAction_(0);
-		~autoGuiControl.at("sinBass1022loopNode").valueAction_(0);
-		~autoGuiControl.at("sinBass1022attack").valueAction_(0.2);
-		~autoGuiControl.at("sinBass1022release").valueAction_(4);
-		~autoGuiControl.at("sinBass1022envLevel1").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel2").valueAction_(49.5);
-		~autoGuiControl.at("sinBass1022envLevel3").valueAction_(64);
-		~autoGuiControl.at("sinBass1022envLevel4").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel5").valueAction_(64);
-		~autoGuiControl.at("sinBass1022envLevel6").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envTime1").valueAction_(0.86);
-		~autoGuiControl.at("sinBass1022envTime2").valueAction_(1.1);
-		~autoGuiControl.at("sinBass1022envTime3").valueAction_(0.71);
-		~autoGuiControl.at("sinBass1022envTime4").valueAction_(0.63);
-		~autoGuiControl.at("sinBass1022envTime5").valueAction_(0.23);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.55);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "loopNode").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(49.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(64);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(64);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.86);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(1.1);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.71);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.63);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0.23);
 
 		// aux 1
 
-		~autoGuiControl.at("noiseInjection1018drywet").valueAction_(-0.58);
-		~autoGuiControl.at("noiseInjection1018attack").valueAction_(1.02);
-		~autoGuiControl.at("noiseInjection1018release").valueAction_(0.01);
-		~autoGuiControl.at("noiseInjection1018noiseType").valueAction_(0);
-		~autoGuiControl.at("noiseInjection1018noiseLevel").valueAction_(1);
-		~autoGuiControl.at("noiseInjection1018impFreq").valueAction_(34);
-		~autoGuiControl.at("noiseInjection1018impLevel").valueAction_(5.26);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.58);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(1.02);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.01);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(1);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(5.26);
 
-		~autoGuiControl.at("distoCrossOver1017drywet").valueAction_(-1);
-		~autoGuiControl.at("distoCrossOver1017amp").valueAction_(0.14);
-		~autoGuiControl.at("distoCrossOver1017smooth").valueAction_(0.1);
-		~autoGuiControl.at("distoCrossOver1017level").valueAction_(0.44);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
 
-		~autoGuiControl.at("distoInsideOut1016drywet").valueAction_(-1);
-		~autoGuiControl.at("distoInsideOut1016level").valueAction_(0.02);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.02);
 
-		~autoGuiControl.at("waveShape1015mix").valueAction_(0.21);
-		~autoGuiControl.at("waveShape1015gain").valueAction_(29.9);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.21);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "gain").valueAction_(29.9);
 
 		// aux 2
 
-		~autoGuiControl.at("quadDelay1014drywet").valueAction_(0.54);
-		~autoGuiControl.at("quadDelay1014feedBack").valueAction_(0.24);
-		~autoGuiControl.at("quadDelay1014sync1").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync2").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync3").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync4").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014amp3").valueAction_(0);
-		~autoGuiControl.at("quadDelay1014amp4").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.54);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.24);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
-		~autoGuiControl.at("pitchShifter1013drywet").valueAction_(0.95);
-		~autoGuiControl.at("pitchShifter1013pitchRatio").valueAction_(1.01);
-		~autoGuiControl.at("pitchShifter1013pitchDisper").valueAction_(0.37);
-		~autoGuiControl.at("pitchShifter1013timeDisper").valueAction_(0.43);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(0.95);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(1.01);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.37);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0.43);
 
-		~autoGuiControl.at("flanging1012drywet").valueAction_(0.43);
-		~autoGuiControl.at("flanging1012fgfreq").valueAction_(0);
-		~autoGuiControl.at("flanging1012fdback").valueAction_(0.36);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(0.43);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(0);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.36);
 
-		~autoGuiControl.at("verb1011drywet").valueAction_(0);
-		~autoGuiControl.at("verb1011feedback").valueAction_(0);
-		~autoGuiControl.at("verb1011room").valueAction_(1);
-		~autoGuiControl.at("verb1011damp").valueAction_(0.02);
-		~autoGuiControl.at("verb1011amount").valueAction_(1);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(0);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(1);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.02);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
 
 		~channel.at(\level2).valueAction_(0.17);
 	}.defer;
@@ -1560,78 +1576,78 @@
 	{
 		// Synth
 
-		~autoGuiControl.at("samplerStereo1021amp").valueAction_(0.09);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(2.89);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(3.16);
-		~autoGuiControl.at("samplerStereo1021curve").valueAction_(-4);
-		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(49);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.87);
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.05);
-		~autoGuiControl.at("samplerStereo1021loop").valueAction_(0);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.09);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(2.89);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(3.16);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "curve").valueAction_(-4);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(49);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.87);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.05);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
 
-		~autoGuiControl.at("sinBass1022amp").valueAction_(0.4);
-		~autoGuiControl.at("sinBass1022loopNode").valueAction_(0);
-		~autoGuiControl.at("sinBass1022attack").valueAction_(0.2);
-		~autoGuiControl.at("sinBass1022release").valueAction_(4);
-		~autoGuiControl.at("sinBass1022curve").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel1").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel2").valueAction_(66);
-		~autoGuiControl.at("sinBass1022envLevel3").valueAction_(66);
-		~autoGuiControl.at("sinBass1022envLevel4").valueAction_(42.5);
-		~autoGuiControl.at("sinBass1022envLevel5").valueAction_(65.7);
-		~autoGuiControl.at("sinBass1022envLevel6").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envTime1").valueAction_(0.35);
-		~autoGuiControl.at("sinBass1022envTime2").valueAction_(0.66);
-		~autoGuiControl.at("sinBass1022envTime3").valueAction_(0.24);
-		~autoGuiControl.at("sinBass1022envTime4").valueAction_(0.41);
-		~autoGuiControl.at("sinBass1022envTime5").valueAction_(0.19);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "loopNode").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(42.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(65.7);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.35);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.24);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.41);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0.19);
 
 		// aux 1
 
-		~autoGuiControl.at("noiseInjection1018drywet").valueAction_(-0.78);
-		~autoGuiControl.at("noiseInjection1018attack").valueAction_(0.04);
-		~autoGuiControl.at("noiseInjection1018release").valueAction_(0.67);
-		~autoGuiControl.at("noiseInjection1018noiseType").valueAction_(0);
-		~autoGuiControl.at("noiseInjection1018noiseLevel").valueAction_(0.31);
-		~autoGuiControl.at("noiseInjection1018impFreq").valueAction_(34);
-		~autoGuiControl.at("noiseInjection1018impLevel").valueAction_(4.99);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.78);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.04);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.67);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(0.31);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(4.99);
 
-		~autoGuiControl.at("distoCrossOver1017drywet").valueAction_(-1);
-		~autoGuiControl.at("distoCrossOver1017amp").valueAction_(0.14);
-		~autoGuiControl.at("distoCrossOver1017smooth").valueAction_(0.1);
-		~autoGuiControl.at("distoCrossOver1017level").valueAction_(0.44);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
 
-		~autoGuiControl.at("distoInsideOut1016drywet").valueAction_(-1);
-		~autoGuiControl.at("distoInsideOut1016level").valueAction_(0.02);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.02);
 
-		~autoGuiControl.at("waveShape1015mix").valueAction_(0.66);
-		~autoGuiControl.at("waveShape1015gain").valueAction_(29.9);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.66);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "gain").valueAction_(29.9);
 
 		// aux 2
 
-		~autoGuiControl.at("quadDelay1014drywet").valueAction_(0.54);
-		~autoGuiControl.at("quadDelay1014feedBack").valueAction_(0.24);
-		~autoGuiControl.at("quadDelay1014sync1").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync2").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync3").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync4").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014amp3").valueAction_(0);
-		~autoGuiControl.at("quadDelay1014amp4").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.54);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.24);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
-		~autoGuiControl.at("pitchShifter1013drywet").valueAction_(1);
-		~autoGuiControl.at("pitchShifter1013pitchRatio").valueAction_(0.28);
-		~autoGuiControl.at("pitchShifter1013pitchDisper").valueAction_(0.37);
-		~autoGuiControl.at("pitchShifter1013timeDisper").valueAction_(0.43);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(1);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0.28);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.37);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0.43);
 
-		~autoGuiControl.at("flanging1012drywet").valueAction_(0.43);
-		~autoGuiControl.at("flanging1012fgfreq").valueAction_(118.1);
-		~autoGuiControl.at("flanging1012fdback").valueAction_(0.17);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(0.43);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(118.1);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.17);
 
-		~autoGuiControl.at("verb1011drywet").valueAction_(0);
-		~autoGuiControl.at("verb1011feedback").valueAction_(0.41);
-		~autoGuiControl.at("verb1011room").valueAction_(0.8);
-		~autoGuiControl.at("verb1011damp").valueAction_(0.84);
-		~autoGuiControl.at("verb1011amount").valueAction_(1);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(0);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.41);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(0.8);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.84);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
 
 		~channel.at(\level2).valueAction_(0.17);
 	}.defer;
@@ -1688,78 +1704,78 @@
 	{
 		// Synth
 
-		~autoGuiControl.at("samplerStereo1021amp").valueAction_(0.09);
-		~autoGuiControl.at("samplerStereo1021attack").valueAction_(2.89);
-		~autoGuiControl.at("samplerStereo1021release").valueAction_(3.16);
-		~autoGuiControl.at("samplerStereo1021curve").valueAction_(-4);
-		~autoGuiControl.at("samplerStereo1021buffer").valueAction_(49);
-		~autoGuiControl.at("samplerStereo1021rate").valueAction_(0.87);
-		~autoGuiControl.at("samplerStereo1021startPos").valueAction_(0.05);
-		~autoGuiControl.at("samplerStereo1021loop").valueAction_(0);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.09);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(2.89);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(3.16);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "curve").valueAction_(-4);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(49);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.87);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.05);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
 
-		~autoGuiControl.at("sinBass1022amp").valueAction_(0.4);
-		~autoGuiControl.at("sinBass1022loopNode").valueAction_(0);
-		~autoGuiControl.at("sinBass1022attack").valueAction_(0.2);
-		~autoGuiControl.at("sinBass1022release").valueAction_(4);
-		~autoGuiControl.at("sinBass1022curve").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel1").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envLevel2").valueAction_(66);
-		~autoGuiControl.at("sinBass1022envLevel3").valueAction_(66);
-		~autoGuiControl.at("sinBass1022envLevel4").valueAction_(42.5);
-		~autoGuiControl.at("sinBass1022envLevel5").valueAction_(65.7);
-		~autoGuiControl.at("sinBass1022envLevel6").valueAction_(0);
-		~autoGuiControl.at("sinBass1022envTime1").valueAction_(0.35);
-		~autoGuiControl.at("sinBass1022envTime2").valueAction_(0.66);
-		~autoGuiControl.at("sinBass1022envTime3").valueAction_(0.24);
-		~autoGuiControl.at("sinBass1022envTime4").valueAction_(0.41);
-		~autoGuiControl.at("sinBass1022envTime5").valueAction_(0.19);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "loopNode").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(42.5);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(65.7);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.35);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.24);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.41);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0.19);
 
 		// aux 1
 
-		~autoGuiControl.at("noiseInjection1018drywet").valueAction_(-0.78);
-		~autoGuiControl.at("noiseInjection1018attack").valueAction_(0.04);
-		~autoGuiControl.at("noiseInjection1018release").valueAction_(0.67);
-		~autoGuiControl.at("noiseInjection1018noiseType").valueAction_(0);
-		~autoGuiControl.at("noiseInjection1018noiseLevel").valueAction_(0.31);
-		~autoGuiControl.at("noiseInjection1018impFreq").valueAction_(34);
-		~autoGuiControl.at("noiseInjection1018impLevel").valueAction_(4.99);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.78);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.04);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.67);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(0.31);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(4.99);
 
-		~autoGuiControl.at("distoCrossOver1017drywet").valueAction_(-1);
-		~autoGuiControl.at("distoCrossOver1017amp").valueAction_(0.14);
-		~autoGuiControl.at("distoCrossOver1017smooth").valueAction_(0.1);
-		~autoGuiControl.at("distoCrossOver1017level").valueAction_(0.44);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
 
-		~autoGuiControl.at("distoInsideOut1016drywet").valueAction_(-1);
-		~autoGuiControl.at("distoInsideOut1016level").valueAction_(0.02);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.02);
 
-		~autoGuiControl.at("waveShape1015mix").valueAction_(0.66);
-		~autoGuiControl.at("waveShape1015gain").valueAction_(29.9);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.66);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "gain").valueAction_(29.9);
 
 		// aux 2
 
-		~autoGuiControl.at("quadDelay1014drywet").valueAction_(0.54);
-		~autoGuiControl.at("quadDelay1014feedBack").valueAction_(0.24);
-		~autoGuiControl.at("quadDelay1014sync1").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync2").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync3").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014sync4").valueAction_(1);
-		~autoGuiControl.at("quadDelay1014amp3").valueAction_(0);
-		~autoGuiControl.at("quadDelay1014amp4").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.54);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.24);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
-		~autoGuiControl.at("pitchShifter1013drywet").valueAction_(1);
-		~autoGuiControl.at("pitchShifter1013pitchRatio").valueAction_(0.28);
-		~autoGuiControl.at("pitchShifter1013pitchDisper").valueAction_(0.37);
-		~autoGuiControl.at("pitchShifter1013timeDisper").valueAction_(0.43);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(1);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0.28);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.37);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0.43);
 
-		~autoGuiControl.at("flanging1012drywet").valueAction_(0.43);
-		~autoGuiControl.at("flanging1012fgfreq").valueAction_(118.1);
-		~autoGuiControl.at("flanging1012fdback").valueAction_(0.17);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(0.43);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(118.1);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.17);
 
-		~autoGuiControl.at("verb1011drywet").valueAction_(0);
-		~autoGuiControl.at("verb1011feedback").valueAction_(0.41);
-		~autoGuiControl.at("verb1011room").valueAction_(0.8);
-		~autoGuiControl.at("verb1011damp").valueAction_(0.84);
-		~autoGuiControl.at("verb1011amount").valueAction_(1);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(0);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.41);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(0.8);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.84);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
 
 		~channel.at(\level2).valueAction_(0.17);
 	}.defer;
