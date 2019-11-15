@@ -3328,26 +3328,26 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song7Pattern6 = Pbind(
 	\instrument, \kick_oto309,
-	\dur, Pseq([Pn(1.75, 4), 3.5], inf), // 4*1.75
+	\dur, Pseq([1.75, 3.5, 1.75/**/, 3.5, 1.5, 0.25, Rest(1.75)], inf), // [1.75, 3.5, 1.75, 3.5, 1.5, 0.25, 1.75].sum
 	\amp, 0.1,
 	\pan, 0.0,
 	\env0L1, 0.5,
-	\env0L2, 1,
+	\env0L2, 0.4,
 	\env0L3, 2.2,
 	\env0L4, 0,
-	\env0T1, 0,
-	\env0T2, 0.21,
-	\env0T3, 0.08,
+	\env0T1, 0.15,
+	\env0T2, 0,
+	\env0T3, 0.26,
 	\env0Crv1, -5.2,
 	\env0Crv2, -2,
 	\env0Crv3, -4,
-	\env1L1, 400,
-	\env1L2, 61.2,
+	\env1L1, 422.4,
+	\env1L2, 69.7,
 	\env1L3, 48.2,
 	\env1T1, 0,
-	\env1T2, 0.07,
-	\env1Crv1, -4,
-	\env1Crv2, 6.8,
+	\env1T2, 0.51,
+	\env1Crv1, -5.55,
+	\env1Crv2, -15.38,
 	\out, ~channelBus[0],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
