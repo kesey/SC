@@ -265,7 +265,7 @@ SynthDef(\syncDelay, { arg in = 0, out = 0, sync = 0/*false*/, feedBack = 0.2, d
 
 ///////////////////////////////////////  Reverb
 
-~reverbSynthDef = SynthDef(\Reverb, {arg in = 0, out = 0, predelaytime = 0.048, decaytimec = 5, decaytimea = 1, drywet = 0.5, level = 0.2;
+SynthDef(\Reverb, {arg in = 0, out = 0, predelaytime = 0.048, decaytimec = 5, decaytimea = 1, drywet = 0.5, level = 0.2;
 	var input, numc, numa, temp;
 	input = In.ar(in, 2);
 	numc = 4; // number of comb delays

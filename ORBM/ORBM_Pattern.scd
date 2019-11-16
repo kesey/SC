@@ -3392,7 +3392,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song7Pattern7 = Pbind(
 	\instrument, \metro,
 	\dur, 1.75,
-	\amp, 0.7 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+	\amp, Pseq([0.7, 0.4, 0.6], inf) * Pfunc({ 1 - ~muteState.at(~pdefName)}),
 	\pan, Pwhite(-0.85, 0.85),
 	\att, 0.01,
 	\rel, 2,
@@ -3429,8 +3429,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 			~pdefPrevInstr = currentInstr;
 		});
 		0;
-	})
-);
+}));
 
 ///////////////////// test pattern
 

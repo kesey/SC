@@ -412,6 +412,7 @@
 				~removePrev.value(id);
 			};
 		});
+		pdefName;
 	}, {
 		"autoGui wrong arguments".postln;
 	});

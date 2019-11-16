@@ -125,13 +125,13 @@ s.waitForBoot({
 			name = ("unit" ++ (i + 1)).asSymbol;
 			~sequencer.put(name,
 				Penvir(
-					(pdefName: name, pdefPrevInstr: nil, muteState: ~muteState, pdefCcStart: 21, pdefMidiChan: i + 2),
+					(pdefName: name, pdefPrevInstr: nil, pdefCcStart: 21, pdefMidiChan: i + 2, muteState: ~muteState),
 					Pdef(name, ~initPattern);
 				)
 			);
 		});
 
-		p = Ppar(~listUnits.value(~sequencer), inf); // all units in parallel
+		p = Ppar(~listUnits.value(~sequencer), inf); // all units in parallel and in separate group with Pbus (usefull for Pfx Pattern)
 
 		this.executeFile(~path ++ "ORBM_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
 		s.sync;

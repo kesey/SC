@@ -2,22 +2,6 @@
 
 ///////////////////////////////////////  Song
 
-~nodeId = Dictionary.new;
-~nodeIdStart = 1021;
-
-~nodeId.put("sinBass", ~nodeIdStart.asString);
-~nodeId.put("samplerStereo", (~nodeIdStart - 1).asString);
-~nodeId.put("inputSig1", (~nodeIdStart - 2).asString);
-~nodeId.put("inputSig2", (~nodeIdStart - 3).asString);
-~nodeId.put("noiseInjection", (~nodeIdStart - 4).asString);
-~nodeId.put("distoCrossOver", (~nodeIdStart - 5).asString);
-~nodeId.put("distoInsideOut", (~nodeIdStart - 6).asString);
-~nodeId.put("waveShape", (~nodeIdStart - 7).asString);
-~nodeId.put("quadDelay", (~nodeIdStart - 8).asString);
-~nodeId.put("pitchShifter", (~nodeIdStart - 9).asString);
-~nodeId.put("flanging", (~nodeIdStart - 10).asString);
-~nodeId.put("verb", (~nodeIdStart - 11).asString);
-
 ~defaultSong = { // ~globalQuant = 1; // !!! change globalQuant before song !!!
 	t.tempo = 60 / 60;
 	{
@@ -26,8 +10,8 @@
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(10);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(2);
 
-		~autoGuiControl.at("inputSig" ++ ~nodeId.at("inputSig1") ++ "attack").valueAction_(6);
-		~autoGuiControl.at("inputSig" ++ ~nodeId.at("inputSig1") ++ "release").valueAction_(3);
+		~autoGuiControl.at("inputSig" ++ ~nodeId.at("inputSoftPop") ++ "attack").valueAction_(6);
+		~autoGuiControl.at("inputSig" ++ ~nodeId.at("inputSoftPop") ++ "release").valueAction_(3);
 	}.defer;
 	~songInit.value;
 	loop {
