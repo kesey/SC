@@ -15,7 +15,7 @@ SynthDef(\starlet, { arg out=0, amp=0.1, gate=1, pan=0, spread=0.8, freq=200, do
 	sig = sig * EnvGen.ar(\adsr.kr(Env.adsr(1.01,0.1,1,1.1)),gate,doneAction:doneAction);
 	sig = sig /10;
 	sig = Splay.ar(sig, spread, amp, pan);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\crackle, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
@@ -26,7 +26,7 @@ SynthDef(\crackle, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
 	sig = HPF.ar(sig, 50);
 	sig = Limiter.ar(sig);
 	sig = Pan2.ar(sig, pan, amp);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\crackle2, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
@@ -38,7 +38,7 @@ SynthDef(\crackle2, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
 	sig = HPF.ar(sig, 50);
 	sig = Limiter.ar(sig);
 	sig = Pan2.ar(sig, pan, amp);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\tredrone, { arg lagf=0, freq=200, pan=0, amp=0.1, out=0;
@@ -53,7 +53,7 @@ SynthDef(\tredrone, { arg lagf=0, freq=200, pan=0, amp=0.1, out=0;
 	sig = RLPF.ar(sig, \lpfr.kr(1.1) * freq.lag(1) * SinOsc.kr(1*~t * [1,3/5]).range(0,1), \rq.kr(0.5));
 	sig = sig + BPF.ar(sig1, freq.lag(1) * 8);
 	//sig = Pan2.ar(sig, pan, amp);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\corde, { arg out=0, amp=0.1, gate=1, pan=0, freq=200, fspread=0.01;
@@ -63,7 +63,7 @@ SynthDef(\corde, { arg out=0, amp=0.1, gate=1, pan=0, freq=200, fspread=0.01;
 	sig = sig * 0.9;
 	sig = Splay.ar(sig, spread, amp, pan);
 	sig = sig * EnvGen.ar(Env.adsr(0.01,0.1,0.8,2.1),gate,doneAction:2);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\taule, { arg out=0, amp=0.1, gate=1, pan=0, spread=0.8, freq=200, doneAction=2;
@@ -132,7 +132,7 @@ SynthDef(\taule, { arg out=0, amp=0.1, gate=1, pan=0, spread=0.8, freq=200, done
 	//sig = Splay.ar(sig, spread, amp, pan);
 	sig = Pan2.ar(sig, pan, amp).mean*2;
 	DetectSilence.ar(sig, 0.001,0.1,doneAction:2);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\cling, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
@@ -148,7 +148,7 @@ SynthDef(\cling, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
 	sig = ( sig*\distamp.kr(10) ).tanh * \distpostamp.kr(1/2);
 	sig = sig * EnvGen.ar(Env.adsr(0.01,0.1,0.8,0.4,1,-4),gate,doneAction:2);
 	sig = Pan2.ar(sig, pan, amp).mean * 4;
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\chh, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
@@ -163,7 +163,7 @@ SynthDef(\chh, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
 	sig = RLPF.ar(sig,  [env3, env2, env1 ], \rq.kr(0.5));
 	sig = sig * EnvGen.ar(Env.adsr(0.01,0.1,0.8,2.4),gate,doneAction:2);
 	sig = Pan2.ar(sig, [-1,0,1]*0.1, amp).mean;
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\fmcowbell, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
@@ -175,7 +175,7 @@ SynthDef(\fmcowbell, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
 	sig = sig.fold(\fold.kr(0.23));
 	sig = sig * \gain.kr(1);
 	sig = Pan2.ar(sig, pan, amp).mean;
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 ///////////////////////////////////////  Sequence
@@ -388,7 +388,32 @@ SynthDef.new(\Colleen3, { arg out = 0, amp=1, pan = 0, freq=110, atk=0.01, rel=2
 	sig = HPF.ar(sig, XLine.kr(hpfmin,hpfmax,rel/6));
 	sig = (sig*env*amp)*0.7;
 	sig = Pan2.ar(sig,pan);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\combs, { arg out = 0, amp = 0.1, pan = 0, att = 0.01, dec = 0.1, sus = 0.7, rel = 0.5, freq = 440, rate = 6, depth = 0.2, regen = -3, sweep = 16, rq = 0.5, harmonic = 1.5, gate = 1, doneAction = 2;
+	var max, min, vibrato, snd, env, filterenv;
+
+	//Setting some values for the filters:
+	max = ((1 + depth) / freq);
+	min = (1 / (freq * (1 + depth)));
+	vibrato = LFNoise1.ar(rate).range(min, max);
+
+	//Amplitude and filter cutoff envelopes
+	env = Env.adsr(att, dec, sus, rel).kr(gate: gate, doneAction: doneAction);
+	filterenv = Env.perc(att, rel).kr;
+	filterenv = ((filterenv * sweep) + 1) * freq;
+
+	//The core noise:
+	snd = BrownNoise.ar(1);
+	snd = CombL.ar(snd, max, vibrato, regen);
+	snd = CombN.ar(snd, harmonic / freq, harmonic / freq, regen, env);
+
+	//More filters and output stuff:
+	snd = RHPF.ar(snd, freq * 4, rq);
+	snd = RLPF.ar(snd, filterenv, rq, amp);
+	snd = Limiter.ar(snd, amp);
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
 )

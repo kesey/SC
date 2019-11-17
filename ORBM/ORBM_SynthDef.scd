@@ -431,6 +431,36 @@ SynthDef(\gatedreverb, {|in = 0, out =0 gate= 1 threshold= 0.1 amp=0.1|
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
+SynthDef(\ikedaBassBr, { arg out = 0, amp = 1, pan = 0, att = 0, dec = 0.1, sus = 0.8, rel = 0.01, curve = -5, freq = 0, harmonic = 14.015, iphase = pi/3, gate = 1, doneAction = 2;
+	var env, snd;
+
+	env = Env.adsr(
+	    	attackTime: att,
+	    	decayTime: dec,
+	    	sustainLevel: sus,
+	    	releaseTime: rel,
+	    	curve: curve,
+	    ).kr(gate: gate, doneAction: doneAction);
+
+	env = env * amp.curvelin(inMin: 0, inMax: 1, outMin: 0, outMax: 1, curve: log(10));
+
+	snd = SinOsc.ar(
+		    //Any value for freq here gets added to the freq of the note (n + 0 = n)
+		    freq: 0,
+		    //Phase sweeps around a circle at (rate / 2pi) to make a sine wave.
+		    phase: (Sweep.ar(trig: gate, rate: 2pi * [freq, freq * harmonic]) + iphase).wrap(-pi, pi),
+	        mul: [1, 0.01]
+	    );
+
+	snd = Mix.ar(snd).tanh;
+
+	snd = LeakDC.ar(snd);
+
+	snd = snd * env;
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 SynthDef(\gabberkick, { arg out = 0, amp = 0.1, attack = 0.001, release = 0.05;
     var snd, freq, high, lfo;
 	freq = \freq.kr(440).min(1400) * (Env.perc(0.001, 0.08, curve: \curve.kr(-1)).ar * 48 * \bend.kr(1)).midiratio;
@@ -603,6 +633,18 @@ OffsetOut.ar(out, son*level).tanh;
 	OffsetOut.ar(out, Pan2.ar(snd, pan, amp));
 }).add;
 
+SynthDef(\kick808Br, {arg out = 0, amp = 1, pan = 0, att = 0.001, rel = 1, freq1 = 240, freq2 = 60, ringTime = 10, dist = 0.5, doneAction = 2;
+	var snd, env;
+	snd = Ringz.ar(
+		in: Impulse.ar(0), // single impulse
+		freq: XLine.ar(freq1, freq2, 0.1),
+		decaytime: ringTime);
+	env = Env.perc(att, rel, amp).kr(doneAction: doneAction);
+	snd = (1.0 - dist) * snd + (dist * (snd.distort));
+	snd = snd * env;
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 ~kikAwSynthDef = SynthDef(\kikAw, { |out = 0, amp = 0.5, basefreq = 50, ratio = 7, sweeptime = 0.05, envL1 = 1, envL2 = 0.8, envL3 = 0, envT1 = 0.3, envT2 = 0.15|
     var fcurve = EnvGen.kr(Env([basefreq * ratio, basefreq], [sweeptime], \exp)),
 	env = EnvGen.kr(Env([envL1, envL2, envL3], [envT1, envT2], -4), doneAction: 2),
@@ -683,7 +725,7 @@ SynthDef(\kick3Aw, {arg out = 0, amp = 1, pan = 0, attack = 0.01, decay = 0.1, r
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-SynthDef(\ringkick, { arg out = 0, freq = 40, decay = 0.25, amp = 1;
+SynthDef(\ringkick, { arg out = 0, amp = 1, decay = 0.25, freq = 40, doneAction = 2;
 	var snd;
 	snd = Ringz.ar(
 		in: LPF.ar(
@@ -694,6 +736,9 @@ SynthDef(\ringkick, { arg out = 0, freq = 40, decay = 0.25, amp = 1;
 		decaytime: decay,
 		mul: 7 * amp
 	).tanh.sin*2;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
 	OffsetOut.ar(out, snd!2);
 }).add;
 
@@ -836,7 +881,7 @@ SynthDef(\kickey,{ arg out = 0, att = 0.0014, rel = 0.8, curve = (-5), startFreq
 	sig = sig + LPF.ar((noiseAmp*BrownNoise.ar(1)),lowpass);
 	sig = sig * gain;
 	sig = sig.softclip * amp * env;
-	Out.ar(out, [sig,sig]);
+	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
 SynthDef(\kickBoomy, { arg out = 0, amp=1, atk = 0.0014, rel=0.4, curve = (-5), frq1 = 180, frq2 = 330, frq3 = 175, frq4 = 224, gain=1.1, doneAction = 2;
@@ -847,7 +892,7 @@ SynthDef(\kickBoomy, { arg out = 0, amp=1, atk = 0.0014, rel=0.4, curve = (-5), 
 	sig = sig + HPF.ar(EnvGen.ar(Env.perc(0.001,0.001,0.5)),500);
 	sig = sig * gain;
 	sig = sig.softclip * 1;
-	Out.ar(out, [sig,sig]);
+	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
 ~kick_oto309SynthDef = SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, env0L3 = 0.5, env0L4 = 0, env0T1 = 0.005, env0T2 = 0.06, env0T3 = 0.26, env0Crv1 = (-4), env0Crv2 = (-2), env0Crv3 = (-4), env1L1 = 110, env1L2 = 59, env1L3 = 29, env1T1 = 0.005, env1T2 = 0.29, env1Crv1 = (-4), env1Crv2 = (-5), doneAction = 2;
@@ -865,7 +910,211 @@ SynthDef(\kickBoomy, { arg out = 0, amp=1, atk = 0.0014, rel=0.4, curve = (-5), 
 	son = son * 1.2;
 	son = son.clip2(1);
 
-	Out.ar(out, Pan2.ar(son * amp));
+	OffsetOut.ar(out, Pan2.ar(son * amp));
+}).add;
+
+SynthDef(\kick_oto309Br, { arg out = 0, amp = 0.5, pan = 0, att = 0.005, rel = 0.29, curve = -4,
+	//Other Controls:
+	filterHarmonic = 1.5, preamp = 1.25, pulseAmp = 0.5, noiseAmp = 1, sineAmp = 1,
+	doneAction = 2;
+	var env, envp, snd;
+
+	env = Env.new(levels: [0.5, 1, 0.5, 0], times: [att, rel * 0.2, rel * 0.9], curve: [curve, curve/2, curve]).kr(doneAction: doneAction);
+	envp = Env.new(levels: [110, 59, 29], times: [att, rel], curve: [curve, curve * 1.25]).kr.midicps;
+
+	snd = LFPulse.ar(freq: envp).range(-1 * pulseAmp, pulseAmp);
+	snd = snd + WhiteNoise.ar(mul: noiseAmp);
+	snd = LPF.ar(in: snd, freq: envp * filterHarmonic, mul: env);
+	snd = snd + SinOsc.ar(freq: envp, phase: 0.5, mul: env * sineAmp);
+
+	snd = Mix.ar(snd) * preamp;
+	snd = snd.clip2(1) * amp;
+
+	OffsetOut.ar(out, Pan2.ar(snd));
+}).add;
+
+~kickBlocksSynthDef = SynthDef(\kickBlocks, { arg out = 0, amp = 0.4, pan = 0, curve = -4,
+	//tone1 arguments
+	t1freq = 400, t1harmonic = 2, t1glide = 0.01,
+	t1att = 0.0005, t1rel = 0.01, t1curve = -4, t1del = 0, t1amp = 1,
+	//tone2 arguments
+	t2freq = 50, t2harmonic = 3.44, t2glide = 0.01,
+	t2att = 0.0001, t2rel = 0.3, t2curve = \lin, t2del = 0.005, t2amp = 1,
+	//hit1 arguments
+	h1freq = 100, h1harmonic = 8, h1glide = 0.01, h1rq = 0.6,
+	h1att = 0.001, h1rel = 0.02, h1curve = -4, h1del = 0.001, h1amp = 1,
+	//hit2 arguments
+	h2freq = 1320, h2harmonic = 1, h2glide = 0,
+	h2att = 0.003, h2rel = 0.03, h2curve = -4, h2del = 0, h2amp = 0.5,
+	//click arguments
+	cfreq = 6100, crq = 1, camp = 1.41,
+	doneAction = 2;
+
+    var snd, noise, tone1, tone2, hit1, hit2, click;
+
+	noise = Hasher.ar(Sweep.ar); //deterministic white noise
+
+    tone1 = SinOsc.ar(
+		freq: XLine.ar(start: t1freq * t1harmonic, end: t1freq, dur: t1glide),
+		mul: Env.perc(attackTime: t1att, releaseTime: t1rel, level: t1amp, curve: t1curve).delay(t1del).ar);
+
+	tone2 = SinOsc.ar(
+		freq: XLine.ar(start: t2freq * t2harmonic, end: t2freq, dur: t2glide),
+		mul: Env.perc(attackTime: t2att, releaseTime: t2rel, level: t2amp, curve: t2curve).delay(t2del).ar);
+
+    hit1 = BPF.ar(
+		in: noise,
+		freq: XLine.ar(start: h1freq * h1harmonic, end: h1freq, dur: h1glide),
+		rq: h1rq,
+		mul: Env.perc(attackTime: h1att, releaseTime: h1rel, level: h1amp, curve: h1curve).delay(h1del).ar);
+
+	hit2 = HPF.ar(
+		in: noise,
+		freq: XLine.ar(start: h2freq * h2harmonic, end: h2freq, dur: h2glide),
+		mul: Env.perc(attackTime: h2att, releaseTime: h2rel, level: h2amp, curve: h2curve).delay(h2del).ar);
+
+	click = BPF.ar(
+		in: Impulse.ar(0) * SampleRate.ir / 48000,
+		freq:  cfreq,
+		rq: crq,
+		mul: camp);
+
+	snd = Mix.ar(tone1 + tone2 + hit1 + hit2 + click).tanh * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\kickRingz, { arg out = 0, pan = 0, freq = 40, amp = 1, decay = 0.25, ffreq = 1000, doneAction = 2;
+	var snd;
+
+	snd = Ringz.ar(
+		    in: LPF.ar(in: Impulse.ar(0), freq: ffreq),
+		    freq: freq,
+		    decaytime: decay,
+		    mul: amp
+	);
+
+	snd = snd.tanh.sin * 2;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\kick_chirp, { arg out = 0, amp = 0.1, pan = 0, curve = -20, att = 0.001, rel = 0.5, maxFreq = 500, doneAction = 2;
+    var env, snd;
+
+	env = Env.perc(attackTime: att, releaseTime: rel, curve: curve).exprange(0, maxFreq).kr(doneAction: doneAction);
+
+    snd = SinOsc.ar(freq: env, mul: amp);
+    snd = LeakDC.ar(snd);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan))
+}).add;
+
+SynthDef(\kick_electro, { arg out = 0, amp = 0.3, pan = 0, att = 0.005, rel = 0.3, doneAction = 2;
+    var body, bodyFreq, bodyAmp, pop, popFreq, popAmp, click, clickAmp, snd;
+
+    // body starts midrange, quickly drops down to low freqs, and trails off
+    bodyFreq = Env.new(
+		    levels: [261, 120, 51],
+		    times: [rel / 8.57, rel / 3.75],
+		    curve: \exp
+		).kr;
+
+    bodyAmp = Env.linen(
+		    attackTime: att,
+		    sustainTime: rel / 3,
+		    releaseTime: rel
+	    ).kr;
+
+    body = SinOsc.ar(freq: bodyFreq, mul: bodyAmp);
+
+    // pop sweeps over the midrange
+    popFreq = XLine.kr(start: 750, end: 261, dur: 0.02);
+
+	popAmp = Env.linen(
+		    attackTime: att / 5,
+		    sustainTime: rel / 15,
+		    releaseTime: rel / 30,
+		    level: 0.15
+	    ).kr;
+
+    pop = SinOsc.ar(freq: popFreq, mul: popAmp);
+
+    // click is spectrally rich, covering the high-freq range
+    // you can use Formant, FM, noise, whatever
+    clickAmp = Env.perc(
+		    attackTime: att / 5,
+		    releaseTime: rel / 300,
+		    level: 0.15
+	    ).kr;
+
+    click = LPF.ar(
+	    	in: Formant.ar(fundfreq: 910, formfreq: 4760, bwfreq: 2110),
+	    	freq: 3140,
+	    	mul: clickAmp
+	    );
+
+	//Putting it all together:
+	snd = Mix.ar([body, pop, click]);
+    snd = snd.tanh * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan, amp));
+}).add;
+
+SynthDef(\kik3Br, { arg out = 0, amp = 1, pan = 0, freq = 66, att = 0.01, dec = 0.1, decaylevel = 0.8, rel = 0.3, envCurve = -4, sweeptime = 0.08, sweepCurve = \exp, harmonic = 6, preamp = 3;
+	var snd, env, fenv;
+
+	env = Env.new(levels: [0, amp, decaylevel * amp, 0], times: [att, dec, rel], curve: envCurve).kr(doneAction: 2);
+
+	fenv = Env.new(levels: [freq * harmonic, freq], times: [sweeptime], curve: sweepCurve).kr;
+
+	snd = SinOsc.ar(freq: fenv, mul: preamp).distort;
+
+    snd = Normalizer.ar(in: snd, level: env);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\sosKick, { arg out = 0, amp = 1, pan = 0, curve = -4, drumAmp = 1, beaterAmp = 0.02,
+	//drum Controls
+	drumFreq = 50, drumHarmonic = 2, drumSweep = 0.02, drumAtt = 0.005, drumRel = 0.4,
+	drumFilter = 1000, modIndex = 6.5, modFreq = 5,
+	//beater Controls
+	beaterFreq = 500, beaterHarmonic = 12, beaterSweep = 0.03, beaterAtt = 0.01, beaterRel = 0.3,
+	doneAction = 2;
+
+	var drumEnv, drumContour, drum, beaterContour, beaterEnv, beater, snd;
+
+	drumEnv = Env.perc(attackTime: drumAtt, releaseTime: drumRel, level: drumAmp, curve: curve).kr;
+
+	drumContour = Line.kr(start: drumFreq * drumHarmonic, end: drumFreq, dur: drumSweep);
+
+	drum = PMOsc.ar(
+		        carfreq: drumContour,
+				modfreq: modFreq,
+				pmindex: modIndex);
+
+	drum = LPF.ar(in: drum, freq: drumFilter, mul: drumEnv);
+
+	beaterEnv = Env.perc(attackTime: beaterAtt, releaseTime: beaterRel, level: beaterAmp, curve: curve).kr;
+
+	beaterContour = Line.kr(start: beaterFreq * beaterHarmonic, end: beaterFreq, dur: beaterSweep);
+
+	beater = HPF.ar(in: WhiteNoise.ar, freq: beaterFreq);
+
+	beater = LPF.ar(in: beater, freq: beaterContour, mul: beaterEnv);
+
+	snd = Mix.ar(drum + beater) * amp;
+
+    DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
 ///////////////////////////////////////  Snare
@@ -1017,8 +1266,8 @@ SynthDef(\snareAw, {arg out = 0, amp = 0.1, sinfreq = 180, att = 0.01, rel = 0.2
 	var snd1 = WhiteNoise.ar(amp);
 	var snd2 = SinOsc.ar(sinfreq,0,amp);
 	var env = EnvGen.kr(Env.perc(att, rel), doneAction: 2);
-	var sum = HPF.ar(snd1 * env, ffreq)+(snd2*env);
-	OffsetOut.ar(out, Pan2.ar(sum, pan));
+	var sum = HPF.ar(snd1, ffreq) + snd2;
+	OffsetOut.ar(out, Pan2.ar(sum * env, pan));
 }).add;
 
 SynthDef(\snarey,{ arg out = 0, amp=0.75, attack = 0.001, release = 0.3, freq=120, gain=0.5, doneAction = 2;
@@ -1027,7 +1276,7 @@ SynthDef(\snarey,{ arg out = 0, amp=0.75, attack = 0.001, release = 0.3, freq=12
 	sig = {(SinOsc.ar(freq) - WhiteNoise.ar(0.5, 0.5))!2};
 	sig = sig * gain;
 	sig = sig.softclip * amp * env;
-	Out.ar(out, [sig,sig]);
+	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
 SynthDef(\snary,{ arg out = 0, amp=0.75, att = 0.001, rel = 0.1, curve = (-5), freq=120, gain=1, doneAction = 2;
@@ -1036,7 +1285,241 @@ SynthDef(\snary,{ arg out = 0, amp=0.75, att = 0.001, rel = 0.1, curve = (-5), f
 	sig = (SinOsc.ar(freq) - WhiteNoise.ar(0.5, 0.5)) * env * amp;
 	sig = sig * gain * 0.4;
 	sig = sig.softclip * amp;
-	Out.ar(out, [sig,sig]);
+	OffsetOut.ar(out, [sig,sig]);
+}).add;
+
+SynthDef(\kraftySnare, { arg out = 0, amp = 1, pan = 0, freq = 6000, rq = 3, att = 0.01, dec = 0.2, curve = -6, doneAction = 2;
+	var snd, env;
+
+	env = Env.perc(attackTime: att, releaseTime: dec, curve: curve).kr(doneAction: doneAction);
+
+	snd = PinkNoise.ar(amp);
+
+	snd = BPF.ar(snd, freq, rq, env);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\neuroSnare, { arg out = 0, amp = 0.1, pan = 0, freq = 160, curve = -4, preamp = 1.4,
+	//Click Controls
+	clickatt = 0.001, clicksus = 0.01, clickrel = 0.001, clickamp = 1, hipass = 300, lopass = 8000,
+	//Body Controls
+	bodyatt = 0.04, bodyrel = 0.2, bodyamp = 2,
+	//Rattle Controls
+	rattlehold = 0.01, rattleatt = 0.05, rattlerel = 0.2, rattleamp = 0.7, rattlefreq = 4000, rq = 0.5, rattlepeak = 3,
+	//Sweep Controls
+	sweepatt = 0.001, sweeprel = 0.02, sweepamp = 1, sweepstart = 3000, sweepend = 1500,
+	doneAction = 2;
+
+    var snd, click, cEnv, body, bEnvFreq, bEnvAmp, rattle, rEnv, sweep, sEnvFreq, sEnvAmp;
+
+    // a percussive click to give it some attack
+	cEnv = Env.linen(
+		            attackTime: 0.001,
+		            sustainTime: 0.01,
+		            releaseTime: 0.001,
+			        level: clickamp
+	            ).ar;
+
+	click = Hasher.ar(Sweep.ar);
+
+	click = HPF.ar(in: click, freq: hipass);
+
+    click = LPF.ar(in: click, freq: lopass);
+
+	click = click * cEnv;
+
+    // sine sweep body
+	bEnvFreq = Env.new(
+			        levels: [2.5, 1.225, 1],
+			        times: [bodyatt, bodyrel],
+			        curve: \exp
+	            ).ar;
+
+	bEnvAmp = Env.perc(
+		            attackTime: bodyatt,
+		            releaseTime: bodyrel,
+		            level: bodyamp,
+		            curve: curve
+	            ).ar;
+
+	body = SinOsc.ar(freq: freq * bEnvFreq, mul: bEnvAmp);
+
+	body = body.tanh;
+
+    // sound of snare coils rattling
+	rEnv = Env.perc(
+			        attackTime: rattleatt,
+			        releaseTime: rattlerel,
+			        level: rattleamp,
+			        curve: curve
+	            ).delay(rattlehold).ar;
+
+	rattle = Hasher.ar(Sweep.ar);
+
+	rattle = BPeakEQ.ar(in: rattle, freq: rattlefreq, rq: rq, db: rattlepeak);
+
+	rattle = HPF.ar(in: rattle, freq: hipass);
+
+	rattle = rattle * rEnv;
+
+    // another sound sweep to improve the attack, optional
+	sEnvFreq = XLine.kr(
+		    	    start: sweepstart,
+		    	    end: sweepend,
+		    	    dur: sweeprel / 2
+	            );
+
+	sEnvAmp = Env.perc(
+			        attackTime: sweepatt,
+			        releaseTime: sweeprel,
+			        level: sweepamp,
+			        curve: curve
+	            ).ar;
+
+	sweep = SinOsc.ar(freq: sEnvFreq, mul: sEnvAmp);
+
+    // distortion helps glue everything together and acts as a compressor
+	snd = Mix.ar(click + body + rattle + sweep);
+
+	snd = (snd * preamp).tanh * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\snare909, { arg out = 0, amp = 0.5, pan = 0, freq = 85, att = 0.0005, curve = -2, toneRel = 0.075, toneAmp = 0.25, noiseRel = 0.4, noiseAmp = 0.2, nyquist = 2200, lpFreq = 7040, hpFreq = 523, doneAction = 2;
+	var relTimes, env, tone, noise, snd;
+
+	relTimes = ([1, 0.733] * toneRel) ++ ([1, 0.708] * noiseRel);
+
+	env = Env.perc(attackTime: att, releaseTime: relTimes, level: amp, curve: curve).kr;
+
+	tone = LFTri.ar(freq: [1, 1.78] * freq, mul: toneAmp);
+
+	noise = Latch.ar(WhiteNoise.ar, Impulse.ar(nyquist * 2));
+
+	noise = LPF.ar(in: noise, freq: lpFreq, mul: noiseAmp);
+
+	snd = tone ++ [noise, HPF.ar(in: noise, freq: hpFreq)];
+
+	snd = Mix.ar(snd * env);
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\snareElectro, { arg out = 0, pan = 0, amp = 0.4, att = 0.001, rel = 0.15, curve = -4, popfreq = 160, sweep = 0.01, noisefreq = 810, rq = 1.6, blend = 0.41, doneAction = 2;
+    var pop, popEnv, popSweep, noise, noiseEnv, snd;
+
+    // pop makes a click coming from very high frequencies
+    // slowing down a little and stopping in mid-to-low
+    popSweep = Env.new(levels: [20.4, 2.6, 1] * popfreq, times: [sweep / 2, sweep], curve: \exp).ar;
+
+    popEnv = Env.perc(attackTime: att, releaseTime: 0.73 * rel, level: blend, curve: curve).kr;
+
+	pop = SinOsc.ar(freq: popSweep, mul: popEnv);
+
+    // bandpass-filtered white noise
+    noiseEnv = Env.perc(attackTime: att, releaseTime: rel, level: 1 - blend, curve: curve).kr(doneAction: doneAction);
+
+	noise = BPF.ar(in: WhiteNoise.ar, freq: noisefreq, rq: rq, mul: noiseEnv);
+
+    snd = Mix.ar(pop + noise) * amp;
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\snareStein, { arg out = 0, amp = 1, pan = 0, att = 0.0005, curve = -4, tonerel = 0.075, noiserel = 0.2,
+	//Other Controls, blend ranges from 0 to 1.
+	noisetop = 7040, noisebottom = 523, noiseamp = 0.2, tonelo = 185, tonehi = 330, toneamp = 0.5, blend = 0.2,
+	doneAction = 2;
+
+    var tone, noise, snd;
+
+	//Sines for the frequency of the drum:
+    tone = SinOsc.ar(freq: [tonelo, tonehi]);
+
+	tone = tone * Env.perc(
+		                attackTime: att,
+		                releaseTime: [tonerel, 0.73 * tonerel],
+		                level: toneamp,
+		                curve: curve
+	                ).kr;
+
+	//Noise for the rattling of the snares: (original used WhiteNoise alone)
+	noise = PinkNoise.ar(noiseamp * (1 - blend)) + WhiteNoise.ar(noiseamp * blend);
+
+	noise = LPF.ar(in: noise, freq: noisetop);
+
+	snd = noise * Env.perc(
+		                attackTime: att,
+		                releaseTime: noiserel,
+		                curve: curve
+	                ).kr;
+
+	snd = snd +	HPF.ar(
+		            in: noise,
+		            freq: noisebottom,
+		            mul: Env.perc(
+			                    attackTime: att,
+			                    releaseTime: 0.915 * noiserel,
+			                    curve: curve
+			                ).kr
+	            );
+
+	//Mix it all together:
+	snd = Mix.ar(snd + tone) * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\sosSnare, { arg out = 0, amp = 0.8, pan = 0, freq = 405, att = 0.005, rel = 0.1, curve = -4,
+	//drumMode Controls
+	drumModeAmp = 0.25, timbreIndex = 0.385, modHarmonic = 0.452,
+	//snares controls
+	snareAmp = 40, nyquist = 1700, snareRez = 1000, ffreq = 2000, rq = 0.1, bwr = 1,
+	doneAction = 2;
+
+	var drumMode, drumModeEnv, snares, snareEnv, snd;
+
+	drumModeEnv = Env.perc(attackTime: att, releaseTime: rel, level: 0.5, curve: curve).kr;
+
+	drumMode = SinOsc.ar(freq: freq * 0.53, mul: drumModeEnv);
+
+	drumMode = drumMode + SinOsc.ar(freq: freq, mul: drumModeEnv);
+
+	drumMode = drumMode + PMOsc.ar(
+		            carfreq: Saw.ar(freq * 0.85),
+					modfreq: freq * modHarmonic,
+					pmindex: timbreIndex,
+					mul: drumModeEnv * 10);
+
+	drumMode = Mix.ar(drumMode) * drumModeAmp;
+
+	snareEnv = Env.perc(attackTime: att, releaseTime: rel, curve: curve).kr;
+
+	snares = Latch.ar(WhiteNoise.ar(0.1), Impulse.ar(nyquist * 2));
+
+	snares = BRF.ar(in: snares, freq: 4 * ffreq, mul: 0.5, rq: rq);
+
+	snares = BRF.ar(in: snares, freq: 2.5 * ffreq, mul: 0.5, rq: rq);
+
+	snares = BRF.ar(in: snares, freq: 1.8 * ffreq, mul: 0.5, rq: rq);
+
+	snares = BRF.ar(in: snares, freq: ffreq, mul: snareEnv, rq: rq);
+
+	snares = Resonz.ar(in: snares, freq: snareRez, bwr: bwr, mul: snareAmp) ;
+
+	snd = Mix.new(drumMode + snares) * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
 ///////////////////////////////////////  HiHat
@@ -1112,6 +1595,24 @@ SynthDef(\hihatAw, {arg out = 0, amp = 0.5, pan = 0, att = 0.01, rel = 0.2, ffre
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
+SynthDef(\hihatElectro, { arg out = 0, pan = 0, amp = 0.3, att = 0.001, rel = 0.3, curve = -8, filterFreq = 4010, rq = 0.56, doneAction = 2;
+	var env, snd;
+
+	// noise -> resonance -> exponential dec envelope
+	env = Env.perc(attackTime: att, releaseTime: rel, curve: curve).kr(doneAction: doneAction);
+
+	snd = ClipNoise.ar(amp);
+	snd = BPF.ar(
+		in: snd,
+		freq: [1, 1.035] * filterFreq,
+		rq: [0.27, 1] * rq,
+		mul: [1.0, 0.6]
+	);
+	snd = Mix(snd) * env;
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 SynthDef(\ikedhat,{arg out = 0, amp = 1, pan = 0, envLevel1 = 0.0, envLevel2 = 1.0, envLevel3 = 0.0, levelScale = 1, levelBias = 0, att= 0.0, rel = 0.01, timeScale = 1, hpf = 6000, t_trig = 1, doneAction = 2;
 	var sig = HPF.ar(WhiteNoise.ar(1), hpf);
 	var env = EnvGen.ar(Env([envLevel1, envLevel2, envLevel3], [att, rel]), t_trig, levelScale, levelBias, timeScale, doneAction);
@@ -1151,14 +1652,51 @@ OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 	b2 = rho.squared.neg;
 	signal = SOS.ar(Impulse.ar(impFreq, 0, env), 1.0, 0.0, 0.0, b1, b2);
 	signal = RHPF.ar(signal, filterfreq, rq);
-	Out.ar(out, Pan2.ar(signal, pan, amp));
+	OffsetOut.ar(out, Pan2.ar(signal, pan, amp));
 }).add;
 
 SynthDef(\haty,{ arg out = 0, att = 0.001, rel = 0.1, curve = (-4), amp = 0.75, doneAction = 2;
 	var env, sig;
 	env = EnvGen.kr(Env.perc(att, rel, 1, curve), 1, doneAction: doneAction);
 	sig = HPF.ar((WhiteNoise.ar(0.5, 0.5) * env * amp), 4000);
-	Out.ar(out, [sig,sig]);
+	OffsetOut.ar(out, [sig,sig]);
+}).add;
+
+SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, rootIndex = 238.5, rq = 1,
+	//Initial envelopes
+	initAtt = 0.005, initRel = 0.1, initAmp = 1, initStart = 15000, initEnd = 9000,
+	//Body envelopes
+	bodyAtt = 0.005, bodyRel = 0.1, bodyAmp = 1, bodyStart = 9000, bodyEnd = 12000,
+	doneAction = 2;
+
+	var root, initialEnv, initialSweep, initial, bodyEnv, bodySweep, body, snd;
+
+	root = Pulse.ar(freq: freq, width: 0.5, mul: 1);
+
+	root = PMOsc.ar(
+		            carfreq: root,
+					modfreq: freq * [1.34, 2.405, 3.09, 1.309],
+					pmindex: rootIndex * [1, 0.22, 0.014, 0.0038]);
+
+	root = Mix.new(root);
+
+	initialEnv = Env.perc(attackTime: initAtt, releaseTime: initRel, curve: curve).kr;
+
+	initialSweep = Line.kr(start: initStart, end: initEnd, dur: initRel);
+
+	initial = BPF.ar(in: root, freq: initialSweep, rq: rq, mul: initialEnv * initAmp);
+
+	bodyEnv = Env.perc(attackTime: bodyAtt, releaseTime: bodyRel, curve: curve / 2).kr;
+
+	bodySweep = Line.kr(start: bodyStart, end: bodyEnd, dur: bodyRel);
+
+	body = HPF.ar(in: root, freq: bodySweep, mul: bodyEnv * bodyAmp);
+
+	snd = Mix.ar([initial, body]) * amp;
+
+    DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
 ///////////////////////////////////////  Cymbal
@@ -1239,6 +1777,43 @@ SynthDef(\haty,{ arg out = 0, att = 0.001, rel = 0.1, curve = (-4), amp = 0.75, 
 	OffsetOut.ar(out, signal*4*amp);
 }).add;
 
+SynthDef(\cymbal808, { arg out = 0, amp = 0.1, pan = 0, att = 0.002, dec = 0.25, rel = 0.05, freqMultiplier = 4.09, decLevel = 0.4, reverb = 0.33, size = 0.5, damp = 0.5, doneAction = 2;
+	var snda, sndb, snd, env, pulseEnv, freqs;
+
+	freqs = [205.35, 304.41, 369.64, 522.71, 540.54, 812.21];
+
+	env = Env.new(
+		levels: [0, 1, decLevel, 0],
+		times: [att, dec, rel],
+		curve: [0, -0.5, 0]
+	).kr;
+
+	pulseEnv = Env.new(
+		levels: [1.0, 0.6],
+		times: dec,
+		curve: -0.5
+	).kr;
+
+	snd = Mix.ar(LFPulse.ar(freq: freqs * 4.09));
+
+	snd = (BinaryOpUGen('==', snd, 6.0) * 0.6) + (BinaryOpUGen('==', snd, 2.0) * 0.2) + (BinaryOpUGen('==', snd, 1.0) * 0.9);
+
+	snd = (snd * pulseEnv) + Mix.ar(LFPulse.ar(freq: freqs, width: 0.55, mul: 0.9));
+
+	snd = RLPF.ar(in: snd, freq: 7000, rq: 0.6);
+ 	snd = RHPF.ar(in: snd, freq: 6800, rq: 1.5);
+	snd = RHPF.ar(in: snd, freq: 6800, rq: 1.5);
+	snd = RHPF.ar(in: snd, freq: 1200, rq: 1.5);
+
+	snd = snd + FreeVerb.ar(in: snd, mix: reverb, room: size, damp: damp);
+	snd = Mix.ar(snd);
+	snd = snd * env * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 ///////////////////////////////////////  Clap
 
 SynthDef(\clap, {| out=0, amp = 1, pan=0, q=0.1, fq=1, rnd1=0, rnd2=0, rnd3=0, t_gate=1, doneAction=2 |
@@ -1308,6 +1883,44 @@ var env, signal, attack, noise, hpf1, hpf2;
 	OffsetOut.ar(out, Pan2.ar(signal, pan, amp));
 }).add;
 
+SynthDef(\oneclapThorBr, { arg out = 0, amp = 0.1, pan = 0, att = 0.003, rel = 0.00035, freq = 100, rq = 0.1,
+	//Other Controls
+	echohz1 = 33.333, echohz2 = 33.156, curve = -4, decay = 0.06, shelfFreq = 7000, rs = 0.5, db = -3,
+	// Controls Ranging from 0 to 1
+	size = 0.15, tone = 0.4, mix = 0.23, damp = 0.5,
+	doneAction = 2;
+
+	var env, snd, noise1, noise2, hpf1, hpf2, delay1, delay2;
+
+	noise1 = GrayNoise.ar(1 - tone) + WhiteNoise.ar(tone);
+
+	noise1 = noise1 + SinOsc.ar(freq: [freq / 2, freq / 2 + 4 ]);
+
+	noise2 = PinkNoise.ar;
+
+	noise2 = noise2 + SinOsc.ar(freq: [freq, (freq * 1.04)] * XLine.kr(start: 1, end: 0.01, dur: 3));
+
+	hpf1 = RLPF.ar(in: noise1, freq: freq, rq: rq);
+
+	hpf2 = RHPF.ar(in: noise1, freq: freq/2, rq: rq/4);
+
+	env = Env.perc(attackTime: att, releaseTime: rel, curve: curve).kr;
+
+	snd = Mix.ar(hpf1 + hpf2) * env;
+
+	delay1 = CombN.ar(in: snd, maxdelaytime: 1.1/echohz1, delaytime: 1/echohz1, decaytime: decay / 2);
+
+	delay2 = CombN.ar(in: snd, maxdelaytime: 1.1/echohz2, delaytime: 1/echohz2, decaytime: decay);
+
+	snd = FreeVerb.ar(in: Mix.ar(delay1 + delay2), mix: mix, room: size, damp: damp, mul: amp);
+
+	snd = BHiShelf.ar(in: snd, freq: shelfFreq, rs: rs, db: db);
+
+	DetectSilence.ar(snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 SynthDef(\clapy, { arg out = 0, amp = 0.5, att = 0.02, rel = 0.3, curve1 = 0, curve2 = (-4), hpf1 = 600, hpf2 = 1000, bpf1 = 2000, bpf2 = 1200, gain = 1.5, doneAction = 2;
 	var env1, env2, sig, noise1, noise2;
 	env1 = EnvGen.ar(Env.new([0, 1, 0, 1, 0, 1, 0, 1, 0], [0.001, 0.013, 0, 0.01, 0, 0.01, 0, 0.03], [0, -3, 0, -3, 0, -3, 0, -4]));
@@ -1317,7 +1930,37 @@ SynthDef(\clapy, { arg out = 0, amp = 0.5, att = 0.02, rel = 0.3, curve1 = 0, cu
 	sig = noise1 + noise2;
 	sig = sig * gain;
 	sig = 0.4 * sig.softclip * amp;
-	Out.ar(out, [sig,sig]);
+	OffsetOut.ar(out, [sig,sig]);
+}).add;
+
+SynthDef(\clapGray, { arg out = 0, amp = 0.1, pan = 0, att = 0.001, rel = 0.25, curve = -4, spreadRate = 75, minDelay = 0.025, maxDelay = 0.05, decay = 0.15, rq = 0.4, blend = 0.7, reverb = 0.1, size = 0.25, damp = 1, doneAction = 2;
+	var env1, env2, snd, noise1, noise2, spread;
+
+	//Multiple Shorter Claps
+	spread = LFNoise1.kr(spreadRate).range(minDelay, maxDelay);
+
+	env1 = Env.perc(attackTime: att / 10, releaseTime: rel / 8, curve: [0, curve]).kr;
+	env1 = CombC.ar(in: env1, maxdelaytime: maxDelay, delaytime: spread, decaytime: decay);
+
+	noise1 = GrayNoise.ar(env1); //Play with frequencies here:
+	noise1 = RHPF.ar(in: noise1, freq: 1000, rq: rq);
+	noise1 = BPF.ar(in: noise1, freq: 2000, rq: 3);
+
+	//One Longer Clap
+	env2 = Env.perc(attackTime: att, releaseTime: rel, curve: [0, curve]).kr;
+
+	noise2 = GrayNoise.ar(env2); //Play with frequencies here:
+	noise2 = RHPF.ar(in: noise2, freq: 1200, rq: rq);
+	noise2 = BPF.ar(in: noise2, freq: 1400, rq: 0.7);
+
+	//Mixing and light Reverb
+	snd = Mix.ar((blend * noise1) + ((1 - blend) * noise2));
+	snd = (snd * 2).softclip;
+	snd = FreeVerb.ar(in: snd, mix: reverb, room: size, damp: damp, mul: amp);
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
 ///////////////////////////////////////  Noise
@@ -1770,7 +2413,7 @@ SynthDef.new(\Shai, { arg out = 0, amp=0.1, freq=440, atk=1, rel=8, doneAction =
 	);
 	env = EnvGen.kr(Env.new([0,1,0],[atk,rel],[1,-1]),doneAction: doneAction);
 	sig = sig*env*amp;
-	Out.ar(out, [sig, sig]);
+	OffsetOut.ar(out, [sig, sig]);
 }).add;
 
 SynthDef.new(\Colleen3, { arg out = 0, amp=1, pan = 0, freq=110, atk=0.01, rel=2, lpf = 4000, lpfmin = 500, lpfmax = 16000, hpfmin = 1, hpfmax = 2000, doneAction = 2;
@@ -1784,7 +2427,61 @@ SynthDef.new(\Colleen3, { arg out = 0, amp=1, pan = 0, freq=110, atk=0.01, rel=2
 	sig = HPF.ar(sig, XLine.kr(hpfmin,hpfmax,rel/6));
 	sig = (sig*env*amp)*0.7;
 	sig = Pan2.ar(sig,pan);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\combs, { arg out = 0, amp = 0.1, pan = 0, att = 0.01, dec = 0.1, sus = 0.7, rel = 0.5, freq = 440, rate = 6, depth = 0.2, regen = -3, sweep = 16, rq = 0.5, harmonic = 1.5, gate = 1, doneAction = 2;
+
+	var max, min, vibrato, snd, env, filterenv;
+
+	//Setting some values for the filters:
+	max = ((1 + depth) / freq);
+	min = (1 / (freq * (1 + depth)));
+	vibrato = LFNoise1.ar(rate).range(min, max);
+
+	//Amplitude and filter cutoff envelopes
+	env = Env.adsr(att, dec, sus, rel).kr(gate: gate, doneAction: doneAction);
+	filterenv = Env.perc(att, rel).kr;
+	filterenv = ((filterenv * sweep) + 1) * freq;
+
+	//The core noise:
+	snd = BrownNoise.ar(1);
+	snd = CombL.ar(snd, max, vibrato, regen);
+	snd = CombN.ar(snd, harmonic / freq, harmonic / freq, regen, env);
+
+	//More filters and output stuff:
+	snd = RHPF.ar(snd, freq * 4, rq);
+	snd = RLPF.ar(snd, filterenv, rq, amp);
+	snd = Limiter.ar(snd, amp);
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\werkit, { arg out = 0, amp = 0.1, pan = 0.0, att = 0.01, dec = 0, sus = 1, rel = 1, freq = 440, rq = 0.1, gate = 1,doneAction = 2;
+
+	var source, filter, env, snd, delayEnv;
+	source = WhiteNoise.ar;
+	filter = BLowPass4.ar(source, freq, rq) * 0.3;
+	env = EnvGen.ar(
+		envelope: Env.adsr(att, dec, sus, rel, amp),
+		gate: gate,
+		doneAction: 2);
+	snd = (0.7 * filter + (0.3 * filter.distort)) * env;
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\werkit2, { arg out = 0, amp = 0.1, att = 0.01, dec = 0, sus = 1, rel = 0.1, freq = 440, rq = 0.1, gate = 1, doneAction = 2;
+
+	var source, filter, env, snd;
+	source = LFSaw.ar(Array.fill(16, { Rand(100, 200) }));
+	filter = BLowPass4.ar(source, freq, rq) * 0.1;
+	env = EnvGen.ar(
+		envelope: Env.adsr(att, dec, sus, rel, amp),
+		gate: gate,
+		doneAction: doneAction);
+	snd = (0.7 * filter + (0.3 * filter.distort)) * env;
+	snd = HPF.ar(snd, 100);
+	snd = Splay.ar(snd);
+	OffsetOut.ar(out, snd);
 }).add;
 
 ///////////////////////////////////////  Sampler
@@ -1932,7 +2629,227 @@ SynthDef(\sinus,{arg out = 0, amp = 0.5, pan = 0, freq = 100, t_gate = 1, attack
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\waveguideFlute, { arg out = 0, amp = 2, scl = 0.2, freq = 440, ipress = 0.9, ibreath = 0.09, ifeedbk1 = 0.4, ifeedbk2 = 0.4, dur = 1;
+SynthDef(\prayerBellBr, { arg out = 0, amp = 0.5, pan = 0, singSwitch = 0, freq = 2434, decayScale = 1, lag = 10, doneAction = 2;
+	var snd, input, first, freqScale, mallet, sing;
+	freqScale = freq / 2434;
+	freqScale = Lag3.kr(freqScale, lag);
+	decayScale = Lag3.kr(decayScale, lag);
+
+	// mallet
+	mallet = LPF.ar(
+		in: Impulse.ar(0) ! 2 * amp,
+		freq: 10000 * freqScale
+	);
+
+	// sing
+	sing = LPF.ar(
+		in: {PinkNoise.ar * Integrator.kr(singSwitch * 0.001, 0.999).linexp(0, 1, 0.01, 1) * amp} ! 2,
+		freq: 2434 * freqScale
+	);
+
+	sing = sing + Dust.ar(0.1);
+	sing = LPF.ar(sing, 10000 * freqScale);
+	sing = sing * LFNoise1.kr(0.5).range(-45, -30).dbamp;
+
+	// input = mallet + sing
+	input = mallet + (singSwitch.clip(0, 1) * sing);
+
+	// resonant filter bank
+	snd = DynKlank.ar(
+		specificationsArrayRef: `[
+			// Array of filter frequencies
+			[
+				(first = LFNoise1.kr(0.5).range(2424, 2444)) + Line.kr(20, 0, 0.5),
+				first + LFNoise1.kr(0.5).range(1,3),
+				LFNoise1.kr(1.5).range(5435, 5440) - Line.kr(35, 0, 1),
+				LFNoise1.kr(1.5).range(5480, 5485) - Line.kr(10, 0, 0.5),
+				LFNoise1.kr(2).range(8435, 8445) + Line.kr(15, 0, 0.05),
+				LFNoise1.kr(2).range(8665, 8670),
+				LFNoise1.kr(2).range(8704, 8709),
+				LFNoise1.kr(2).range(8807, 8817),
+				LFNoise1.kr(2).range(9570, 9607),
+				LFNoise1.kr(2).range(10567, 10572) - Line.kr(20, 0, 0.05),
+				LFNoise1.kr(2).range(10627, 10636) + Line.kr(35, 0, 0.05),
+				LFNoise1.kr(2).range(14689, 14697) - Line.kr(10, 0, 0.05)
+			],
+			// Array of filter amplitudes
+			[
+				LFNoise1.kr(1).range(-10, -5).dbamp,
+				LFNoise1.kr(1).range(-20, -10).dbamp,
+				LFNoise1.kr(1).range(-12, -6).dbamp,
+				LFNoise1.kr(1).range(-12, -6).dbamp,
+				-20.dbamp,
+				-20.dbamp,
+				-20.dbamp,
+				-25.dbamp,
+				-10.dbamp,
+				-20.dbamp,
+				-20.dbamp,
+				-25.dbamp
+			],
+			// Array of filter decay times
+			[
+				20 * freqScale.pow(0.2),
+				20 * freqScale.pow(0.2),
+				5,
+				5,
+				0.6,
+				0.5,
+				0.3,
+				0.25,
+				0.4,
+				0.5,
+				0.4,
+				0.6
+			] * freqScale.reciprocal.pow(0.5)
+		],
+		input: input,
+		freqscale: freqScale,
+		freqoffset: 0,
+		decayscale: decayScale
+	);
+
+	DetectSilence.ar(snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, Pan2.ar(Mix.ar(snd), pan));
+}).add;
+
+SynthDef(\glockenspiel, { arg out = 0, amp = 0.01, pan = 0, att = 0.001, rel = 6, freq = 440, exciterRel = 0.05, doneAction = 2;
+	var env, snd, exciter;
+
+	env = Env.perc(att, exciterRel, 0.25).kr;
+
+	exciter = WhiteNoise.ar(env);
+
+	snd = DynKlank.ar(
+		specificationsArrayRef:
+	        	Ref.new([
+	        		[1, 2, 2.803, 3.871, 5.074, 7.81, 10.948, 14.421],   // harmonics
+			        [1, 0.044, 0.891, 0.0891, 0.794, 0.1, 0.281, 0.079], // amplitudes
+		        	[1, 0.205, 1, 0.196, 0.339, 0.047, 0.058, 0.047]     // ring times
+		        ]),
+		input: exciter,
+		freqscale: freq,
+		decayscale: rel
+	);
+
+	DetectSilence.ar(
+		        in: snd,
+		        amp: 0.001,
+		        time: 0.5,
+		        doneAction: doneAction
+		    );
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan, amp));
+}).add;
+
+SynthDef(\rissetBell, { arg out = 0, amp = 0.1, pan = 0, att = 0.005, rel = 2, freq = 400, gate = 1, doneAction = 2;
+	var amps = #[1, 0.67, 1, 1.8, 2.67, 1.67, 1.46, 1.33, 1.33, 1, 1.33];
+	var durs = #[1, 0.9, 0.65, 0.55, 0.325, 0.35, 0.25, 0.2, 0.15, 0.1, 0.075];
+	var frqs = #[0.56, 0.56, 0.92, 0.92, 1.19, 1.7, 2, 2.74, 3, 3.76, 4.07];
+	var dets = #[0, 1, 0, 1.7, 0, 0, 0, 0, 0, 0, 0];
+	var doneActionEnv = Env.linen(0, att+rel, 0).ar(gate: gate, doneAction: doneAction);
+	var snd = Mix.fill(11, {arg i;
+		var env = Env.perc(
+			attackTime: att,
+			releaseTime: rel * durs[i],
+			level: amps[i],
+			curve: att.explin(0.005, 4, -4.5, 0)
+	).ar(gate: gate);
+		SinOsc.ar(
+			freq: freq * frqs[i] + dets[i],
+			mul: amp * env
+		);
+	});
+	snd = snd * doneActionEnv * 0.5;
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\sosBell, { arg out = 0, amp = 0.1, pan = 0, freq = 440, rel = 2, curve = \lin,
+	//ring Controls (wobbleDepth goes from 0 to 1)
+	ringAmp = 1, ringRel = 0.9, wobbleDepth = 0.6, wobbleMin = 1, wobbleMax = 1.8,
+	//strike Controls
+	strikeAmp = 1, strikeDec = 0.01, strikeRel = 0.04, strikeDepth = 0.028, strikeHarmonic = 8,
+	//hum Controls
+	humAmp = 0.5, humAtt = 0.5, humDec = 0.5, humRel = 1,
+	doneAction = 2;
+
+	var snd, ring, ringEnv, ringFreqs, strike, strikeEnv, strikeMod, hum, humEnv;
+
+	ringFreqs = [2, 3, 4.1, 5.43, 6.8, 8.21];
+
+	ringEnv = Env.new(
+		            levels: [1, 0.3, 0.2, 0],
+		            times: [1/3, 1/3, 1/3] * ringRel * rel,
+		            curve: curve).kr;
+
+	ring = SinOsc.ar(
+		            freq: ringFreqs * freq,
+		            mul: Array.series(6, 1, -0.1) * ringEnv);
+
+	ring = ring * LFTri.ar(
+		            freq: {Rand(wobbleMin, wobbleMax)}.dup(6)).range((1 - wobbleDepth), 1);
+
+	strikeEnv = Env.new(
+		            levels: [1, 0.1, 0],
+		            times: [strikeDec, strikeRel * rel],
+		            curve: curve).kr;
+
+	strikeMod = LFNoise1.ar(freq * 36).range(1/ (strikeDepth + 1), strikeDepth + 1);
+
+	strike = SinOsc.ar(
+                    freq: freq * strikeHarmonic * strikeMod,
+		            mul: strikeEnv);
+
+	humEnv = Env.new(
+		            levels: [0, 1, 0.8, 0],
+		            times: [humAtt, humDec, humRel * rel],
+		            curve: curve).kr;
+
+	hum = SinOsc.ar(
+		            freq: freq * [1.01, 0.47],
+		            mul: humEnv);
+
+	snd = Mix.ar((ring * ringAmp) + (strike * strikeAmp) + (hum * humAmp)) * amp;
+
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\tubularBell, { arg out = 0, amp = 0.1, pan = 0, att = 0.005, rel = 9, freq = 440, exciterRel = 0.05, doneAction = 2;
+
+	var env, snd, exciter;
+
+	env = Env.perc(att, exciterRel, 0.05).kr;
+
+	exciter = GrayNoise.ar(env);
+
+	snd = DynKlank.ar(
+		specificationsArrayRef:
+	        	Ref.new([
+	        		[1.013, 1.512, 2.113, 2.525, 3.35, 4.57, 6.48],   // harmonics
+			        [1, 0.78, 0.89, 0.63, 0.31, 0.56, 0.25], // amplitudes
+		        	[1, 0.9, 0.8, 0.65, 0.45, 0.3, 0.1]     // ring times
+		        ]),
+		input: exciter,
+		freqscale: freq,
+		decayscale: rel
+	);
+
+	snd = LPF.ar(snd, freq * 9.5);
+
+	DetectSilence.ar(
+		        in: snd,
+		        amp: 0.001,
+		        time: 0.5,
+		        doneAction: doneAction
+		    );
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan, amp));
+}).add;
+
+SynthDef(\waveguideFlute, { arg out = 0, amp = 2, scl = 0.2, freq = 440, ipress = 0.9, ibreath = 0.09, ifeedbk1 = 0.4, ifeedbk2 = 0.4, dur = 1, doneAction = 2;
 
 	var kenv1, kenv2, kenvibr, kvibr, sr, cr, block;
 	var poly, signalOut, ifqc;
@@ -1951,7 +2868,7 @@ SynthDef(\waveguideFlute, { arg out = 0, amp = 2, scl = 0.2, freq = 440, ipress 
 	);
 	// overall envelope
 	kenv2 = EnvGen.kr(Env.new(
-		[ 0.0, amp, amp, 0.0 ], [ 0.1, dur - 0.02, 0.1 ], 'linear' ), doneAction: 2
+		[ 0.0, amp, amp, 0.0 ], [ 0.1, dur - 0.02, 0.1 ], 'linear' ), doneAction: doneAction
 	);
 	// vibrato envelope
 	kenvibr = EnvGen.kr(Env.new( [ 0.0, 0.0, 1, 1, 0.0 ], [ 0.5, 0.5, dur - 1.5, 0.5 ], 'linear') );
@@ -1984,7 +2901,6 @@ SynthDef(\waveguideFlute, { arg out = 0, amp = 2, scl = 0.2, freq = 440, ipress 
 	signalOut = avalue;
 
 	OffsetOut.ar(out, [ signalOut * kenv2, signalOut * kenv2 ] );
-
 }).add;
 
 SynthDef(\justwannahavefun,{|out= 0 amp = 0.1 pan=(-0.1) freq = 440 ringTime=10.0 |
@@ -2008,6 +2924,89 @@ SynthDef(\marimba1, { arg out = 0, freq = 440, amp = 0.4;
 	snd = BLowShelf.ar(snd, 220, 0.81, 6);
 	snd = snd * env;
 	OffsetOut.ar(out, Splay.ar(snd));
+}).add;
+
+SynthDef(\kalimba, { arg out = 0, amp = 0.1, pan = 0, att = 0.001, freq = 44,
+	// Mix control goes from 0 to 1
+	mix = 0.1,
+	// Release controls for different parts of the sound
+	minRel = 2.5, maxRel = 3.5, clickRel = 0.01,
+	doneAction = 2;
+
+	var note, env, body, snd;
+
+	env = Env.perc(att * 3, Rand(minRel, maxRel), 1, -8).kr(doneAction: doneAction);
+	note = SinOsc.ar(freq) * env;
+	body = DynKlank.ar(
+		specificationsArrayRef:
+		Ref.new([
+			[240 * ExpRand(0.9, 1.1), 2020 * ExpRand(0.9, 1.1), 3151 * ExpRand(0.9, 1.1)],
+			[-7, 0, 3].dbamp, // same as 10.pow([-7, 0, 3] / 20),
+			[0.75, 0.04, 0.06] + clickRel
+		]),
+		input:
+		// Try BrownNoise, GrayNoise, etc. here, but you may need to change ring times above
+		(PinkNoise.ar * Env.perc(att, clickRel).kr)
+	);
+	snd = (note * (1 - mix)) + (body * mix) * amp;
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\pmCrotales, { arg out = 0, amp = 0.2, pan = 0, att = 0, rel = 2, curve = -6, freq = 261, tone = 3, modLo = 5.25, modHi = 5.5;
+	var env, snd, mod;
+
+	env = Env.perc(attackTime: 0, releaseTime: rel, curve: curve).kr(doneAction: 2);
+
+	mod = Rand(modLo, modHi);
+
+	snd = PMOsc.ar(
+	    	carfreq: freq,
+	    	modfreq: mod * freq,
+	    	pmindex: env * tone,
+	    	mul: env * amp
+	    );
+
+	snd = HPF.ar(snd, freq / 2);
+
+	snd = Mix.ar(snd);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\steelDrum, { arg out = 0, amp = 0.1, pan = 0, att = 0.01, dec = 1.5, curve = -6, freq = 440, filterHarmonic = 6, doneAction = 2;
+	var resFreqArray, resAmpArray, resDecArray, enva, envb, envc, snda, sndb, sndc, snd;
+
+	//Arrays for the bank of resonators, mostly harmonics near 5ths and 9ths, and random amplitudes:
+	resFreqArray = [2, 2.98, 4.75, 6.21, 9, 9.15, 11.87];
+	resAmpArray = [0.35, 0.23, 0.10, 0.06, 0.07, 0.05, 0.01];
+	resDecArray = [0.86, 0.72, 0.37, 0.55, 0.32, 0.21, 0.16];
+
+	//Custom envelope shapes attempting to capture the aparrent "bloom" of a note:
+	enva = Env.pairs([[0, 0], [att, 1], [(att + dec), 0]], curve).kr;
+	envb = Env.pairs([[0, 0], [(att * 5), 0.25], [(att * 6), 0.75], [((att * 6) + (dec / 2)), 0]], curve).kr;
+	envc = Env.pairs([[0, 0], [(att * 5), 0.1], [(att * 8), 0.5], [((att * 8) + (dec / 3)), 0]], curve).kr;
+
+	//Fundamental, octave up, and a bank of enharmonic resonators excited by a metalic sound:
+	snda = SinOsc.ar(freq: freq, mul: enva);
+	sndb = SinOsc.ar(freq: freq * 2.015, mul: envb);
+	sndc = DynKlank.ar(
+		specificationsArrayRef:
+		    Ref.new([
+		    	resFreqArray * freq,
+		    	resAmpArray,
+			    resDecArray * dec
+		    ]),
+		input:
+		LPF.ar(HPF.ar(CombN.ar(PinkNoise.ar(1), 1/freq, 1/freq, -1, envc), freq * 2), freq * filterHarmonic)
+	);
+
+	//Output stages with a tiny bit of compression to smooth things out:
+
+	snd = Mix.ar([snda, sndb, sndc]) * (amp / 3);
+	snd = Limiter.ar(snd, amp);
+	DetectSilence.ar(in: snd, amp: 0.0001, time: 0.5, doneAction: doneAction);
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
 SynthDef(\noisyTone, { arg out = 0, freq = 440, amp = 0.2, pan = 0.5;
@@ -2293,7 +3292,7 @@ SynthDef.new(\Colleen, { arg out = 0, amp=1, pan = 0, atk=0.35, rel=2, freq=110,
 	sig = LPF.ar(sig, XLine.kr(100,700,rel*0.1));
 	sig = (sig*env*amp)*4;
 	sig = Pan2.ar(sig,pan);
-	Out.ar(out, sig);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef.new(\Zeynep, { arg out = 0, freq=440, envL1 = 0, envL2 = 0.03, envL3 = 0.1, envL4 = 0.2, envL5 = 0, atk=1, rel=4, amp=1, dur=0.2, beats=1, doneAction = 2;
@@ -2301,7 +3300,120 @@ SynthDef.new(\Zeynep, { arg out = 0, freq=440, envL1 = 0, envL2 = 0.03, envL3 = 
 	sig = Resonz.ar(WhiteNoise.ar(0.5), freq, XLine.kr(0.1, 0.001, dur*beats))*50;
 	env = EnvGen.kr(Env.new([envL1,envL2,envL3,envL4,envL5],[atk,atk,dur,rel],[1,-1]),doneAction: doneAction);
 	sig = (sig*env*amp).tanh;
-	Out.ar(out, [sig, sig]);
+	OffsetOut.ar(out, [sig, sig]);
+}).add;
+
+SynthDef(\sosTom, { arg out = 0, amp = 0.6, pan = 0, drumRel = 0.4, stickRel = 0.01, drumModeAmp = 0.25, freq = 250, timbreIndex = 0.77, att = 0.005, curve = -6, doneAction = 2;
+
+	var drumMode, drumModeEnv, stick, stickEnv, snd;
+
+	drumModeEnv = Env.perc(
+		            attackTime: att,
+		            releaseTime: drumRel,
+		            level: 0.5,
+		            curve: curve).kr(doneAction: doneAction);
+
+	drumMode = PMOsc.ar(
+		            carfreq: Saw.ar(freq: freq * 0.9),
+					modfreq: freq * 0.85,
+					pmindex: timbreIndex,
+					mul: drumModeEnv * 10);
+
+	drumMode = drumMode + SinOsc.ar(freq: [freq, freq * 0.8], mul: drumModeEnv);
+
+	drumMode = Mix.ar(drumMode) * drumModeAmp;
+
+	stick = Crackle.ar(chaosParam: 2.01);
+
+	stickEnv = Env.perc(attackTime: att, releaseTime: stickRel, level: 3, curve: curve).kr;
+
+	snd = Mix.ar(drumMode + stickEnv) * amp;
+
+	snd = LeakDC.ar(snd);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\beating, { arg out = 0, amp = 0.1, pan = 0, att = 0.01, dec = 1, freq = 440, curve = -4, beatFreq = 15, doneAction = 2;
+
+	var env, snd, oscillator1, oscillator2;
+
+	env = Env.perc(att, dec, amp, curve).kr(doneAction: doneAction);
+
+	oscillator1 = SinOsc.ar(freq); //Try other waveforms for the oscillators! Mix and match, collect them all!
+	oscillator2 = SinOsc.ar(Line.kr(freq + beatFreq, freq, dec));
+
+	snd = Mix([oscillator1, oscillator2]);
+	snd = snd * env;
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\blip1, {arg out = 0, amp = 0.1, pan = 0, att = 0.01, rel = 1, freq = 25, numharm = 10, doneAction = 2;
+	var snd, env;
+	env = Env.perc(att, rel, amp).kr(doneAction: doneAction);
+	snd = Blip.ar(
+		freq: freq * [1, 1.01],
+		numharm: numharm,
+		mul: env
+	);
+	snd = LeakDC.ar(snd);
+	snd = Mix.ar(snd);
+	snd = Pan2.ar(snd, pan);
+	OffsetOut.ar(out, snd);
+}).add;
+
+SynthDef(\laserbeam, { arg out = 0, amp = 0.6, pan = 0.0, freq = 40, att = 0.01, doneAction = 2;
+	var snd, freqenv, ampenv;
+	// frequency envelope
+	freqenv = EnvGen.ar(Env([4, 0.5, 1, 1], [att, 0.01, 1.0]));
+	// amplitude envelope
+	// no gate: fixed-time envelope, self-terminating.
+	ampenv = EnvGen.ar(
+		envelope: Env([0, 1, 0.5, 0.0], [0.02, 0.2, 0.1]),
+		levelScale: amp,
+		doneAction: doneAction);
+	snd = LFTri.ar(freq: freq * freqenv, mul: ampenv);
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\ping_mh,{ arg out = 0, amp = 0.2, pan = 0, att = 0.001, dur = 1, curve = -4, freq = 90, rate = 4, depth = 0.03, doneAction = 2;
+	var snd, lfo, env;
+
+	lfo = LFNoise2.ar(rate).range(1 / (1 + depth), (1 + depth));
+
+	env = Env.perc(attackTime: att, releaseTime: dur, level: amp, curve: curve).kr(doneAction: doneAction);
+
+	snd = SinOsc.ar(freq: [freq, freq * lfo], mul: env);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\pulseRisset, {arg out = 0, amp = 0.1, pan = 0, att = 0.01, rel = 11, freq = 440, pulseFreq = 8;
+    var partials, durs, amps, snd, env;
+ 	partials = [246.4, 247.4, 404.8, 406.5, 523.6, 748, 880, 1206, 1320, 1654, 1791]; // original freqs
+	partials = (partials / 440) * freq; // consider 440 the 'root'
+	durs = [11, 10, 7, 6, 4, 3.4, 3, 2.2, 2, 1.1, 1] / 11;
+	amps = durs.linlin(1, 11, 0.2, 1);
+
+	env = Env.perc(
+		attackTime: att,
+		releaseTime: durs * rel,
+		level: amps
+	).kr(doneAction: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // only longest env gets doneAction: 2
+
+	snd = Pulse.ar(partials) * env * amp / 11;
+
+	snd = RLPF.ar(
+		in: snd,
+		freq: freq * LFPulse.ar(pulseFreq).range(2, 4),
+		rq: SinOsc.ar(LFNoise2.kr(1).range(4, 9)).range(0.1, 0.3)
+	);
+
+	snd = LPF.ar(snd, 12000);
+	snd = Limiter.ar(Mix.ar(snd));
+
+	OffsetOut.ar(out, Pan2.ar(snd,pan) );
 }).add;
 
 ///////////////////////////////////////  Sequence
@@ -2543,6 +3655,49 @@ SynthDef(\moogbasstone2,{ arg out = 0, freq = 440, amp = 0.1, gate = 1, attackTi
 
 }).add;
 
+SynthDef(\moogBass, { arg out = 0, amp = 0.1, pan = 0, freq = 40, cutoff = 1000, gain = 2.0, lagamount = 0.01, att = 0.001, dec = 0.3, sus = 0.9, rel = 0.2, chorus = 0.7, gate = 1, doneAction = 2;
+	var osc, filter, env, filterenv, snd, chorusfx;
+
+	osc = Mix(VarSaw.ar(
+		freq: freq.lag(lagamount) * [1.0, 1.001, 2.0],
+		iphase: Rand(0.0,1.0) ! 3,
+		width: Rand(0.5,0.75) ! 3,
+		mul: 0.5));
+
+	filterenv = EnvGen.ar(
+		envelope: Env.asr(0.2, 1, 0.2),
+		gate: gate);
+
+	filter =  MoogFF.ar(
+		in: osc,
+		freq: cutoff * (1.0 + (0.5 * filterenv)),
+		gain: gain);
+
+	env = EnvGen.ar(
+		envelope: Env.adsr(0.001, 0.3, 0.9, 0.2, amp),
+		gate: gate,
+		doneAction: doneAction);
+
+	snd = (0.7 * filter + (0.3 * filter.distort)) * env;
+
+	chorusfx = Mix.fill(7, {
+
+		var maxdelaytime = rrand(0.005, 0.02);
+		DelayC.ar(
+			in: snd,
+			maxdelaytime: maxdelaytime,
+			delaytime: LFNoise1.kr(
+				freq: Rand(4.5, 10.5),
+				mul: 0.25 * maxdelaytime,
+				add: 0.75 * maxdelaytime)
+		)
+	});
+
+	snd = snd + (chorusfx * chorus);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 ~tweetAnaBassSynthDef = SynthDef(\tweetAnaBass, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release = 2, freq = 60, ffreq = 60, tu = 9, compTresh = 0.5, t_trig = 1, doneAction = 2;
 	var sig, env, bw;
 	bw = LFNoise0.ar(_);
@@ -2557,6 +3712,20 @@ SynthDef(\moogbasstone2,{ arg out = 0, freq = 440, amp = 0.1, gate = 1, attackTi
 	sig = sig * env;
 	sig = Compander.ar(sig, sig, compTresh, 1, 1/8, 0.002);
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+SynthDef(\triangleWaveBells,{ arg out = 0, amp = 1.0, pan = 0.0, att = 0.01, dec = 0.1, sus = 1, rel = 0.5, freq = 40, lforate = 10, lfowidth = 0.0, cutoff = 100, rq = 0.5, gate = 1, doneAction = 2;
+
+	var osc1, osc2, vibrato, filter, env;
+	vibrato = SinOsc.ar(lforate, Rand(0, 2.0));
+	osc1 = Saw.ar(freq * (1.0 + (lfowidth * vibrato)), 0.75);
+	osc2 = Mix(LFTri.ar((freq.cpsmidi + [11.9, 12.1]).midicps));
+	filter = RHPF.ar((osc1 + (osc2 * 0.5)) * 0.5, cutoff, rq);
+	env = EnvGen.ar(
+		envelope: Env.adsr(att, dec, sus, rel, amp),
+		gate: gate,
+		doneAction: doneAction);
+	OffsetOut.ar(out, Pan2.ar(filter * env, pan));
 }).add;
 
 )

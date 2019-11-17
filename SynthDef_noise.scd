@@ -406,4 +406,32 @@ SynthDef(\corman1, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release 
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
+SynthDef(\werkit, { arg out = 0, amp = 0.1, pan = 0.0, att = 0.01, dec = 0, sus = 1, rel = 1, freq = 440, rq = 0.1, gate = 1,doneAction = 2;
+
+	var source, filter, env, snd, delayEnv;
+	source = WhiteNoise.ar;
+	filter = BLowPass4.ar(source, freq, rq) * 0.3;
+	env = EnvGen.ar(
+		envelope: Env.adsr(att, dec, sus, rel, amp),
+		gate: gate,
+		doneAction: 2);
+	snd = (0.7 * filter + (0.3 * filter.distort)) * env;
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\werkit2, { arg out = 0, amp = 0.1, att = 0.01, dec = 0, sus = 1, rel = 0.1, freq = 440, rq = 0.1, gate = 1, doneAction = 2;
+
+	var source, filter, env, snd;
+	source = LFSaw.ar(Array.fill(16, { Rand(100, 200) }));
+	filter = BLowPass4.ar(source, freq, rq) * 0.1;
+	env = EnvGen.ar(
+		envelope: Env.adsr(att, dec, sus, rel, amp),
+		gate: gate,
+		doneAction: doneAction);
+	snd = (0.7 * filter + (0.3 * filter.distort)) * env;
+	snd = HPF.ar(snd, 100);
+	snd = Splay.ar(snd);
+	OffsetOut.ar(out, snd);
+}).add;
+
 )

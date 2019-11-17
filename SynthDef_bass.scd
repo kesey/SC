@@ -74,4 +74,61 @@ SynthDef(\tweetAnaBass, { arg out = 0, t_trig = 1, freq = 60, attack = 0.01, rel
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
+SynthDef(\moogBass, { arg out = 0, amp = 0.1, pan = 0, freq = 40, cutoff = 1000, gain = 2.0, lagamount = 0.01, att = 0.001, dec = 0.3, sus = 0.9, rel = 0.2, chorus = 0.7, gate = 1, doneAction = 2;
+	var osc, filter, env, filterenv, snd, chorusfx;
+
+	osc = Mix(VarSaw.ar(
+		freq: freq.lag(lagamount) * [1.0, 1.001, 2.0],
+		iphase: Rand(0.0,1.0) ! 3,
+		width: Rand(0.5,0.75) ! 3,
+		mul: 0.5));
+
+	filterenv = EnvGen.ar(
+		envelope: Env.asr(0.2, 1, 0.2),
+		gate: gate);
+
+	filter =  MoogFF.ar(
+		in: osc,
+		freq: cutoff * (1.0 + (0.5 * filterenv)),
+		gain: gain);
+
+	env = EnvGen.ar(
+		envelope: Env.adsr(0.001, 0.3, 0.9, 0.2, amp),
+		gate: gate,
+		doneAction: doneAction);
+
+	snd = (0.7 * filter + (0.3 * filter.distort)) * env;
+
+	chorusfx = Mix.fill(7, {
+
+		var maxdelaytime = rrand(0.005, 0.02);
+		DelayC.ar(
+			in: snd,
+			maxdelaytime: maxdelaytime,
+			delaytime: LFNoise1.kr(
+				freq: Rand(4.5, 10.5),
+				mul: 0.25 * maxdelaytime,
+				add: 0.75 * maxdelaytime)
+		)
+	});
+
+	snd = snd + (chorusfx * chorus);
+
+	OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\triangleWaveBells,{ arg out = 0, amp = 1.0, pan = 0.0, att = 0.01, dec = 0.1, sus = 1, rel = 0.5, freq = 40, lforate = 10, lfowidth = 0.0, cutoff = 100, rq = 0.5, gate = 1, doneAction = 2;
+
+	var osc1, osc2, vibrato, filter, env;
+	vibrato = SinOsc.ar(lforate, Rand(0, 2.0));
+	osc1 = Saw.ar(freq * (1.0 + (lfowidth * vibrato)), 0.75);
+	osc2 = Mix(LFTri.ar((freq.cpsmidi + [11.9, 12.1]).midicps));
+	filter = RHPF.ar((osc1 + (osc2 * 0.5)) * 0.5, cutoff, rq);
+	env = EnvGen.ar(
+		envelope: Env.adsr(att, dec, sus, rel, amp),
+		gate: gate,
+		doneAction: doneAction);
+	OffsetOut.ar(out, Pan2.ar(filter * env, pan));
+}).add;
+
 )

@@ -238,4 +238,59 @@ SynthDef(\haty,{ arg out = 0, att = 0.001, rel = 0.1, curve = (-4), amp = 0.75, 
 	Out.ar(out, [sig,sig]);
 }).add;
 
+SynthDef(\hihatElectro, { arg out = 0, pan = 0, amp = 0.3, att = 0.001, rel = 0.3, curve = -8, filterFreq = 4010, rq = 0.56, doneAction = 2;
+	var env, snd;
+
+	// noise -> resonance -> exponential dec envelope
+	env = Env.perc(attackTime: att, releaseTime: rel, curve: curve).kr(doneAction: doneAction);
+
+	snd = ClipNoise.ar(amp);
+	snd = BPF.ar(
+		in: snd,
+		freq: [1, 1.035] * filterFreq,
+		rq: [0.27, 1] * rq,
+		mul: [1.0, 0.6]
+	);
+	snd = Mix(snd) * env;
+
+	Out.ar(out, Pan2.ar(snd, pan));
+}).add;
+
+SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, rootIndex = 238.5, rq = 1,
+	//Initial envelopes
+	initAtt = 0.005, initRel = 0.1, initAmp = 1, initStart = 15000, initEnd = 9000,
+	//Body envelopes
+	bodyAtt = 0.005, bodyRel = 0.1, bodyAmp = 1, bodyStart = 9000, bodyEnd = 12000,
+	doneAction = 2;
+
+	var root, initialEnv, initialSweep, initial, bodyEnv, bodySweep, body, snd;
+
+	root = Pulse.ar(freq: freq, width: 0.5, mul: 1);
+
+	root = PMOsc.ar(
+		            carfreq: root,
+					modfreq: freq * [1.34, 2.405, 3.09, 1.309],
+					pmindex: rootIndex * [1, 0.22, 0.014, 0.0038]);
+
+	root = Mix.new(root);
+
+	initialEnv = Env.perc(attackTime: initAtt, releaseTime: initRel, curve: curve).kr;
+
+	initialSweep = Line.kr(start: initStart, end: initEnd, dur: initRel);
+
+	initial = BPF.ar(in: root, freq: initialSweep, rq: rq, mul: initialEnv * initAmp);
+
+	bodyEnv = Env.perc(attackTime: bodyAtt, releaseTime: bodyRel, curve: curve / 2).kr;
+
+	bodySweep = Line.kr(start: bodyStart, end: bodyEnd, dur: bodyRel);
+
+	body = HPF.ar(in: root, freq: bodySweep, mul: bodyEnv * bodyAmp);
+
+	snd = Mix.ar([initial, body]) * amp;
+
+    DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 )
