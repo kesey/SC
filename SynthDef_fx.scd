@@ -66,6 +66,28 @@ SynthDef(\distortion, { arg out = 0, gain = 41.97, envtime = 4, mix = 1, outputl
 	ReplaceOut.ar(out, XFade2.ar(input, Shaper.ar(shaperbuf, input), mix.linlin(0,1.0,-1,1.0)));
 }).add;
 
+SynthDef(\waveShape, { arg in = 0, out = 0, mix = 1, gain = 1, shaperbuf;
+	var input = In.ar(in, 2);
+	var sig = XFade2.ar(input, Shaper.ar(shaperbuf, input * gain), mix.linlin(0,1.0,-1,1.0));
+	ReplaceOut.ar(out, sig);
+}).add;
+
+SynthDef(\distoIxi, {arg in = 0, out = 0, drywet = 0.5, gain = 1;
+	var fx, sig;
+	sig = In.ar(in, 2);
+	fx = sig.abs;
+	fx = ((fx.squared + (gain*fx))/(fx.squared + ((gain-1)*fx) + 1));
+	XOut.ar(out, drywet, fx);
+}).add;
+
+SynthDef(\disto1Ixi, {arg in = 0, out = 0, drywet = 0.5, pregain = 1, postgain = 2;
+	var fx, sig, distortion;
+	sig = In.ar(in, 2);
+	distortion = ((sig * pregain).distort * postgain).distort;
+	fx = Compander.ar(distortion, distortion, 1, 0, 1 ); // sustain
+	XOut.ar(out, drywet, LeakDC.ar(fx + sig));
+}).add;
+
 ///////////////////////////////////////  Dynamic
 
 SynthDef(\Compression, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, drywet = 0.5, level = 1;
@@ -82,6 +104,13 @@ SynthDef(\Limiter, { arg in = 0, out = 0, gain = 1, level = 0.99, dur = 0.01;
 	ReplaceOut.ar(out, effect);
 }).add;
 
+SynthDef(\tremoloIxi, {arg in=0, out=0, drywet = 0.5, freq=1, strength=1;
+	var fx, sig;
+	sig = In.ar(in, 2);
+	fx = sig * SinOsc.ar(freq, 0, strength, 0.5);
+	XOut.ar(out, drywet, fx + sig);
+}).add;
+
 ///////////////////////////////////////  Time
 
 SynthDef(\Phasing, { arg in = 0, out = 0, freq = 0.2, drywet = 0.5, level = 1;
@@ -91,6 +120,19 @@ SynthDef(\Phasing, { arg in = 0, out = 0, freq = 0.2, drywet = 0.5, level = 1;
 	XOut.ar(out, drywet, effect * level);
 }).add;
 
+SynthDef(\phasingIxi, { arg in = 0, out = 0, drywet = 0.5, freq = 0.2;
+	var input, effect;
+	input = InFeedback.ar(in, 2);
+	effect = CombC.ar(
+		input,
+		4,
+		LFPar.kr(0.1, 0, 1).range(0.000022675,0.01), // a circle every 10 seconds
+		0
+	);
+	effect = input + effect;
+	XOut.ar(out, drywet, effect);
+}).add;
+
 SynthDef(\Flanging, {arg in = 0, out = 0, flangefreq = 0.1, fdback = 0.1, drywet = 0.5, level = 1;
 	var input, effect;
 	input = In.ar(0, 2);
@@ -98,6 +140,26 @@ SynthDef(\Flanging, {arg in = 0, out = 0, flangefreq = 0.1, fdback = 0.1, drywet
 	effect = DelayN.ar(input, 0.02, SinOsc.kr(flangefreq, 0, 0.005, 0.005)); // max delay of 20msec
 	LocalOut.ar(fdback * effect);
 	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\flangerIxi, { arg in=0, out=0, drywet = 0.5, delay=0.1, depth=0.08, rate=0.06, fdbk=0.0, decay=0.0;
+	var input, maxdelay, maxrate, dsig, mixed, local;
+	maxdelay = 0.013;
+	maxrate = 10.0;
+	input = In.ar(in, 2);
+	local = LocalIn.ar(2);
+	dsig = AllpassL.ar( // the delay (you could use AllpassC (put 0 in decay))
+		input + (local * fdbk),
+		maxdelay * 2,
+		LFTri.kr( // very similar to SinOsc (try to replace it) - Even use LFTri
+			rate * maxrate,
+			0,
+			depth * maxdelay,
+			delay * maxdelay),
+		decay);
+	mixed = input + dsig;
+	LocalOut.ar(mixed);
+	XOut.ar(out, drywet, mixed);
 }).add;
 
 SynthDef(\chorus, { arg out=0, amp=0.1, gate=1, pan=0, freq=200;
@@ -161,6 +223,16 @@ SynthDef(\choruscompresseffect, {|out =0 gate= 1|
 
 //From Steal This Sound SC Example
 //By Nick Collins
+}).add;
+
+SynthDef(\chorusIxi, { arg in = 10, out = 0, drywet = 0.5, predelay=0.08, speed=0.05, depth=0.1, ph_diff=0.5;
+	var input, sig, modulators, numDelays = 12;
+	input = In.ar(in, 2);
+	modulators = Array.fill(numDelays, {arg i;
+	LFPar.kr(speed * rrand(0.94, 1.06), ph_diff * i, depth, predelay);});
+	sig = DelayC.ar(input, 0.5, modulators);
+	sig = sig.sum; //Mix(sig);
+	XOut.ar(out, drywet, sig!2);
 }).add;
 
 ///////////////////////////////////////  Delay
@@ -261,6 +333,21 @@ SynthDef(\drumy, { arg freq=200, pan=0, amp=0.1;
 	sig = sig * \gain.kr(1);
 	sig = SelectX.ar(\mix.kr(1), [in, sig]);
 	ReplaceOut.ar(\outbus.kr(0), sig);
+}).add;
+
+SynthDef(\grainin, { arg in = 0, out = 0, drywet = 0.5, amp = 0.2, time = 0.1, freq = 20;
+	var sig, input;
+	input = In.ar(in, 2);
+	sig = GrainIn.ar(2, Dust.ar(freq), time, Mix.ar(input)*0.4);
+	XOut.ar(out, drywet, sig * amp);
+}).add;
+
+SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5, grainDur = 0.1, grainSpeed = 10;
+	var pan, granulizer, input;
+	input = In.ar(in, 2);
+	pan = LFNoise0.kr(grainSpeed, panWidth);
+	granulizer = GrainIn.ar(2, Impulse.kr(grainSpeed), grainDur, Mix.ar(input), pan);
+	XOut.ar(out, drywet, granulizer * amp);
 }).add;
 
 ///////////////////////////////////////  Stutter
@@ -467,19 +554,18 @@ SynthDef(\Reverb, {arg in = 0, out = 0, predelaytime = 0.048, decaytimec = 5, de
 	XOut.ar(out, drywet, temp * level);
 }).add;
 
-SynthDef(\grainin, { arg in = 0, out = 0, drywet = 0.5, amp = 0.2, time = 0.1, freq = 20;
-	var sig, input;
-	input = In.ar(in, 2);
-	sig = GrainIn.ar(2, Dust.ar(freq), time, Mix.ar(input)*0.4);
-	XOut.ar(out, drywet, sig * amp);
-}).add;
+SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combdecay=15, allpassdecay=1, revVol=0.31;
+	var sig, y, z;
+	sig = In.ar(in, 2);
 
-SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5, grainDur = 0.1, grainSpeed = 10;
-	var pan, granulizer, input;
-	input = In.ar(in, 2);
-	pan = LFNoise0.kr(grainSpeed, panWidth);
-	granulizer = GrainIn.ar(2, Impulse.kr(grainSpeed), grainDur, Mix.ar(input), pan);
-	XOut.ar(out, drywet, granulizer * amp);
+	// predelay
+	z = DelayN.ar(sig, 0.1, predelay); // max 100 ms predelay
+
+	// 7 length modulated comb delays in parallel :
+	y = Mix.ar(Array.fill(7,{ CombL.ar(z, 0.05, rrand(0.03, 0.05), combdecay) }));
+
+	6.do({ y = AllpassN.ar(y, 0.050, rrand(0.03, 0.05), allpassdecay) });
+	XOut.ar(out, drywet, sig + (y * revVol)); // as fxlevel is 1 then I lower the vol a bit
 }).add;
 
 )

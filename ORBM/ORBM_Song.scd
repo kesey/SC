@@ -1658,8 +1658,8 @@
 
 	~song7InitPart = {
 		~changePattern.value(Pdef(\unit1), ~song7Pattern1);
-		/*~changePattern.value(Pdef(\unit2), ~song7Pattern2);
-		~changePattern.value(Pdef(\unit3), ~song7Pattern3);*/
+		~changePattern.value(Pdef(\unit2), ~song7Pattern2);
+		~changePattern.value(Pdef(\unit3), ~song7Pattern3);
 		~changePattern.value(Pdef(\unit4), ~song7Pattern4);
 		~changePattern.value(Pdef(\unit5), ~song7Pattern5);
 		~changePattern.value(Pdef(\unit6), ~song7Pattern6);
