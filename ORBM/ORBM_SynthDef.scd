@@ -240,10 +240,11 @@ SynthDef(\disto1Ixi, {arg in = 0, out = 0, drywet = 0.5, pregain = 1, postgain =
 
 ///////////////////////////////////////  Dynamic
 
-SynthDef(\Compression, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, drywet = 0.5, level = 1;
-	var input, effect;
+SynthDef(\Compression, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, ratio = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
 	input = In.ar(in, 2);
-	effect = CompanderD.ar(gain * input, threshold, 1, 0.5);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 1, ratio, att, rel, makeUpGain);
 	XOut.ar(out, drywet, effect * level);
 }).add;
 
@@ -252,6 +253,48 @@ SynthDef(\Limiter, { arg in = 0, out = 0, gain = 1, level = 0.99, dur = 0.01;
 	input = In.ar(in, 2);
 	effect = Limiter.ar(gain * input, level, dur);
 	ReplaceOut.ar(out, effect);
+}).add;
+
+SynthDef(\limiterIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 1, 0.1, att, rel, makeUpGain);
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\sustainerIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 0.7, 1, att, rel, makeUpGain);
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\noisegateIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 10, 1, att, rel, makeUpGain);
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\noisegateRevIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, predelay=0.048, combdecay=3.7, allpassdecay=0.21, revVol=0.21, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 10, 1, att, rel, makeUpGain);
+	effect = DelayN.ar(effect, 0.1, predelay);
+	effect = Mix.ar(Array.fill(7,{ CombL.ar(effect, 0.05, rrand(0.03, 0.05), rrand(1, 20)) }));
+	6.do({ effect = AllpassN.ar(effect, 0.050, rrand(0.03, 0.05), allpassdecay) });
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\normalizerIxi, {arg in = 0, amp = 1, out = 0, level = 0.5, dur = 0.01, drywet = 0.5;
+	var input, effect;
+	input = In.ar(in, 2);
+	effect = Normalizer.ar(input, level, dur);
+	XOut.ar(out, drywet, effect * amp);
 }).add;
 
 SynthDef(\tremoloIxi, {arg in=0, out=0, drywet = 0.5, freq=1, strength=1;
@@ -1029,8 +1072,9 @@ SynthDef(\kick_oto309Br, { arg out = 0, amp = 0.5, pan = 0, att = 0.005, rel = 0
 	cfreq = 6100, crq = 1, camp = 1.41,
 	doneAction = 2;
 
-    var snd, noise, tone1, tone2, hit1, hit2, click;
+    var env, snd, noise, tone1, tone2, hit1, hit2, click;
 
+	env = EnvGen.kr(Env.linen(0.01, 1, 6), doneAction: doneAction);
 	noise = Hasher.ar(Sweep.ar); //deterministic white noise
 
     tone1 = SinOsc.ar(
@@ -1060,9 +1104,9 @@ SynthDef(\kick_oto309Br, { arg out = 0, amp = 0.5, pan = 0, att = 0.005, rel = 0
 
 	snd = Mix.ar(tone1 + tone2 + hit1 + hit2 + click).tanh * amp;
 
-	DetectSilence.ar(in: snd, doneAction: doneAction);
+	//DetectSilence.ar(in: snd, doneAction: doneAction);
 
-	OffsetOut.ar(out, Pan2.ar(snd, pan));
+	OffsetOut.ar(out, Pan2.ar(snd * env, pan));
 }).add;
 
 SynthDef(\kickRingz, { arg out = 0, pan = 0, freq = 40, amp = 1, decay = 0.25, ffreq = 1000, doneAction = 2;
@@ -1310,36 +1354,35 @@ SynthDef(\snare808, { arg out=0,tu=1, amp=0.1, gate=1, pan=0, freq=200;
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\snaremed, { | out = 0, level = 1, pan = 0, noise = 1, done = 2, dc = 1, snd = 20, env0L1 = 1, env0L2 = 1, env0L3 = 1, env0L4 = 1, atkEnv0 = 0.01, decEnv0 = 0.2, relEnv0 = 0.26, fratio = 1.5, env1L1 = 120, env1L2 = 30, env1L3 = 30, env1T1, env1T2, env1T3, env1T4, curve1 = (-4), curve2 = (-2), curve3 = (-4), phase, oamp = 0.1, owhich2 = 0, ochoose = 0|
+~snaremedSynthDef = SynthDef(\snaremed, { | out = 0, level = 1, pan = 0, noise = 1, dc = 1, env0L1 = 1, env0L2 = 1, env0L3 = 1, env0L4 = 1, atkEnv0 = 0.01, decEnv0 = 0.2, relEnv0 = 0.26, fratio = 1.5, env1L1 = 120, env1L2 = 30, env1L3 = 30, env1T1 = 0.1, env1T2 = 0.2, curve1 = (-4), curve2 = (-2), curve3 = (-4), phase = 0, oamp = 0.1, owhich2 = 0, ochoose = 0, doneAction = 2|
 	var env0,env1,
-env1m, son, son2,son3,son4,p2;
+	env1m, son, son2,son3,son4,p2;
 	p2 = phase * (-pi);
-env0 = Env([env0L1,env0L2,env0L3,env0L4,0],[atkEnv0,decEnv0,relEnv0],[curve1, curve2, curve3]);
-	env1 = Env([env1L1,env1L2,env1L3],[env1T1,env1T2,env1T3,env1T4],[curve1, curve2, curve3]);
+	env0 = Env([env0L1,env0L2,env0L3,env0L4,0],[atkEnv0,decEnv0,relEnv0],[curve1, curve2, curve3]);
+	env1 = Env([env1L1,env1L2,env1L3],[env1T1,env1T2],[curve1, curve2, curve3]);
 
-env0 = EnvGen.ar(env0, doneAction: done);
-env1 = EnvGen.ar(env1);
+	env0 = EnvGen.ar(env0, doneAction: doneAction);
+	env1 = EnvGen.ar(env1);
 	env1m = env1.midicps;
-son = LFSaw.ar(env1m,0,oamp, 1,1.4);//*LFSaw.ar(100).distort;
-son2 = SinOsc.ar(env1m,0, oamp, 1,1.4);
-son3 = LFPulse.ar(env1m,0, oamp, 1,1.4);
-son4 = LFTri.ar(env1m,0, oamp, 1,1.4);
+	son = LFSaw.ar(env1m,0,oamp, 1,1.4);//*LFSaw.ar(100).distort;
+	son2 = SinOsc.ar(env1m,0, oamp, 1,1.4);
+	son3 = LFPulse.ar(env1m,0, oamp, 1,1.4);
+	son4 = LFTri.ar(env1m,0, oamp, 1,1.4);
 
-son = SelectX.ar(ochoose,[son,son2,son3,son4]);
-son = LeakDC.ar(son,dc,30);
-son = son ;
-son = HPF.ar(son, 100, env0);
+	son = SelectX.ar(ochoose,[son,son2,son3,son4]);
+	son = LeakDC.ar(son,dc,30);
+	son = son ;
+	son = HPF.ar(son, 100, env0);
 	son = son + SelectX.ar(owhich2,[ SinOsc.ar(env1m, phase, env0), LFSaw.ar(env1m, phase, env0), LFPulse.ar(env1m, phase, env0), LFTri.ar(env1m, phase, env0)]);
 	son =  HPF.ar(son +BrownNoise.ar(env0/2*noise)+WhiteNoise.ar(env0*noise),fratio);
-//son = son.clip2(1);
+	//son = son.clip2(1);
 
 	son = Limiter.ar(son,1);
 	son = son * level.distort;
 
 	OffsetOut.ar(out, Pan2.ar(son, pan, level)).tanh;
-//OffsetOut.ar(snd, son*level).tanh;
-},
-).add;
+	//OffsetOut.ar(snd, son*level).tanh;
+}).add;
 
 SynthDef(\snareAw, {arg out = 0, amp = 0.1, sinfreq = 180, att = 0.01, rel = 0.2, ffreq = 2000, pan = 0;
 	var snd1 = WhiteNoise.ar(amp);
@@ -1490,7 +1533,7 @@ SynthDef(\snare909, { arg out = 0, amp = 0.5, pan = 0, freq = 85, att = 0.0005, 
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-SynthDef(\snareElectro, { arg out = 0, pan = 0, amp = 0.4, att = 0.001, rel = 0.15, curve = -4, popfreq = 160, sweep = 0.01, noisefreq = 810, rq = 1.6, blend = 0.41, doneAction = 2;
+SynthDef(\snareElectro, { arg out = 0, amp = 0.4, pan = 0, att = 0.001, rel = 0.15, curve = -4, popfreq = 160, sweep = 0.01, noisefreq = 810, rq = 1.6, blend = 0.41, doneAction = 2;
     var pop, popEnv, popSweep, noise, noiseEnv, snd;
 
     // pop makes a click coming from very high frequencies
@@ -1511,13 +1554,14 @@ SynthDef(\snareElectro, { arg out = 0, pan = 0, amp = 0.4, att = 0.001, rel = 0.
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-~snareSteinSynthDef = SynthDef(\snareStein, { arg out = 0, amp = 1, pan = 0, att = 0.0005, curve = -4, tonerel = 0.075, noiserel = 0.2,
+SynthDef(\snareStein, { arg out = 0, amp = 1, pan = 0, att = 0.0005, curve = -4, tonerel = 0.075, noiserel = 0.2,
 	//Other Controls, blend ranges from 0 to 1.
 	noisetop = 7040, noisebottom = 523, noiseamp = 0.2, tonelo = 185, tonehi = 330, toneamp = 0.5, blend = 0.2,
 	doneAction = 2;
 
-    var tone, noise, snd;
+    var env, tone, noise, snd;
 
+	env = EnvGen.kr(Env.linen(0.01, 1, 2), doneAction: doneAction);
 	//Sines for the frequency of the drum:
     tone = SinOsc.ar(freq: [tonelo, tonehi]);
 
@@ -1550,22 +1594,23 @@ SynthDef(\snareElectro, { arg out = 0, pan = 0, amp = 0.4, att = 0.001, rel = 0.
 	            );
 
 	//Mix it all together:
-	snd = Mix.ar(snd + tone) * amp;
+	snd = Mix.ar(snd + tone) * amp * env;
 
-	DetectSilence.ar(in: snd, doneAction: doneAction);
+	//DetectSilence.ar(in: snd, doneAction: doneAction);
 
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-SynthDef(\sosSnare, { arg out = 0, amp = 0.8, pan = 0, freq = 405, att = 0.005, rel = 0.1, curve = -4,
+SynthDef(\sosSnare, { arg out = 0, amp = 0.8, pan = 0, att = 0.005, rel = 0.1, curve = -4, freq = 405,
 	//drumMode Controls
 	drumModeAmp = 0.25, timbreIndex = 0.385, modHarmonic = 0.452,
 	//snares controls
 	snareAmp = 40, nyquist = 1700, snareRez = 1000, ffreq = 2000, rq = 0.1, bwr = 1,
 	doneAction = 2;
 
-	var drumMode, drumModeEnv, snares, snareEnv, snd;
+	var env, drumMode, drumModeEnv, snares, snareEnv, snd;
 
+	env = EnvGen.kr(Env.linen(0.01, 1, 2), doneAction: doneAction);
 	drumModeEnv = Env.perc(attackTime: att, releaseTime: rel, level: 0.5, curve: curve).kr;
 
 	drumMode = SinOsc.ar(freq: freq * 0.53, mul: drumModeEnv);
@@ -1594,9 +1639,9 @@ SynthDef(\sosSnare, { arg out = 0, amp = 0.8, pan = 0, freq = 405, att = 0.005, 
 
 	snares = Resonz.ar(in: snares, freq: snareRez, bwr: bwr, mul: snareAmp) ;
 
-	snd = Mix.new(drumMode + snares) * amp;
+	snd = Mix.new(drumMode + snares) * env * amp;
 
-	DetectSilence.ar(in: snd, doneAction: doneAction);
+	//DetectSilence.ar(in: snd, doneAction: doneAction);
 
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
@@ -3502,6 +3547,51 @@ SynthDef(\pulseRisset, {arg out = 0, amp = 0.1, pan = 0, att = 0.01, rel = 11, f
 	snd = Limiter.ar(Mix.ar(snd));
 
 	OffsetOut.ar(out, Pan2.ar(snd,pan) );
+}).add;
+
+SynthDef(\pitchTrackSynthIxi, {arg in = 0, out = 0, att = 0.51, dec = 0.52, sus = 1, rel = 0.51, curve = (-4);
+	var sig, env, input, amp, freq, hasFreq;
+
+	// the audio input
+	// input = SoundIn.ar([in, in+1]);
+	input = InFeedback.ar(in, 2);
+	amp = Amplitude.kr(in, 0.25, 0.25);
+
+	// the pitch variable and the hasFreq (Pitch.kr returns a list like this [freq, hasFreq])
+	# freq, hasFreq = Pitch.kr(input, ampThreshold: 0.2, median: 7);
+
+	// when the hasFreq is true (pitch is found) we generate a ADSR envelope that is open until
+	// the hasFreq is false again or the amplitude is below the ampThreshold of the Pitch.
+	env = EnvGen.ar(Env.adsr(att, dec, sus, rel, 1, curve), gate: hasFreq);
+
+	// we plug the envolope to the volume argument of the Sine
+	sig = SinOsc.ar(freq, 0, env * amp) ! 2;
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\pitcherIxi,{ arg out = 0, in = 0, threshold = 0.5, lpf = 2000;
+	var input, amp, freq, hasFreq, sig, gate;
+
+	// input = SoundIn.ar([in, in + 1]);
+	input = InFeedback.ar(in, 2);
+
+	// using a LowPassFilter to remove high harmonics
+	input = LPF.ar(Mix.new(input), lpf);
+	amp = Amplitude.kr(input, 0.25, 0.25);
+
+	// # freq, hasFreq = Pitch.kr(input, ampThreshold: 0.1, median: 7);
+	# freq, hasFreq = Tartini.kr(input); // Tartini performs better than Pitch
+
+	gate = Lag.kr(amp > threshold, 0.01);
+
+	// sig = VarSaw.ar(freq, 0, 0.2, amp*hasFreq*gate);
+
+	// 3 sines (octave lower, pitch and octave higher mixed into one signal
+	sig = Mix.new(SinOsc.ar(freq * [0.5,1,2], 0, 0.2 * amp*hasFreq*gate));
+	6.do({
+		sig = AllpassN.ar(out, 0.040, [0.040.rand,0.040.rand], 2)
+	});
+	OffsetOut.ar(out, sig);
 }).add;
 
 ///////////////////////////////////////  Sequence

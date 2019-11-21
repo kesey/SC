@@ -46,17 +46,6 @@
 	listUnits;
 };
 
-// remove previous Pdef, use it when you reset sequencer
-~resetPdefView = {
-	~synthWindow.keysValuesDo({ arg key, value;
-		if(key.contains("unit"), {
-			value.removeAll;
-			value.remove;
-			{ ~synthWindow.removeAt(key); }.fork(t, 0.2); // need to be delayed
-		});
-	});
-};
-
 ~cleanDict = { arg dict, synthWindowKey;
 	dict.keysDo({ arg key; // remove control no longer in use
 		if(key.contains(synthWindowKey), {
@@ -92,27 +81,23 @@
 	});
 };
 
+~resetFirstTime = { arg pdefNameString;
+	~firstTime.keysValuesDo({ arg key, value; // reset control bus creation
+		if((key.contains(pdefNameString) and: value.not), {
+			~firstTime.put(key, true);
+		});
+	});
+};
+
 ~changePattern = { arg pdef, pattern;
 	var pdefNameSymbol, pdefNameString;
 
 	pdefNameSymbol = pdef.key.asSymbol;
 	pdefNameString = pdefNameSymbol.asString;
 
-	~firstTime.keysValuesDo({ arg key, value; // reset control bus creation
-		if((key.contains(pdefNameString) and: value.not), {
-			~firstTime.put(key, true);
-		});
-	});
+	~resetFirstTime.value(pdefNameString);
 
 	Pdef(pdefNameSymbol, pattern).quant_(~globalQuant);
-};
-
-~songInit = {
-	var unit;
-	~pdefNumber.do({ arg i;
-		unit = (\unit ++ (1 + i)).asSymbol;
-		~changePattern.value(Pdef(unit), ~initPattern);
-	});
 };
 
 // use it with SynthDef sync on a clock like sync delay
@@ -139,6 +124,7 @@
 				~firstTime.put(key, true);
 			});
 		});
+
 	});
 
 	if (controlId.isString, {
@@ -149,11 +135,8 @@
 			});
 		});
 
-		~firstTime.keysValuesDo({ arg key, value;
-			if((key.contains(controlId) and: value.not), {
-				~firstTime.put(key, true);
-			});
-		});
+	    ~resetFirstTime.value(controlId);
+
 	});
 };
 
@@ -163,6 +146,26 @@
 		unit = ("unit" ++ (1 + i)).asString;
 		~resetControlBus.value(unit);
 	});
+};
+
+~songInit = {
+	var unit;
+	~pdefNumber.do({ arg i;
+		unit = (\unit ++ (1 + i)).asSymbol;
+		~changePattern.value(Pdef(unit), ~initPattern);
+	});
+};
+
+// remove previous Pdef, use it when you reset sequencer
+~resetPdefView = {
+	~synthWindow.keysValuesDo({ arg key, value;
+		if(key.contains("unit"), {
+			value.removeAll;
+			value.remove;
+			{ ~synthWindow.removeAt(key); }.defer; // need to be delayed
+		});
+	});
+	~resetAllControlBus.value;
 };
 
 ~pdefUpdate = { arg controlId, instance, controlNameSymb, value;

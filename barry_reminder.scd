@@ -748,3 +748,43 @@ var source, detect;
 }.play;
 )
 
+
+/******************************************************************Pass Array as Arg in a SynthDef*****************************************************************/
+
+(
+SynthDef("help-Control-DynKlank", { arg out=0, freq;
+	var klank, harm, amp, ring;
+
+	// harmonics
+	harm = Control.names(\harm).kr(Array.series(4,1,1));
+	// amplitudes
+	amp = Control.names(\amp).kr(Array.fill(4,0.05));
+	// ring times
+	ring = Control.names(\ring).kr(Array.fill(4,1));
+	klank = DynKlank.ar(`[harm,amp,ring], {ClipNoise.ar(0.003)}.dup, freq);
+	OffsetOut.ar(out, klank);
+}).add;
+)
+
+a = Synth("help-Control-DynKlank", [\freq, 300]);
+b = Synth("help-Control-DynKlank", [\freq, 400]);
+
+
+a.set(\harm,  Array.rand(4, 1.0, 4.7));
+a.set(\amp, Array.rand(4, 0.005, 0.1));
+a.set(\ring, Array.rand(4, 0.005, 1.0));
+
+b.set(\harm,  Array.rand(4, 1.0, 4.7));
+b.set(\amp, Array.rand(4, 0.005, 0.1));
+b.set(\ring, Array.rand(4, 0.005, 1.0));
+
+/******************************************************************SynthDef.wrap*****************************************************************/
+
+d = SynthDef(\demoWrapping, { |out|
+    Out.ar(out, SynthDef.wrap({ |freq| SinOsc.ar(freq) }))
+});
+
+d.allControlNames;
+
+// Print:
+// [ ControlName  P 0 out control 0, ControlName  P 1 freq control 0 ]

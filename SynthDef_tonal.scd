@@ -908,4 +908,47 @@ SynthDef(\pulseRisset, {arg out = 0, amp = 0.1, pan = 0, att = 0.01, rel = 11, f
 	OffsetOut.ar(out, Pan2.ar(snd,pan) );
 }).add;
 
+SynthDef(\pitchTrackSynthIxi, {arg in = 0, out = 0, att = 0.51, dec = 0.52, sus = 1, rel = 0.51, curve = (-4);
+	var sig, env, input, amp, freq, hasFreq;
+
+	// the audio input
+	// input = SoundIn.ar([in, in+1]);
+	input = InFeedback.ar(in, 2);
+	amp = Amplitude.kr(in, 0.25, 0.25);
+
+	// the pitch variable and the hasFreq (Pitch.kr returns a list like this [freq, hasFreq])
+	# freq, hasFreq = Pitch.kr(input, ampThreshold: 0.2, median: 7);
+
+	// when the hasFreq is true (pitch is found) we generate a ADSR envelope that is open until
+	// the hasFreq is false again or the amplitude is below the ampThreshold of the Pitch.
+	env = EnvGen.ar(Env.adsr(att, dec, sus, rel, 1, curve), gate: hasFreq);
+
+	// we plug the envolope to the volume argument of the Sine
+	sig = SinOsc.ar(freq, 0, env * amp) ! 2;
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\pitcherIxi,{ arg out = 0, in = 0, threshold = 0.5, lpf = 2000;
+	var input, amp, freq, hasFreq, sig, gate;
+
+	// input = SoundIn.ar([in, in + 1]);
+	input = InFeedback.ar(in, 2);
+
+	// using a LowPassFilter to remove high harmonics
+	input = LPF.ar(Mix.new(input), lpf);
+	amp = Amplitude.kr(input, 0.25, 0.25);
+
+	# freq, hasFreq = Pitch.kr(input, ampThreshold: 0.1, median: 7);
+	gate = Lag.kr(amp > threshold, 0.01);
+
+	// sig = VarSaw.ar(freq, 0, 0.2, amp*hasFreq*gate);
+
+	// 3 sines (octave lower, pitch and octave higher mixed into one signal
+	sig = Mix.new(SinOsc.ar(freq * [0.5,1,2], 0, 0.2 * amp*hasFreq*gate));
+	6.do({
+		sig = AllpassN.ar(out, 0.040, [0.040.rand,0.040.rand], 2)
+	});
+	OffsetOut.ar(out, sig);
+}).add;
+
 )

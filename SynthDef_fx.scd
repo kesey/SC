@@ -90,10 +90,11 @@ SynthDef(\disto1Ixi, {arg in = 0, out = 0, drywet = 0.5, pregain = 1, postgain =
 
 ///////////////////////////////////////  Dynamic
 
-SynthDef(\Compression, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, drywet = 0.5, level = 1;
-	var input, effect;
+SynthDef(\Compression, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, ratio = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
 	input = In.ar(in, 2);
-	effect = CompanderD.ar(gain * input, threshold, 1, 0.5);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 1, ratio, att, rel, makeUpGain);
 	XOut.ar(out, drywet, effect * level);
 }).add;
 
@@ -102,6 +103,48 @@ SynthDef(\Limiter, { arg in = 0, out = 0, gain = 1, level = 0.99, dur = 0.01;
 	input = In.ar(in, 2);
 	effect = Limiter.ar(gain * input, level, dur);
 	ReplaceOut.ar(out, effect);
+}).add;
+
+SynthDef(\limiterIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 1, 0.1, att, rel, makeUpGain);
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\sustainerIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 0.7, 1, att, rel, makeUpGain);
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\noisegateIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 10, 1, att, rel, makeUpGain);
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\noisegateRevIxi, {arg in = 0, out = 0, gain = 1.5, threshold = 0.5, att = 0.01, rel = 0.01, makeUpGain = 1, predelay=0.048, combdecay=3.7, allpassdecay=0.21, revVol=0.21, drywet = 0.5, level = 1;
+	var input, effect, sig;
+	input = In.ar(in, 2);
+	sig = gain * input;
+	effect = CompanderD.ar(sig, threshold, 10, 1, att, rel, makeUpGain);
+	effect = DelayN.ar(effect, 0.1, predelay);
+	effect = Mix.ar(Array.fill(7,{ CombL.ar(effect, 0.05, rrand(0.03, 0.05), rrand(1, 20)) }));
+	6.do({ effect = AllpassN.ar(effect, 0.050, rrand(0.03, 0.05), allpassdecay) });
+	XOut.ar(out, drywet, effect * level);
+}).add;
+
+SynthDef(\normalizerIxi, {arg in = 0, amp = 1, out = 0, level = 0.5, dur = 0.01, drywet = 0.5;
+	var input, effect;
+	input = In.ar(in, 2);
+	effect = Normalizer.ar(input, level, dur);
+	XOut.ar(out, drywet, effect * amp);
 }).add;
 
 SynthDef(\tremoloIxi, {arg in=0, out=0, drywet = 0.5, freq=1, strength=1;

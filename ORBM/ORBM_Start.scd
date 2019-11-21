@@ -147,5 +147,12 @@ s.waitForBoot({
 // GUI.current; // Test which GUI library you are using by default
 // UGen.browse; // another kind of documentation
 // Class.browse;
+// Help.gui; // open a dedicated help window
+
+
+// if you are posting a long list you might not get the whole list using .postln;
+// for that use the following:
+
+// Post << ~firstTime
 
 )

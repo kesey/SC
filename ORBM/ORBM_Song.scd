@@ -1665,7 +1665,7 @@
 		~changePattern.value(Pdef(\unit6), ~song7Pattern6);
 		~changePattern.value(Pdef(\unit7), ~song7Pattern7);
 		// ~changePattern.value(Pdef(\unit8), ~song7Pattern8);
-		/*Pdefn(\patt1_6_dur, Pseq([0.125, 0.25, 0.125, 0.25, 0.5/**/, 0.125, 0.25, 0.5, 0.125, 0.25/**/, 0.125, 0.25, 0.125, 0.5, 0.25/**/, 0.125, 0.5, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);*/
+		Pdefn(\patt1_4_dur, Pseq([1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
 		~resetAllControlBus.value;
 	};
 
@@ -1678,7 +1678,7 @@
 	~song7Part2 = {
 		"song7 part2".postln;
 		~song7InitPart.value;
-		Pdefn(\patt1_6_dur, Pseq([0.125, 0.5, 0.25, 0.25, Rest(0.125)/**/, 0.375, 0.25, 0.25, 0.125, 0.25/**/, 0.125, 0.5, Rest(0.25), 0.25, 0.125/**/, 0.375, 0.25, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_4_dur, Pseq([0.125, 0.5, 0.25, 0.25, Rest(0.125)/**/, 0.375, 0.25, 0.25, 0.125, 0.25/**/, 0.125, 0.5, Rest(0.25), 0.25, 0.125/**/, 0.375, 0.25, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);
 		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, 0.25, Rest(1), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), 0.75, 1, Rest(0.75), 0.5], inf)).quant_(~globalQuant);
 		28.0.wait;
 	};
