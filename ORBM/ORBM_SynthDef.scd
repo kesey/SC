@@ -1835,7 +1835,7 @@ SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, r
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-~cym1SynthDef = SynthDef(\cym1, { arg out=0, amp=0.5, pan=0, envL1 = 0, envL2 = 1, envL3 = 0.3, envL4 = 0, levScale = 1, envT1 = 0.1, envT2 = 0.02, envT3= 0.01, envC1 = (-8), envC2 = 4, envC3 = (-4), tu=1, doneAction=2;
+~cym1SynthDef = SynthDef(\cym1, { arg out=0, amp=0.2, pan=0, envL1 = 0, envL2 = 1, envL3 = 0.3, envL4 = 0, levScale = 1, envT1 = 0.1, envT2 = 0.02, envT3= 0.01, envC1 = (-8), envC2 = 4, envC3 = (-4), tu=1, doneAction=2;
 	var sig;
 	var env = EnvGen.ar(Env.new([envL1, envL2, envL3, envL4], [envT1, envT2, envT3], [envC1, envC2, envC3]), levelScale: levScale, doneAction: doneAction);
 	var freqs = geom(100, 50, 1.3434)*10.234567*Lag3.kr(tu, 10);
@@ -1845,16 +1845,15 @@ SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, r
 	OffsetOut.ar(out, sig);
 }).add;
 
-~cymnewSynthDef = SynthDef(\cymnew, { arg out = 0, amp = 0.5, pan = 0, att = 0, rel = 4, curve = (-8), tu = 6, pos = 0, t_trig = 1, doneAction = 2;
+~cymnewSynthDef = SynthDef(\cymnew, { arg out = 0, amp = 0.2, pan = 0, att = 0, rel = 4, curve = (-8), tu = 6, t_trig = 1, doneAction = 2;
     var sig;
     var env = EnvGen.ar(Env.perc(att,rel,1,curve), t_trig, doneAction: doneAction);
-    var
-    freqs= geom(99,40,pi/3)*10.234567*tu;
-    sig = WhiteNoise.ar;
+    var freqs = geom(99,40,pi/3)*10.234567*tu;
+	sig = WhiteNoise.ar(0.2);
     sig = Ringz.ar(sig,freqs,1).mean;
 
-    sig = Pan2.ar(sig*env, pan, amp);
-    OffsetOut.ar(out, sig * 0.2);
+    sig = Pan2.ar(sig*env, pan);
+    OffsetOut.ar(out, sig * amp);
 }).add;
 
 ~cymbalicMcldSynthDef = SynthDef(\cymbalicMcld, { |out=0, amp=0.1, pan=0, attLowf = 0.5, relLowf = 5, lowNoiseLev = 0.1, attHif = 1, relHif = 3, hiNoiseLev = 0.1, attHi = 1, relHi = 2, hiLev = 0.25, attTh = 0.001, relTh = 0.001, freq1 = 627, freq2 = 2961, freq3 = 7824, freq4 = 476, t_trig = 1, doneAction = 2|

@@ -1664,7 +1664,7 @@
 		~changePattern.value(Pdef(\unit5), ~song7Pattern5);
 		~changePattern.value(Pdef(\unit6), ~song7Pattern6);
 		~changePattern.value(Pdef(\unit7), ~song7Pattern7);
-		// ~changePattern.value(Pdef(\unit8), ~song7Pattern8);
+		~changePattern.value(Pdef(\unit8), ~song7Pattern8);
 		Pdefn(\patt1_4_dur, Pseq([1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
 		~resetAllControlBus.value;
 	};

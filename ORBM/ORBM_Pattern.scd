@@ -3258,7 +3258,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song7Pattern2 = Pbind(
 	\instrument, \kickBlocks,
 	\dur, Pseq([Rest(0.4375), 1.75, Rest(0.4375), 0.875/**/, Rest(2.1875), 0.4375, Rest(0.875)], inf),
-	\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+	\amp, 0.36 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
 	\pan, 0,
 	\curve, -10.92,
 	\t1freq, 64.6,
@@ -3646,6 +3646,44 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 		});
 		0;
 }));
+
+~song7Pattern8 = Pbind(
+	\instrument, \cymnew,
+	\dur, Pseq([Rest(0.21875), 0.109375, 0.21875, Rest(0.109375), 0.21875/**/, Rest(0.109375), 0.21875, 0.21875, Rest(0.109375), 0.21875], inf),
+	\amp, Pseq([0.12, 0.07, 0.11, 0.03, 0.07, 0.11, 0.12, 0.03], inf) * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+	\pan, Pwhite(-0.25, 0.25, inf),
+	\att, 0,
+	\rel, 0.33,
+	\curve, Pseq([-5.02, -2.52, -5.02, -10, -2], inf), // -5.02,
+	\tu, 4.81,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~cymnewSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"t_trig", ["none"],
+					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
+					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
+					"att", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"curve", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve)), true],
+					"tu", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\tu)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
 
 ///////////////////// test pattern
 
