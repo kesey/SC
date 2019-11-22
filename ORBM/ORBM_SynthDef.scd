@@ -1848,7 +1848,18 @@ SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, r
 ~cymnewSynthDef = SynthDef(\cymnew, { arg out = 0, amp = 0.2, pan = 0, att = 0, rel = 4, curve = (-8), tu = 6, t_trig = 1, doneAction = 2;
     var sig;
     var env = EnvGen.ar(Env.perc(att,rel,1,curve), t_trig, doneAction: doneAction);
-    var freqs = geom(99,40,pi/3)*10.234567*tu;
+	var freqs = geom(99,40,pi/3)*10.234567*tu;
+	sig = WhiteNoise.ar(0.2);
+    sig = Ringz.ar(sig,freqs,1).mean;
+
+    sig = Pan2.ar(sig*env, pan);
+    OffsetOut.ar(out, sig * amp);
+}).add;
+
+~cymnew1SynthDef = SynthDef(\cymnew1, { arg out = 0, amp = 0.2, pan = 0, envL1 = 0, envL2 = 1, envL3 = 0.4, envL4 = 0, envT1 = 0.12, envT2 = 0.02, envT3 = 0.23, curve = (-8), tu = 6, t_trig = 1, doneAction = 2;
+    var sig;
+	var env = EnvGen.kr(Env([envL1, envL2, envL3, envL4], [envT1, envT2, envT3], curve), t_trig, doneAction: doneAction);
+	var freqs = geom(99,40,pi/3)*10.234567*tu;
 	sig = WhiteNoise.ar(0.2);
     sig = Ringz.ar(sig,freqs,1).mean;
 

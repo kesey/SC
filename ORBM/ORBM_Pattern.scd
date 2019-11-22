@@ -3180,7 +3180,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
-///////////////////// song6
+///////////////////// song7
 
 ~song7Pattern1 = Pbind(
 	\instrument, \snaremed,
@@ -3648,14 +3648,19 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 }));
 
 ~song7Pattern8 = Pbind(
-	\instrument, \cymnew,
-	\dur, Pseq([Rest(0.21875), 0.109375, 0.21875, Rest(0.109375), 0.21875/**/, Rest(0.109375), 0.21875, 0.21875, Rest(0.109375), 0.21875], inf),
-	\amp, Pseq([0.12, 0.07, 0.11, 0.03, 0.07, 0.11, 0.12, 0.03], inf) * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+	\instrument, \cymnew1,
+	\dur, Pseq([Rest(0.21875), 0.109375, 0.21875, Rest(0.109375), 0.21875/**/, Rest(0.109375), 0.21875, Rest(0.21875), 0.109375, Rest(0.21875)], inf),
+	\amp, Pseq([0.09, 0.04, 0.08, 0.01, 0.04, 0.08, 0.09, 0.01], inf) * Pfunc({ 1 - ~muteState.at(~pdefName)}),
 	\pan, Pwhite(-0.25, 0.25, inf),
-	\att, 0,
-	\rel, 0.33,
-	\curve, Pseq([-5.02, -2.52, -5.02, -10, -2], inf), // -5.02,
-	\tu, 4.81,
+	\envL1, 1.9,
+	\envL2, 0,
+	\envL3, 0.7,
+	\envL4, 0,
+	\envT1, 0.17,
+	\envT2, 0.04,
+	\envT3, 0.16,
+	\curve, Pseq([-5.02, -2.46, -5.02, -10, -2], inf),
+	\tu, 4.85,
 	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
@@ -3668,14 +3673,19 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 			midiChan = ~pdefMidiChan.asInt;
 			{
 				~removePrev.value(synthWindowKey);
-				~autoGui.value(v, ~cymnewSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+				~autoGui.value(v, ~cymnew1SynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
 					"doneAction", ["none"],
 					"t_trig", ["none"],
 					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
 					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
-					"att", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
-					"rel", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
-					"curve", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve)), true],
+					"envL1", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\envL1)), true],
+					"envL2", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\envL2)), true],
+					"envL3", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\envL3)), true],
+					"envL4", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\envL4)), true],
+					"envT1", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT1)), true],
+					"envT2", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT2)), true],
+					"envT3", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT3)), true],
+					"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve)), true],
 					"tu", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\tu)), true]
 				]));
 			}.defer;
