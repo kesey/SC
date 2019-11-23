@@ -3544,7 +3544,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\cfreq, 2381.8,
 	\crq, 1,
 	\camp, 1.41,
-	\out, ~channelBus[1],
+	\out, ~channelBus[0],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
