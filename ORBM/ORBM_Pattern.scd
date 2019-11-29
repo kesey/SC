@@ -3257,7 +3257,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song7Pattern2 = Pbind(
 	\instrument, \kickBlocks,
-	\dur, Pseq([Rest(0.4375), 1.75, Rest(0.4375), 0.875/**/, Rest(2.1875), 0.4375, Rest(0.875)], inf),
+	\dur, Pseq([Rest(0.75), 1, Rest(1.25), 0.5], inf),// Pseq([Rest(0.4375), 1.75, Rest(0.4375), 0.875/**/, Rest(2.1875), 0.4375, Rest(0.875)], inf),
 	\amp, 0.36 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
 	\pan, 0,
 	\curve, -10.92,

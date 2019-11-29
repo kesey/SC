@@ -523,11 +523,11 @@ v.canvas.layout = VLayout();
 	~autoGui.value(v, ~sinBassSynthDef, ~sinBass, 94, 0, Color.new255(238, 230, 133), Dictionary.newFrom(
 		List[
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],
-			"amp", ["slider", ControlSpec(0, 10, step: 0.01, default: 1.34), true],
+			"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: 1.34), true],
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
 			"loopNode", ["knob", ControlSpec(0, 4, step: 1, default: 0), true],
-			"attack", ["knob", ControlSpec(0, 10, step: 0.01, default: 0.2), true],
-			"release", ["knob", ControlSpec(0, 10, step: 0.01, default: 4), true],
+			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.2), true],
+			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 4), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), true],
 			"envLevel1", ["knob", ControlSpec(0, 80, step: 0.1, default: 0), true],
 			"envLevel2", ["knob", ControlSpec(0, 80, step: 0.1, default: 40), true],

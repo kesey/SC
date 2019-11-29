@@ -1672,15 +1672,54 @@
 	~song7Part1 = {
 		"song7 part1".postln;
 		~song7InitPart.value;
-		14.0.wait;
+		28.0.wait;
 	};
 
 	~song7Part2 = {
 		"song7 part2".postln;
 		~song7InitPart.value;
-		Pdefn(\patt1_4_dur, Pseq([0.125, 0.5, 0.25, 0.25, Rest(0.125)/**/, 0.375, 0.25, 0.25, 0.125, 0.25/**/, 0.125, 0.5, Rest(0.25), 0.25, 0.125/**/, 0.375, 0.25, 0.25, 0.125, 0.25], inf)).quant_(~globalQuant);
-		Pbindef(\unit4, \dur, Pseq([Rest(0.5), 1, 0.25, Rest(1), 0.75, 1, Rest(0.5)/**/, 1, Rest(1), 0.75, 1, Rest(0.75), 0.5], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_4_dur, Pseq([1.75, 0.5, 2, 1.25, 1.5/**/, 1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2, \dur, Pseq([Pn(Pseq([Rest(0.75), 1, Rest(1.25), 0.5]), 3)/**/, Rest(0.75), 1.75, 0.5, Rest(0.5)], inf)).quant_(~globalQuant);
+		14.0.wait;
+	};
+
+	~song7Part3 = {
+		"song7 part3".postln;
+		~song7InitPart.value;
+		Pdefn(\patt1_4_dur, Pseq([1.75, 0.5, 2, 1.25, 1.5/**/, 0.5, 1.75, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2, \dur, Pseq([Rest(0.75), 1, Rest(1.25), 0.5, /**/Rest(0.75), 1, Rest(0.5), 1.25], inf)).quant_(~globalQuant);
+		14.0.wait;
+	};
+
+	~song7Part4 = {
+		"song7 part4".postln;
+		~song7InitPart.value;
+		// Pdefn(\patt1_4_dur, Pseq([0.5, 1.75, 2, 1.25, 1.5/**/, 1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant); // ?
+		Pbindef(\unit6, \dur, Pseq([0.875, 3.5, Rest(0.875), 1.75/**/, Rest(0.875), 2.625, 1.5, 0.25, Rest(1.75)], inf)).quant_(~globalQuant);
 		28.0.wait;
+	};
+
+	~song7Part5 = {
+		"song7 part5".postln;
+		~song7InitPart.value;
+		Pbindef(\unit1,
+			\decEnv0, 0.1,
+			\relEnv0, 0.03,
+			\owhich2, 3
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_4_dur, Pseq([1.75, 0.5, 2, 1.25, 1.5/**/, 1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([Pn(Pseq([Rest(0.75), 1, Rest(1.25), 0.5]), 3)/**/, Rest(0.75), 1.75, 0.5, Rest(0.5)]/2, inf),
+			\h1glide, 0.33,
+			\h1rq, 0.4,
+			\h1curve, -1.08,
+			\amp, 0.22 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		Pbindef(\unit5, \levBiasBpf, 57.4).quant_(~globalQuant);
+		~resetControlBus.value("unit5levBiasBpf");
+		56.0.wait;
 	};
 
 	// Synth + Fx Preset
@@ -1770,11 +1809,11 @@
 
 	loop {
 		~song7Part1.value;
-		/*~song7Part2.value;
+		~song7Part2.value;
 		~song7Part3.value;
 		~song7Part4.value;
 		~song7Part5.value;
-		~song7Part6.value;
+		/*~song7Part6.value;
 		~song7Part7.value;
 		~song7Part8.value;*/
 	}
