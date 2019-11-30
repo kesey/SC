@@ -171,22 +171,6 @@ SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5,
 	//XOut.ar(out, drywet, effect);
 }).add;
 
-SynthDef(\awdistortion, {arg in = 0, out = 0, gate = 1;
-	var source = In.ar(in,2);
-	var env = Linen.kr(gate, 0.0, 1, 0.1, 2);
-	var abs, excess,output;
-
-	abs = source.abs;
-
-	excess = (abs-0.1).max(0.0).min(0.9)/0.9;
-
-	//original plus sinusoidal perturbation of amount based on absolute amplitude
-	output = source+(excess*(sin(excess*2pi*5)*0.5-0.5));
-
-	XOut.ar(out,env,output*env);
-
-}).add;
-
 SynthDef(\ladspaDist, { arg in = 0, out = 0, drywet = -0.5, envTime = 0.001, knee = 0;
 	var input, sig;
 	input = InFeedback(in, 2);

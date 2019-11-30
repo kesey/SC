@@ -3645,7 +3645,8 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 			~pdefPrevInstr = currentInstr;
 		});
 		0;
-}));
+	})
+);
 
 ~song7Pattern8 = Pbind(
 	\instrument, \cymnew1,

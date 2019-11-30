@@ -1694,7 +1694,6 @@
 	~song7Part4 = {
 		"song7 part4".postln;
 		~song7InitPart.value;
-		// Pdefn(\patt1_4_dur, Pseq([0.5, 1.75, 2, 1.25, 1.5/**/, 1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant); // ?
 		Pbindef(\unit6, \dur, Pseq([0.875, 3.5, Rest(0.875), 1.75/**/, Rest(0.875), 2.625, 1.5, 0.25, Rest(1.75)], inf)).quant_(~globalQuant);
 		28.0.wait;
 	};
@@ -1719,6 +1718,99 @@
 		~resetControlBus.value("unit2");
 		Pbindef(\unit5, \levBiasBpf, 57.4).quant_(~globalQuant);
 		~resetControlBus.value("unit5levBiasBpf");
+		Pbindef(\unit7, \dur, 1).quant_(~globalQuant);
+		56.0.wait;
+	};
+
+	~song7Part6 = {
+		"song7 part6".postln;
+		~song7InitPart.value;
+		Pbindef(\unit1,
+			\env1L2, Pseq([220, 43]-0.03, inf),
+			\decEnv0, Pwhite(0.1, 0.83),
+			\relEnv0, Pseq([0.02, 0.79, 0.46, 0.2], inf),
+			\owhich2, 3
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pbindef(\unit5, \levBiasBpf, 57.4).quant_(~globalQuant);
+		~resetControlBus.value("unit5levBiasBpf");
+		Pbindef(\unit6, \dur, Pseq([0.875, 3.5, Rest(0.875), 1.75/**/, Rest(0.875), 2.625, 1.5, 0.25, Rest(1.75)], inf)).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([Rest(0.21875), 0.109375, 0.21875, Rest(0.109375), 0.21875/**/, Rest(0.109375), 0.21875, Rest(0.21875), 0.109375, Rest(0.21875)]*2, inf)
+		).quant_(~globalQuant);
+		28.0.wait;
+	};
+
+	~song7Part7 = {
+		"song7 part7".postln;
+		~song7InitPart.value;
+		Pbindef(\unit1,
+			\env1L2, Pseq([220, 43]-0.03, inf),
+			\decEnv0, Pwhite(0.1, 0.3),
+			\relEnv0, Pseq([0.02, 0.46, 0.2, 0.79], inf),
+			\owhich2, 3
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pbindef(\unit2,
+			\dur, Pseq([Pn(Pseq([Rest(0.75), 1, Rest(1.25), 0.5]), 3)/**/, Rest(0.75), 1.75, 0.5, Rest(0.5)], inf),
+			\t2freq, 228.9,
+			\t2rel, 0.22,
+			\t2amp, 0.5,
+			\h1freq, 2246.8,
+			\h1harmonic, 118,
+			\h1rq, 0.1,
+			\h1rel, 0.03,
+			\h1curve, -8.15,
+			\amp, 0.22 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		Pbindef(\unit4,
+			\phRate, Pseq([665.4, 331], inf),
+			\inAmt, 0.9,
+			\coef2, Pseq([0.99, 0.98, 0.97, 0.99, 0.97], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value(#["tweetKickIntunit4phRate", "tweetKickIntunit4inAmt", "tweetKickIntunit4coef2"]);
+		Pbindef(\unit6, \dur, Pseq([0.875, 3.5, Rest(0.875), 1.75/**/, Rest(0.875), 2.625, 1.5, 0.25, Rest(1.75)], inf)).quant_(~globalQuant);
+		Pbindef(\unit7, \dur, 1).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([Rest(0.21875), 0.109375, 0.21875, Rest(0.109375), 0.21875/**/, Rest(0.109375), 0.21875, Rest(0.21875), 0.109375, Rest(0.21875)]*2, inf)
+		).quant_(~globalQuant);
+		56.0.wait;
+	};
+
+	~song7Part8 = {
+		"song7 part8".postln;
+		~song7InitPart.value;
+		Pbindef(\unit1,
+			\env1L2, Pseq([220, 43]-0.03, inf),
+			\decEnv0, Pwhite(0.1, 0.3),
+			\relEnv0, Pseq([0.02, 0.46, 0.2, 0.79], inf),
+			\owhich2, 3
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_4_dur, Pseq([1.75, 0.5, 2, 1.25, 1.5/**/, 0.5, 1.75, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(0.75), 1, Rest(1.25), 0.5, /**/Rest(0.75), 1, Rest(0.5), 1.25], inf),
+			\t2freq, 228.9,
+			\t2rel, 0.22,
+			\t2amp, 0.5,
+			\h1freq, 2246.8,
+			\h1harmonic, 118,
+			\h1rq, 0.1,
+			\h1rel, 0.03,
+			\h1curve, -8.15,
+			\amp, 0.22 * Pfunc({ 1 - ~muteState.at(~pdefName)})
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		Pbindef(\unit4,
+			\phRate, Pseq([665.4, 331], inf),
+			\inAmt, 0.9,
+			\coef2, Pseq([0.99, 0.98, 0.97, 0.99, 0.97], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value(#["tweetKickIntunit4phRate", "tweetKickIntunit4inAmt", "tweetKickIntunit4coef2"]);
+		Pbindef(\unit5, \levBiasBpf, 57.4).quant_(~globalQuant);
+		~resetControlBus.value("unit5levBiasBpf");
+		Pbindef(\unit7, \dur, Pseq([Pn(0.5, 4), Pn(1, 5)], inf)).quant_(~globalQuant);
 		56.0.wait;
 	};
 
@@ -1813,9 +1905,9 @@
 		~song7Part3.value;
 		~song7Part4.value;
 		~song7Part5.value;
-		/*~song7Part6.value;
+		~song7Part6.value;
 		~song7Part7.value;
-		~song7Part8.value;*/
+		~song7Part8.value;
 	}
 };
 

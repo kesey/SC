@@ -131,7 +131,7 @@ s.waitForBoot({
 			);
 		});
 
-		p = Ppar(~listUnits.value(~sequencer), inf); // all units in parallel and in separate group with Pbus (usefull for Pfx Pattern)
+		p = Ppar(~listUnits.value(~sequencer), inf); // all units in parallel
 
 		this.executeFile(~path ++ "ORBM_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
 		s.sync;
@@ -148,11 +148,10 @@ s.waitForBoot({
 // UGen.browse; // another kind of documentation
 // Class.browse;
 // Help.gui; // open a dedicated help window
-
+// Filter.dumpSubclassList; // <ClassName>.dumpSubClassList post all the class whose inherit from ClassName
 
 // if you are posting a long list you might not get the whole list using .postln;
 // for that use the following:
-
 // Post << ~firstTime
 
 )
