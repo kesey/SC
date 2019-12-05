@@ -3696,6 +3696,107 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
+///////////////////// song8
+
+~song8Pattern1 = Pbind(
+	\instrument, \mutantFric,
+	\dur, Pseq([2, 1, 0.5, 1], inf),
+	\amp, 0.5 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+	\attack, 0.01,
+	\release, 0.02,
+	\spec1, Pseq([0.00001, 0.01, 0, 0.01], inf),
+	\spec2, 0.2,
+	\noiseFreq, 5,
+	\sigFreq, 35,
+	\spring, 0.87,
+	\damp, 7.58,
+	\beltmass, 8.95,
+	\source, 0,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~mutantFricSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"gate", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
+					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true],
+					"spec1", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\spec1)), true],
+					"spec2", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\spec2)), true],
+					"noiseFreq", ["knob", ControlSpec(0, 100, step: 0.1, default: event.at(\noiseFreq)), true],
+					"sigFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\sigFreq)), true],
+					"spring", ["knob", ControlSpec(0, 1.15, step: 0.01, default: event.at(\spring)), true],
+					"damp", ["knob", ControlSpec(0, 200, step: 0.01, default: event.at(\damp)), true],
+					"beltmass", ["knob", ControlSpec(0, 100, step: 0.01, default: event.at(\beltmass)), true],
+					"source", ["knob", ControlSpec(0, 5, step: 1, default: event.at(\source)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
+~song8Pattern7 = Pbind(
+	\instrument, \impn,
+	\dur, Pseq([1, 2, 1.5], inf),
+	\amp, 1.22 * Pfunc({ 1 - ~muteState.at(~pdefName)}),
+	\pan, 0,
+	\att, 0.001,
+	\rel, 0.1,
+	\curve, -5,
+	\impRate, 0,
+	\kfreq, 1,
+	\kdec, 0.55,
+	\tu, 162.45,
+	\freq, 12585,
+	\bwr, 0.26,
+	\delTime, 0.25,
+	\decTime, 1.58,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~impnSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve)), true],
+					"impRate", ["knob", ControlSpec(0, 2000, step: 1, default: event.at(\impRate)), true],
+					"kfreq", ["knob", ControlSpec(0, 20000, step: 0.01, default: event.at(\kfreq)), true],
+					"kdec", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\kdec)), true],
+					"tu", ["knob", ControlSpec(0, 20000, step: 0.01, default: event.at(\tu)), true],
+					"freq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freq)), true],
+					"bwr", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\bwr)), true],
+					"delTime", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\delTime)), true],
+					"decTime", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\decTime)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
 ///////////////////// test pattern
 
 ~pattern1 = Pbind(

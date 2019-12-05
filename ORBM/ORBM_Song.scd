@@ -1911,4 +1911,136 @@
 	}
 };
 
+
+
+~song8 = {// ~globalQuant = 9; // !!! change globalQuant before song !!!
+	t.tempo = 212 / 60;
+	t.beatsPerBar = 9;
+
+	// Part
+
+	~song8InitPart = {
+		~changePattern.value(Pdef(\unit1), ~song8Pattern1);
+		~changePattern.value(Pdef(\unit2), ~song8Pattern2);
+		~changePattern.value(Pdef(\unit3), ~song8Pattern3);
+		~changePattern.value(Pdef(\unit4), ~song8Pattern4);
+		~changePattern.value(Pdef(\unit5), ~song8Pattern5);
+		~changePattern.value(Pdef(\unit6), ~song8Pattern6);
+		~changePattern.value(Pdef(\unit7), ~song8Pattern7);
+		~changePattern.value(Pdef(\unit8), ~song8Pattern8);
+		Pdefn(\patt1_4_dur, Pseq([1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
+		~resetAllControlBus.value;
+	};
+
+	~song8Part1 = {
+		"song8 part1".postln;
+		~song8InitPart.value;
+		18.0.wait;
+	};
+
+	~song8Part2 = {
+		"song8 part2".postln;
+		~song8InitPart.value;
+		Pdefn(\patt1_4_dur, Pseq([1.75, 0.5, 2, 1.25, 1.5/**/, 1, 1.25, 2, 1.25, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2, \dur, Pseq([Pn(Pseq([Rest(0.75), 1, Rest(1.25), 0.5]), 3)/**/, Rest(0.75), 1.75, 0.5, Rest(0.5)], inf)).quant_(~globalQuant);
+		18.0.wait;
+	};
+
+	// Synth + Fx Preset
+
+	{
+		// Synth
+
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.08);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(0.11);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(3.16);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "curve").valueAction_(-4);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(59);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(1);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
+
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.8);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "loopNode").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(80);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(20.9);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(40);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(40);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.01);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.75);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.01);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.91);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0.19);
+
+		// aux 1
+
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.79);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.04);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.67);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "nType5Chaos").valueAction_(1.49);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(1.15);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impSource").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(3.76);
+
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
+
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.02);
+
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.24);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "gain").valueAction_(32.3);
+
+		// aux 2
+
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.5);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
+
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(1);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(2.14);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.53);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(1);
+
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(0.15);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(0);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.69);
+
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.38);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(0.81);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.75);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
+
+		~channel.at(\level2).valueAction_(0.17);
+	}.defer;
+
+	~songInit.value;
+
+	loop {
+		~song8Part1.value;
+		/*~song8Part2.value;
+		~song8Part3.value;
+		~song8Part4.value;
+		~song8Part5.value;
+		~song8Part6.value;
+		~song8Part7.value;
+		~song8Part8.value;*/
+	}
+};
+
 )

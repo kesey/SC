@@ -2230,12 +2230,20 @@ SynthDef(\res, { | out=0 pan=0 freq=40 fltBus t_gate=1 doneAction=2|
 	OffsetOut.ar(out, Pan2.ar(flt, pan));
 }).add;
 
-SynthDef(\mutantFric, { arg out = 0, amp = 1, spec1 = 0.00001, spec2 = 0.03, noiseFreq = 3, attack = 0.01, release = 1, gate = 1, doneAction = 2;
+~mutantFricSynthDef = SynthDef(\mutantFric, { arg out = 0, amp = 1, attack = 0.01, release = 1, spec1 = 0.00001, spec2 = 0.03, noiseFreq = 3, sigFreq = 50, spring = 0.414, damp = 0.313, beltmass = 1, source = 0, gate = 1, doneAction = 2;
 	var friction, sig;
 	friction = Array.fill(5, {
 		[spec1.max(0.00001), spec2.max(0.03)].asSpec.map(LFNoise2.kr(noiseFreq))
 	});
-	sig = Friction.ar(LFTri.ar(50), friction: friction, mass: friction*30000);
+	sig = Select.ar(source, [
+		LFTri.ar(sigFreq),
+		LFPar.ar(sigFreq),
+		LFCub.ar(sigFreq),
+		LFSaw.ar(sigFreq),
+		LFDNoise3.ar(sigFreq),
+		LFDNoise0.ar(sigFreq)
+	]);
+	sig = Friction.ar(sig, friction, Lag2.kr(spring), damp, friction*30000, beltmass);
 	sig = sig * EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
 	OffsetOut.ar(out, Splay.ar(sig * amp));
 }).add;
@@ -2289,7 +2297,7 @@ SynthDef(\tweetErosion, { arg out = 0, amp = 1, attack = 0.01, release = 10, fee
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\harshTexture, { arg out = 0, amp = 1, impFreq = 2, delTimeMod = 2, attack = 0.01, release = 10, t_trig = 1, doneAction = 2;
+SynthDef(\harshTexture, { arg out = 0, amp = 1, impFreq = 2, delTimeMod = 0.5, attack = 0.01, release = 10, t_trig = 1, doneAction = 2;
 	var sig, env;
 	//env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
 	env = Linen.kr(t_trig, attack, 1, release, doneAction);
@@ -2309,22 +2317,22 @@ SynthDef(\harshTexture, { arg out = 0, amp = 1, impFreq = 2, delTimeMod = 2, att
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\ultraHiSummer, { arg out = 0, amp = 1, t_trig = 1, attack = 0.01, release = 10, doneAction = 2;
+SynthDef(\ultraHiSummer, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release = 10, blpFreq1 = 16e3, blpFreq2 = 16150, seqRate = 0.2, seqVal1 = 70, seqVal2 = 30, seqVal3 = 0, t_trig = 1, doneAction = 2;
 	var sig, env;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
 	sig = Blip.ar(
-		[16e3,16150],
+		[blpFreq1, blpFreq2],
 		2,
-		LFTri.ar(
+		LFSaw.ar(
 			Duty.ar(
-				LFNoise0.ar(0.2,4,6),
+				LFNoise0.ar(seqRate,4,6),
 				0,
-				Dseq([70,30,0],inf)
+				Dseq([seqVal1, seqVal2, seqVal3], inf)
 			)
-		).clip(0,1)
+		).clip(0, 1)
 	);
-	sig = sig * env;
-	OffsetOut.ar(out, sig * amp);
+	sig = (sig[0] + sig[1]) * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
 SynthDef(\ambiantPic, { arg out = 0, amp = 1, lfnFreq = 22, attack = 0.01, release = 10, delTime1 = 0.13, delTime2 = 0.1, decTime = 0.2, t_trig = 1, doneAction = 2;
@@ -2602,10 +2610,21 @@ SynthDef(\werkit2, { arg out = 0, amp = 0.1, att = 0.01, dec = 0, sus = 1, rel =
 	OffsetOut.ar(out, snd);
 }).add;
 
-~impnSynthDef = SynthDef(\impn,{ arg out = 0, amp=0.75, pan = 0, att = 0.001, rel = 0.1, curve = (-5), impRate = 10, delTime = 0.25, decTime = 1, doneAction = 2;
-	var env, sig, snare;
+~impnSynthDef = SynthDef(\impn,{ arg out = 0, amp=0.75, pan = 0, att = 0.001, rel = 0.1, curve = (-5), impRate = 10, kfreq = 1, kdec = 1, tu = 1, freq = 10327, bwr = 1, delTime = 0.25, decTime = 1, doneAction = 2;
+	var env, sig;
 	env = EnvGen.kr(Env.linen(att, 1, rel, 1, curve), doneAction: doneAction);
 	sig = Impulse.ar(impRate);
+	sig = DynKlank.ar(
+		Ref.new([
+			[1, 2, 2.803, 3.871, 5.074, 7.81, 10.948, 14.421] * tu,   // harmonics
+			[1, 0.044, 0.891, 0.0891, 0.794, 0.1, 0.281, 0.079], // amplitudes
+			[1, 0.205, 1, 0.196, 0.339, 0.047, 0.058, 0.047]     // ring times
+		]),
+		sig,
+		kfreq,
+		decayscale: kdec
+	);
+	sig = Resonz.ar(sig, freq, bwr);
 	sig = CombL.ar(sig, 6, delTime, decTime);
 	sig = sig * env;
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
