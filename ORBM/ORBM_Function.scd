@@ -169,13 +169,21 @@
 };
 
 ~pdefUpdate = { arg controlId, instance, controlNameSymb, value;
-	if (~firstTime.at(controlId), {
-		~controlBus.put(controlId, Bus.control(s, 1).set(value));
-		Pbindef(instance, controlNameSymb, ~controlBus.at(controlId).asMap).quant_(~globalQuant);
-		~firstTime.put(controlId, false);
+	var exception;
+	exception = [\amp, \amplitude, \vol, \volume, \level];
+
+	if (exception.includesEqual(controlNameSymb), {
+		Pbindef(instance, controlNameSymb, value * Pfunc({ 1 - ~muteState.at(instance); })).quant_(~globalQuant);
 	}, {
-		~controlBus.at(controlId).set(value);
+		if (~firstTime.at(controlId), {
+			~controlBus.put(controlId, Bus.control(s, 1).set(value));
+			Pbindef(instance, controlNameSymb, ~controlBus.at(controlId).asMap).quant_(~globalQuant);
+			~firstTime.put(controlId, false);
+		}, {
+			~controlBus.at(controlId).set(value);
+		});
 	});
+
 };
 
 // automatic GUI creation and midi mapping

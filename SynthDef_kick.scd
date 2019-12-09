@@ -345,7 +345,7 @@ SynthDef(\kick_808b, {arg out = 0, freq1 = 240, freq2 = 60, amp = 1, ringTime = 
 //https://github.com/brunoruviaro/SynthDefs-for-Patterns/blob/master/kick808.scd
 }).add;
 
-SynthDef(\SOSkick,
+SynthDef(\SOSkick1,
 	{ arg out = 0, freq = 50, mod_freq = 5, mod_index = 5, sustain = 0.4, amp = 0.8, beater_noise_level = 0.025;
 		var pitch_contour, drum_osc, drum_lpf, drum_env;
 		var beater_source, beater_hpf, beater_lpf, lpf_cutoff_contour, beater_env;
