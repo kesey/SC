@@ -1932,7 +1932,7 @@
 		~changePattern.value(Pdef(\unit3), ~song8Pattern3);
 		~changePattern.value(Pdef(\unit4), ~song8Pattern4);
 		~changePattern.value(Pdef(\unit5), ~song8Pattern5);
-		// ~changePattern.value(Pdef(\unit6), ~song8Pattern6);
+		~changePattern.value(Pdef(\unit6), ~song8Pattern6);
 		~changePattern.value(Pdef(\unit7), ~song8Pattern7);
 		~changePattern.value(Pdef(\unit8), ~song8Pattern8);
 		Pdefn(\patt3_4_dur, Pseq([1, 2, 1.5, 1, 1.5, 2], inf)).quant_(~globalQuant);

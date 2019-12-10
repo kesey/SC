@@ -979,7 +979,7 @@ SynthDef(\kicky,{ arg out = 0, startFreq=80, endFreq=15, decay=4, lowpass=800, a
 	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
-SynthDef(\kickey,{ arg out = 0, att = 0.0014, rel = 0.8, curve = (-5), startFreq=60, endFreq=10, decay=0.8, lowpass=500, amp=1, noiseAmp=0.00, gain=1, linedur=0.8, doneAction = 2;
+SynthDef(\kickey,{ arg out = 0, amp = 1, att = 0.0014, rel = 0.8, curve = (-5), startFreq = 60, endFreq = 10, decay = 0.8, lowpass = 500, noiseAmp = 0.00, gain = 1, linedur = 0.8, doneAction = 2;
 	var sig, env, freq;
 	freq = XLine.kr(startFreq, endFreq, linedur, 1, 0);
 	env = EnvGen.kr(Env.perc(att, rel, 1, curve), 1, doneAction: doneAction);
@@ -1188,26 +1188,35 @@ SynthDef(\kik3Br, { arg out = 0, amp = 1, pan = 0, freq = 66, att = 0.01, dec = 
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-~sosKickSynthDef = SynthDef(\sosKick, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 1, drumAmp = 1, beaterAmp = 0.02, clickAmp = 1,
-	// drum Controls
+~sosKickSynthDef = SynthDef(\sosKick, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 1, subamp = 1, drumAmp = 1, beaterAmp = 0.02, clickAmp = 1,
+	// sub controls
+	startsubfreq = 60, endsubfreq = 32, linesubdur = 0.08, subdecay = 0.2, sublowpass = 500,
+	// drum controls
 	drumFreq = 50, drumHarmonic = 2, drumSweep = 0.02, drumAtt = 0.005, drumRel = 0.4, curve = (-4),
 	drumFilter = 1000, modIndex = 6.5, modFreq = 5,
-	// beater Controls
+	// beater controls
 	beaterFreq = 500, beaterHarmonic = 12, beaterSweep = 0.03, noiseMod = 500, beaterL1 = 0, beaterL2 = 1, beaterL3 = 2.4, beaterL4 = 0, beaterT1 = 0.01, beaterT2 = 0.3, beaterT3 = 0.08,
 	// click controls
 	clkffreq = 500, clkres = 0,
 	t_trig = 1, doneAction = 2;
 
-	var drumEnv, drumContour, drum, beaterContour, beaterEnv, beater, snd, click, envClick;
+	var subfreq, sub, drumEnv, drumContour, drum, beaterContour, beaterEnv, beater, snd, click, envClick;
 
-	drumEnv = Env.perc(attackTime: drumAtt, releaseTime: drumRel, level: drumAmp, curve: curve).kr;
+	subfreq = XLine.kr(startsubfreq, endsubfreq, linesubdur, 1, 0);
+
+	sub = LPF.ar(Ringz.ar(Impulse.ar(0), subfreq, subdecay), sublowpass) * subamp;
+
+	drumEnv = Env.perc(attackTime: drumAtt, releaseTime: drumRel, curve: curve).kr;
+
+	sub = sub * drumEnv;
 
 	drumContour = Line.kr(start: drumFreq * drumHarmonic, end: drumFreq, dur: drumSweep);
 
 	drum = PMOsc.ar(
 		carfreq: drumContour,
 		modfreq: modFreq,
-		pmindex: modIndex
+		pmindex: modIndex,
+		mul: drumAmp
 	);
 
 	drum = LPF.ar(in: drum, freq: Lag2.kr(drumFilter), mul: drumEnv);
@@ -1224,7 +1233,7 @@ SynthDef(\kik3Br, { arg out = 0, amp = 1, pan = 0, freq = 66, att = 0.01, dec = 
 	click = Hasher.ar(Sweep.ar(t_trig, 0.000001)) * envClick;
 	click = MoogLadder.ar(click, clkffreq, clkres) * EnvGen.kr(Env.perc(0.0001, 0.00001), t_trig, clickAmp);
 
-	snd = Mix.ar(drum + beater + click) * amp;
+	snd = Mix.ar(sub + drum + beater + click) * amp;
 
 	snd = snd * EnvGen.kr(Env.asr(att, 1, rel), t_trig, doneAction: doneAction);
     //DetectSilence.ar(in: snd, doneAction: doneAction);
