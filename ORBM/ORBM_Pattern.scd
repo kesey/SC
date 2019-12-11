@@ -3700,7 +3700,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song8Pattern1 = Pbind(
 	\instrument, \mutantFric,
-	\dur, Pseq([2, 1, 0.5, 1], inf),
+	\dur, Pdefn(\patt1_5_dur),
 	\amp, 0.5 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\attack, 0.01,
 	\release, 0.02,
@@ -3740,6 +3740,74 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"beltmass", ["knob", ControlSpec(0, 100, step: 0.01, default: event.at(\beltmass)), true],
 					"source", ["knob", ControlSpec(0, 5, step: 1, default: event.at(\source)), true],
 					"hpfFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\hpfFreq)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
+~song8Pattern2 = Pbind(
+	\instrument, \kickMist,
+	\dur, Pseq([Pn(Pseq([Rest(0.5), 2, 2]), 3), 0.5, Rest(2), 2], inf),
+	\level, 0.3 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\pan, 0,
+	\tu, 0.58,
+	\noise, 0,
+	\env0L1, 0.48,
+	\env0L2, 0.14,
+	\env0L3, 0.56,
+	\env0L4, 0,
+	\env0T1, 0.37,
+	\env0T2, 0, // 0.07,
+	\env0T3, 0,
+	\curve0_1, -16.13,
+	\curve0_2, 6.34,
+	\curve0_3, 6.85,
+	\env1L1, 313.01,
+	\env1L2, 54.31,
+	\env1L3, 0,
+	\env1T1, 0,
+	\env1T2, 1.36,
+	\curve1_1, 1.26,
+	\curve1_2, 0.86,
+	\pan, 0,
+	\out, ~channelBus[0],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~kickMistSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"level", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\level)), true],
+					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
+					"tu", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\level)), true],
+					"noise", ["knob", ControlSpec(0, 20, step: 0.01, default: event.at(\noise)), true],
+					"env0L1", ["knob", ControlSpec(0, 400, step: 0.01, default: event.at(\env0L1)), true],
+					"env0L2", ["knob", ControlSpec(0, 400, step: 0.01, default: event.at(\env0L2)), true],
+					"env0L3", ["knob", ControlSpec(0, 400, step: 0.01, default: event.at(\env0L3)), true],
+					"env0L4", ["knob", ControlSpec(0, 400, step: 0.01, default: event.at(\env0L4)), true],
+					"env0T1", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\env0T1)), true],
+					"env0T2", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\env0T2)), true],
+					"env0T3", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\env0T3)), true],
+					"curve0_1", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve0_1)), true],
+					"curve0_2", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve0_2)), true],
+					"curve0_3", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve0_3)), true],
+					"env1L1", ["knob", ControlSpec(0, 2000, step: 0.01, default: event.at(\env1L1)), true],
+					"env1L2", ["knob", ControlSpec(0, 2000, step: 0.01, default: event.at(\env1L2)), true],
+					"env1L3", ["knob", ControlSpec(0, 2000, step: 0.01, default: event.at(\env1L3)), true],
+					"env1T1", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\env0T1)), true],
+					"env1T2", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\env0T2)), true],
+					"curve1_1", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve1_1)), true],
+					"curve1_2", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\curve1_2)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -3861,7 +3929,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song8Pattern5 = Pbind(
 	\instrument, \sosKick,
-	\dur, Pseq([2, 1, 0.5, 1/**/, 1.5, 1, Rest(0.5), 1, 0.5], inf),
+	\dur, Pdefn(\patt1_5_dur),
 	\amp, 0.35 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, 0,
 	\att, 0.01,
@@ -3955,24 +4023,30 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
-~song8Pattern7 = Pbind(
-	\instrument, \kick3Aw,
-	\dur, Pseq([Rest(0.5), 2, 0.5, Rest(0.5), 1], inf),
-	\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-	\pan, Pwhite(-0.8, 0.8),
-	\envL1, 0,
-	\envL2, 2.21,
-	\envL3, 0,
-	\envL4, 5,
+~song8Pattern6 = Pbind(
+	\instrument, \oneclapThorBr,
+	\dur, Pseq([Rest(1.25), 3.25, Rest(2), 2.5], inf),
+	\amp, 0.04 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\pan, 0,
 	\attack, 0,
-	\decay, 0.3,
-	\release, 0.14,
-	\punch, 0.37,
-	\envfLev1, 369,
-	\envfLev2, 16475,
-	\enfTime, 0.01,
-	\envfCurve, -9.47,
-	\out, ~channelBus[1],
+	\release, 5,
+	\att, 0.26,
+	\rel, 0.04, // 0.01,
+	\tone, 0.53,
+	\noiseAmp, 0.08,
+	\freq, 85,
+	\rq, 0.07,
+	\echohz1, 0, // 33.333,
+	\echohz2, 0, // 33.16,
+	\curve, -10,
+	\decay, 0, // 0.31,
+	\shelfFreq, 8060,
+	\rs, 0.45,
+	\db, 6,
+	\size, 0,
+	\mix, 0,
+	\damp, 0.5,
+	\out, ~channelBus[0],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
@@ -3984,22 +4058,28 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 			midiChan = ~pdefMidiChan.asInt;
 			{
 				~removePrev.value(synthWindowKey);
-				~autoGui.value(v, ~kick3AwSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+				~autoGui.value(v, ~oneclapThorBrSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
 					"doneAction", ["none"],
 					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
 					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
-					"envL1", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL1)), true],
-					"envL2", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL2)), true],
-					"envL3", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL3)), true],
-					"envL4", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL4)), true],
 					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
-					"decay", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\decay)), true],
 					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true],
-					"punch", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\punch)), true],
-					"envfLev1", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\envfLev1)), true],
-					"envfLev2", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\envfLev2)), true],
-					"enfTime", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\enfTime)), true],
-					"envfCurve", ["slider", ControlSpec(-10, 10, step: 0.01, default: event.at(\envfCurve)), true]
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"tone", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\tone)), true],
+					"noiseAmp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\noiseAmp)), true],
+					"freq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freq)), true],
+					"rq", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\rq)), true],
+					"echohz1", ["knob", ControlSpec(0, 100, step: 0.01, default: event.at(\echohz1)), true],
+					"echohz2", ["knob", ControlSpec(0, 100, step: 0.01, default: event.at(\echohz2)), true],
+					"curve", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve)), true],
+					"decay", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\decay)), true],
+					"shelfFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\shelfFreq)), true],
+					"rs", ["knob", ControlSpec(0.45, 10, step: 0.01, default: event.at(\rs)), true],
+					"db", ["knob", ControlSpec(-20, 20, step: 0.01, default: event.at(\db)), true],
+					"size", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\size)), true],
+					"mix", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\mix)), true],
+					"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\damp)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -4062,7 +4142,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song8Pattern7 = Pbind(
 	\instrument, \kick3Aw,
 	\dur, Pseq([Rest(0.5), 2, 0.5, Rest(0.5), 1], inf),
-	\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\amp, 0.07 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, Pwhite(-0.8, 0.8),
 	\envL1, 0,
 	\envL2, 2.21,
@@ -4073,7 +4153,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\release, 0.14,
 	\punch, 0.37,
 	\envfLev1, 369,
-	\envfLev2, 16475,
+	\envfLev2, 19951,
 	\enfTime, 0.01,
 	\envfCurve, -9.47,
 	\out, ~channelBus[1],

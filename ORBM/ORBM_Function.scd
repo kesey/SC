@@ -91,7 +91,6 @@
 
 ~changePattern = { arg pdef, pattern;
 	var pdefNameSymbol, pdefNameString;
-
 	pdefNameSymbol = pdef.key.asSymbol;
 	pdefNameString = pdefNameSymbol.asString;
 
@@ -169,10 +168,9 @@
 };
 
 ~pdefUpdate = { arg controlId, instance, controlNameSymb, value;
-	var exception;
-	exception = [\amp, \amplitude, \vol, \volume, \level];
-
-	if (exception.includesEqual(controlNameSymb), {
+	var exceptions;
+	exceptions = [\amp, \amplitude, \vol, \volume, \level];
+	if (exceptions.includesEqual(controlNameSymb), {
 		Pbindef(instance, controlNameSymb, value * Pfunc({ 1 - ~muteState.at(instance); })).quant_(~globalQuant);
 	}, {
 		if (~firstTime.at(controlId), {
@@ -183,7 +181,6 @@
 			~controlBus.at(controlId).set(value);
 		});
 	});
-
 };
 
 // automatic GUI creation and midi mapping
@@ -254,7 +251,7 @@
 			);
 
 			case
-			{ controlType == "none" or: "out in input output inbus outbus doneaction".contains(controlName.toLower) }
+			{ controlType == "none" or: ["out", "in", "input", "output", "inbus", "outbus", "doneaction"].includesEqual(controlName.toLower) }
 			{
 				caseFind = true;
 			}

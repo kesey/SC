@@ -582,17 +582,17 @@ SynthDef(\gabberkick, { arg out = 0, amp = 0.1, attack = 0.001, release = 0.05;
     OffsetOut.ar(out, snd * amp);
 }).add;
 
-~kickMistSynthDef = SynthDef(\kickMist, { arg out = 0, level = 1, tu = 1, noise = 1, env0L1 = 0.5, env0L2 = 1, env0L3 = 0.3, env0L4 = 0, env0T1 = 0.01, env0T2 = 0.5, env0T3 = 0.26, env1L1 = 120, env1L2 = 43, env1L3 = 29, env1T1 = 0.03, env1T2 = 0.29, doneAction = 2;
+~kickMistSynthDef = SynthDef(\kickMist, { arg out = 0, level = 1, pan = 0, tu = 1, noise = 1, env0L1 = 0.5, env0L2 = 1, env0L3 = 0.3, env0L4 = 0, env0T1 = 0.01, env0T2 = 0.5, env0T3 = 0.26, curve0_1 = (-4), curve0_2 = (-2), curve0_3 = (-4), env1L1 = 120, env1L2 = 43, env1L3 = 29, env1T1 = 0.03, env1T2 = 0.29, curve1_1 = (-4), curve1_2 = (-5), doneAction = 2;
 	var env0, env1, env1m, sig;
-	env0 =  EnvGen.ar(Env.new([env0L1, env0L2, env0L3, env0L4], [env0T1, env0T2, env0T3], #[-4, -2, -4]), doneAction: doneAction);
-	env1 = EnvGen.ar(Env.new([env1L1, env1L2, env1L3], [env1T1, env1T2], #[-4, -5]));
+	env0 =  EnvGen.ar(Env.new([env0L1, env0L2, env0L3, env0L4], [env0T1, env0T2, env0T3], [curve0_1, curve0_2, curve0_3]), doneAction: doneAction);
+	env1 = EnvGen.ar(Env.new([env1L1, env1L2, env1L3], [env1T1, env1T2], [curve1_1, curve1_2]));
 	env1m = env1.midicps;
 	sig = LFPulse.ar(env1m*tu, 0, 0.5, 1, -0.5);
 	sig = sig + WhiteNoise.ar(noise);
 	sig = LPF.ar(sig, env1m*1.5, env0);
 	sig = sig + SinOsc.ar(env1m*tu, 0.5, env0*4);
 	sig = sig.clip2(1);
-	OffsetOut.ar(out, Pan2.ar(sig, 0, level));
+	OffsetOut.ar(out, Pan2.ar(sig, pan, level));
 }).add;
 
 ~kickhiSynthDef = SynthDef(\kickhi, { arg out = 0, amp = 1, pan = 0, vcaLev1 = 0.5, vcaLev2 = 0.1, vcaLev3 = 0.01, vcaLev4 = 0.01, vcaLev5 = 0, vcaTime1 = 0.01, vcaTime2 = 0.5, vcaTime3 = 1.26, vcaTime4 = 0.1, vcaCurve1 = (-4), vcaCurve2 = (-2), vcaCurve3 = (-4), vcfLev1 = 122, vcfLev2 = 30, vcfLev3 = 33, vcfLev4 = 28, vcfTime1 = 0.05, vcfTime2 = 0.29, vcfTime3 = 1, vcfCurve1 = (-4), vcfCurve2 = (-5), tu = 1, doneAction = 2;
@@ -654,7 +654,7 @@ SynthDef(\kicknoise,{arg out = 0, amp = 0.5, pan = 0;
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\t1kick, {arg out = 0, amp = 0.5, pan = 0, rel = 0, doneAction = 2;
+~t1kickSynthDef = SynthDef(\t1kick, {arg out = 0, amp = 0.5, pan = 0, rel = 0, doneAction = 2;
 	var enva, envf, sig;
 	enva = EnvGen.ar(Env([0.01,1,0],[0.001, rel]), doneAction: doneAction);
 	envf = EnvGen.ar(Env([800,50],[0.005,1]));
@@ -1555,7 +1555,7 @@ SynthDef(\snareElectro, { arg out = 0, amp = 0.4, pan = 0, att = 0.001, rel = 0.
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-SynthDef(\snareStein, { arg out = 0, amp = 1, pan = 0, att = 0.0005, curve = -4, tonerel = 0.075, noiserel = 0.2,
+~snareSteinSynthDef = SynthDef(\snareStein, { arg out = 0, amp = 1, pan = 0, att = 0.0005, curve = -4, tonerel = 0.075, noiserel = 0.2,
 	//Other Controls, blend ranges from 0 to 1.
 	noisetop = 7040, noisebottom = 523, noiseamp = 0.2, tonelo = 185, tonehi = 330, toneamp = 0.5, blend = 0.2,
 	doneAction = 2;
@@ -2022,20 +2022,20 @@ var env, signal, attack, noise, hpf1, hpf2;
 	OffsetOut.ar(out, Pan2.ar(signal, pan, amp));
 }).add;
 
-SynthDef(\oneclapThorBr, { arg out = 0, amp = 0.1, pan = 0, att = 0.003, rel = 0.00035, freq = 100, rq = 0.1,
+~oneclapThorBrSynthDef = SynthDef(\oneclapThorBr, { arg out = 0, amp = 0.1, pan = 0, attack = 0.01, release = 1, att = 0.003, rel = 0.00035, tone = 0.4, noiseAmp = 1, freq = 100, rq = 0.1,
 	//Other Controls
 	echohz1 = 33.333, echohz2 = 33.156, curve = -4, decay = 0.06, shelfFreq = 7000, rs = 0.5, db = -3,
 	// Controls Ranging from 0 to 1
-	size = 0.15, tone = 0.4, mix = 0.23, damp = 0.5,
+	size = 0.15, mix = 0.23, damp = 0.5,
 	doneAction = 2;
 
 	var env, snd, noise1, noise2, hpf1, hpf2, delay1, delay2;
 
-	noise1 = GrayNoise.ar(1 - tone) + WhiteNoise.ar(tone);
+	noise1 = (GrayNoise.ar(1 - tone) + WhiteNoise.ar(tone)) * noiseAmp;
 
 	noise1 = noise1 + SinOsc.ar(freq: [freq / 2, freq / 2 + 4 ]);
 
-	noise2 = PinkNoise.ar;
+	noise2 = PinkNoise.ar(noiseAmp);
 
 	noise2 = noise2 + SinOsc.ar(freq: [freq, (freq * 1.04)] * XLine.kr(start: 1, end: 0.01, dur: 3));
 
@@ -2055,7 +2055,8 @@ SynthDef(\oneclapThorBr, { arg out = 0, amp = 0.1, pan = 0, att = 0.003, rel = 0
 
 	snd = BHiShelf.ar(in: snd, freq: shelfFreq, rs: rs, db: db);
 
-	DetectSilence.ar(snd, doneAction: doneAction);
+	snd = snd * EnvGen.kr(Env.linen(attack, 1, release), doneAction: doneAction);
+	// DetectSilence.ar(snd, doneAction: doneAction);
 
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
