@@ -1971,18 +1971,19 @@ SynthDef(\clap, {| out=0, amp = 1, pan=0, q=0.1, fq=1, rnd1=0, rnd2=0, rnd3=0, t
 	OffsetOut.ar(out,sig);
 }).add;
 
-SynthDef(\clapping, {arg out = 0, pan = 0, amp=0.5, filterfreq=120, rq=0.1, t_trig=1, doneAction=2;
-	var env, signal, attack,  noise, hpf1, hpf2;
-	noise = WhiteNoise.ar(1)+SinOsc.ar([filterfreq/2,filterfreq/2+4 ], pi*0.5, XLine.kr(1,0.01,4));
-	hpf1 = RLPF.ar(noise, 400, rq);
-	hpf2 = RHPF.ar(noise,  120, rq/4);
-	env = EnvGen.kr(Env.perc(0.003, 0.035));
+~clappingSynthDef = SynthDef(\clapping, {arg out = 0, amp=0.5, pan = 0, attack = 0.01, release = 1, att = 0.003, rel = 0.035, noiseAmp = 1, filterfreq=120, rq=0.1, sinAmpStart = 1, sinAmpEnd = 0.01, sinAmpDur = 4, lpfFreq = 400, hpfFreq = 120, delTimeL = 0.03, delDecL = 0.031, delTimeR = 0.03016, delDecR = 0.06, t_trig=1, doneAction=2;
+	var env, signal, noise, hpf1, hpf2;
+	noise = WhiteNoise.ar(noiseAmp)+SinOsc.ar([filterfreq/2,filterfreq/6 ], pi*0.5, XLine.kr(sinAmpStart, sinAmpEnd, sinAmpDur));
+	hpf1 = RLPF.ar(noise, lpfFreq, rq);
+	hpf2 = RHPF.ar(noise,  hpfFreq, rq/4);
+	env = EnvGen.kr(Env.perc(att, rel));
 	signal = (hpf1+hpf2) * env;
-	signal = CombC.ar(signal, 0.5, 0.03, 0.031)+CombC.ar(signal, 0.5, 0.03016, 0.06);
-	signal = FreeVerb.ar(signal, 0.1, 0, 0.5);
-	signal = Limiter.ar(signal, 0.7, 0.01) * amp;
-	DetectSilence.ar(signal, doneAction: doneAction);
-	OffsetOut.ar(out, Pan2.ar(signal, pan));
+	signal = CombC.ar(signal, 0.5, delTimeL, delDecL)+CombC.ar(signal, 0.5, delTimeR, delDecR);
+	// signal = FreeVerb.ar(signal, 0.1, 0, 0.5);
+	// signal = Limiter.ar(signal, 0.7, 0.01) * amp;
+	signal = signal * EnvGen.kr(Env.linen(attack, 1, release), doneAction: doneAction);
+	// DetectSilence.ar(signal, doneAction: doneAction);
+	OffsetOut.ar(out, Pan2.ar(signal, pan, amp));
 }).add;
 
 SynthDef(\clap_oto309, {
