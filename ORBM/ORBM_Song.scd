@@ -1987,15 +1987,15 @@
 
 		// aux 1
 
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.79);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.8);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.04);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.67);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "nType5Chaos").valueAction_(1.49);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(3);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "nType5Chaos").valueAction_(0.48);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(1.15);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impSource").valueAction_(0);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(3.76);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(4);
 
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
@@ -2010,31 +2010,31 @@
 
 		// aux 2
 
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(-1);
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.5);
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.28);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.46);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(0);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
 		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(1);
-		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(2.14);
-		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.53);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0);
 		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(1);
 
-		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(0.15);
-		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(0);
-		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.69);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(-0.15);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(126);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.9);
 
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(-1);
-		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.38);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.33);
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(0.81);
-		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.75);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.69);
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
 
-		~channel.at(\level2).valueAction_(0.17);
+		~channel.at(\level2).valueAction_(0.07);
 	}.defer;
 
 	~songInit.value;
