@@ -3751,7 +3751,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song8Pattern2 = Pbind(
 	\instrument, \clapping,
 	\dur, Pseq([Pn(Pseq([Rest(0.5), 2, 2]), 3), 0.5, Rest(2), 2], inf),
-	\amp, 0.05 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\amp, 0.047 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, 0,
 	\attack, 0.01,
 	\release, 1,

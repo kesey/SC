@@ -1959,31 +1959,31 @@
 	{
 		// Synth
 
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.08);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.1);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(0.11);
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(3.16);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(6.05);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "curve").valueAction_(-4);
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(59);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(62);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(1);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
 
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.8);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.91);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "loopNode").valueAction_(0);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(80);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(20.9);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(66);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(20);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(44.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(0);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(40);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(40);
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.01);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.75);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.01);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.91);
-		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(0.19);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.42);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.44);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.32);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.64);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(1.56);
 
 		// aux 1
 
