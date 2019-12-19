@@ -3700,7 +3700,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song8Pattern1 = Pbind(
 	\instrument, \mutantFric,
-	\dur, Pdefn(\patt1_5_dur),
+	\dur, Pdefn(\patt1_5_dur) * 2,
 	\amp, 0.5 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\attack, 0.01,
 	\release, 0.02,
