@@ -1935,26 +1935,26 @@
 		~changePattern.value(Pdef(\unit6), ~song8Pattern6);
 		~changePattern.value(Pdef(\unit7), ~song8Pattern7);
 		~changePattern.value(Pdef(\unit8), ~song8Pattern8);
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.6875), 1.375, 2.75, 0.6875], inf)).quant_(~globalQuant);
-		// Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.25, 0.5, 0.75, Rest(0.5), 1], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1], inf)).quant_(~globalQuant);// 4.5/4
 		// Pdefn(\patt1_5_dur, Pseq([2, 1, 0.5, 1/**/, 1.5, 1, Rest(0.5), 1, 0.5], inf)).quant_(~globalQuant);
-		Pdefn(\patt3_4_dur, Pseq([2, 0.75, Rest(0.75), 2], inf)).quant_(~globalQuant);
+		// Pdefn(\patt3_4_dur, Pseq([1, 2, 1.5, 1, 1.5, 2/**/, 3, 1.5, 1, 1.5, 2], inf)).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([1, 2, 1.5, 1.5, 1, 2/**/, 3, 1.5, 1, 1.5, 2], inf)).quant_(~globalQuant);
 		~resetAllControlBus.value;
 	};
 
 	~song8Part1 = {
 		"song8 part1".postln;
 		~song8InitPart.value;
-		22.0.wait;
+		18.0.wait;
 	};
 
 	~song8Part2 = {
 		"song8 part2".postln;
 		~song8InitPart.value;
-		// Pdefn(\patt1_5_dur, Pseq([], inf)).quant_(~globalQuant);
+		// Pdefn(\patt1_5_dur, Pseq([Rest(0.75), 1, Rest(0.5625), 0.6875, Rest(1.5)/**/, Rest(0.75), 1, Rest(0.5625), 0.6875, 1, Rest(0.5)], inf)).quant_(~globalQuant);
 		// Pdefn(\patt1_5_dur, Pseq([1, 0.5, 1.5, 1, 0.5/**/, 1, Rest(0.5), 1.5, 1, 0.5/**/, 1.5, 1, 0.5, Rest(1), 0.5/**/, 1, Rest(0.5), 1.5, 1, 0.5], inf)).quant_(~globalQuant);
 		// Pbindef(\unit2, \dur, Pseq([Rest(0.5), 2, 2, Rest(1), 1.5, 2, Rest(0.5), 2, 2, 0.5, Rest(2), 2], inf)).quant_(~globalQuant);
-		22.0.wait;
+		18.0.wait;
 	};
 
 	~song8Part3 = {

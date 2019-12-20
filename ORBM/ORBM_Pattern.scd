@@ -3923,7 +3923,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song8Pattern5 = Pbind(
 	\instrument, \oneclapThorBr,
-	\dur, Pseq([Rest(1.375), 3.125, Rest(2), 4.5], inf),
+	\dur, Pseq([Rest(1.25), 3.25, Rest(2), 2.5], inf),
 	\amp, 0.03 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, 0,
 	\attack, 0,
@@ -4084,7 +4084,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song8Pattern7 = Pbind(
 	\instrument, \kick3Aw,
-	\dur, Pseq([Rest(0.5), 2, 0.5, 1, Rest(0.5), 1], inf),
+	\dur, Pseq([Rest(0.5), 2, 0.5, Rest(0.5), 1], inf),
 	\amp, 0.09 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, Pwhite(-0.8, 0.8),
 	\envL1, 0,
@@ -4141,7 +4141,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\amp, 0.09 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, Pwhite(-0.5, 0.5),
 	\att, 0,
-	\rel, Pseq([Pseq([0.58, 0.32, 0.12], 2), 0.32, 0.58, 0.12, 0.45, 1.32], inf),
+	\rel, Pseq([Pseq([0.58, 0.32, 0.12], 2), 0.32, 0.45, 1.32], inf),
 	\curve, -11.66,
 	\tu, 6.08,
 	\out, ~channelBus[1],
