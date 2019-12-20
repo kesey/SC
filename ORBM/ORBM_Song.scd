@@ -1957,8 +1957,11 @@
 	~song8Part3 = {
 		"song8 part3".postln;
 		~song8InitPart.value;
-		Pdefn(\patt1_5_dur, Pseq([Rest(1.5), 2, 1/**/, 1.5, 1, 2/**/, 1.5, Rest(1), 2/**/, 1.5, 1, 2], inf)).quant_(~globalQuant);
-		Pdefn(\patt3_4_dur, Pseq([Rest(1), 2, 1.5, Rest(1), 1.5, 2], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([4.5, Rest(2), 2.5, Rest(2), 5, 2], inf)
+		).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2/**/, 1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1.125), 1.875], inf)).quant_(~globalQuant);
 		18.0.wait;
 	};
 
@@ -2050,8 +2053,8 @@
 	loop {
 		~song8Part1.value;
 		~song8Part2.value;
-		/*~song8Part3.value;
-		~song8Part4.value;
+		~song8Part3.value;
+		/*~song8Part4.value;
 		~song8Part5.value;
 		~song8Part6.value;
 		~song8Part7.value;
