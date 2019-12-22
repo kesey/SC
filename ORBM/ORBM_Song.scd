@@ -1979,6 +1979,79 @@
 		36.0.wait;
 	};
 
+	~song8Part5 = {
+		"song8 part5".postln;
+		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([0.5, Rest(2), 2], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pbindef(\unit7,
+			\dur, Pseq([0.5, 0.5, 1, Rest(0.25)/**/, 0.5, 0.5, Rest(0.25), 1], inf)
+		).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf)
+		).quant_(~globalQuant);
+		36.0.wait;
+	};
+
+	~song8Part6 = {
+		"song8 part6".postln;
+		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		/*Pbindef(\unit2,
+			\dur, Pseq([0.5, Rest(2), 2/**/, 2.5, 2], inf),
+			\delTimeL, Pseq([0.3, 0.15, 0/**/, 0, 0.15], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");*/
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2], inf)
+		).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2], inf)).quant_(~globalQuant);
+		Pbindef(\unit7,
+			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf)
+		).quant_(~globalQuant);
+		18.0.wait;
+	};
+
+	~song8Part7 = {
+		"song8 part7".postln;
+		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2/**/, Rest(0.5), 2, Rest(2), 0.5, Rest(4)], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3/**/, 0, 0.15, 0, 0.3, 0.3], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pbindef(\unit7,
+			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf)
+		).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, Rest(0.25), 0.5, 0.5, Rest(0.25)/**/, 0.25, 0.5, Rest(0.5), 0.25, Rest(0.5), 0.25], inf)
+		).quant_(~globalQuant);
+		36.0.wait;
+	};
+
+	~song8Part8 = {
+		"song8 part8".postln;
+		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([0.5, Rest(2), 2], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pbindef(\unit7,
+			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf)
+		).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, Rest(0.25), 0.5, 0.5, Rest(0.25)/**/, 0.25, 0.5, Rest(0.5), 0.25, Rest(0.5), 0.25], inf)
+		).quant_(~globalQuant);
+		36.0.wait;
+	};
+
 	// Synth + Fx Preset
 
 	{
@@ -2069,10 +2142,10 @@
 		~song8Part2.value;
 		~song8Part3.value;
 		~song8Part4.value;
-		/*~song8Part5.value;
+		~song8Part5.value;
 		~song8Part6.value;
 		~song8Part7.value;
-		~song8Part8.value;*/
+		~song8Part8.value;
 	}
 };
 
