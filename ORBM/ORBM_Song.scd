@@ -2006,14 +2006,19 @@
 			\delTimeL, Pseq([0.3, 0.15, 0/**/, 0, 0.15], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");*/
-		Pbindef(\unit2,
+		/*Pbindef(\unit2,
 			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2], inf)
+		).quant_(~globalQuant);*/
+		Pbindef(\unit2,
+			\dur, Pseq([0.5, Rest(2), 2], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
 		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
 		Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2], inf)).quant_(~globalQuant);
 		Pbindef(\unit7,
 			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf)
 		).quant_(~globalQuant);
-		18.0.wait;
+		36.0.wait;
 	};
 
 	~song8Part7 = {
