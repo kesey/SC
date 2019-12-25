@@ -1943,6 +1943,16 @@
 	~song8Part1 = {
 		"song8 part1".postln;
 		~song8InitPart.value;
+		Pbindef(\unit1,
+			\amp, Pseq([0.58, Pn(0.4, 3)], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\spec1, Pseq([0.03, Pn(0.00001, 3), 0.03, Pn(0.01, 3), 0.03, Pn(0.0001, 3), 0.03, Pn(0.01, 3)], inf),
+			\spec2, Pseq([0, Pn(0.2, 3)], inf),
+			\noiseFreq, Pseq([14.7, Pn(5, 3)], inf),
+			\sigFreq, Pseq([56, Pn(35, 3)], inf),
+			\damp, Pseq([43.81, Pn(7.58, 3)], inf),
+			\source, Pseq([1, Pn(0, 3)], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
 		36.0.wait;
 	};
 
@@ -1957,6 +1967,16 @@
 	~song8Part3 = {
 		"song8 part3".postln;
 		~song8InitPart.value;
+		Pbindef(\unit1,
+			\amp, Pseq([0.58, 0.4], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\spec1, Pseq([0.03, 0.00001, 0.03, 0.01, 0.03, 0.0001, 0.03, 0.01], inf),
+			\spec2, Pseq([0, 0.2], inf),
+			\noiseFreq, Pseq([14.7, 5], inf),
+			\sigFreq, Pseq([56, 35], inf),
+			\damp, Pseq([43.81, 7.58], inf),
+			\source, Pseq([1, 0], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
 		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2], inf)
@@ -1967,6 +1987,16 @@
 	~song8Part4 = {
 		"song8 part4".postln;
 		~song8InitPart.value;
+		Pbindef(\unit1,
+			\amp, Pseq([0.58, 0.4, 0.4], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\spec1, Pseq([0.03, 0.00001, 0.00001, 0.03, 0.01, 0.01, 0.03, 0.0001, 0.0001, 0.03, 0.01, 0.01], inf),
+			\spec2, Pseq([0, 0.2, 0.2], inf),
+			\noiseFreq, Pseq([14.7, 5, 5], inf),
+			\sigFreq, Pseq([56, 35, 35], inf),
+			\damp, Pseq([43.81, 7.58, 7.58], inf),
+			\source, Pseq([1, 0, 0], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
 		Pbindef(\unit2,
 			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2], inf),
 			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
@@ -1982,6 +2012,16 @@
 	~song8Part5 = {
 		"song8 part5".postln;
 		~song8InitPart.value;
+		Pbindef(\unit1,
+			\amp, Pseq([0.58, Pn(0.4, 3)], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\spec1, Pseq([0.03, Pn(0.00001, 3), 0.03, Pn(0.01, 3), 0.03, Pn(0.0001, 3), 0.03, Pn(0.01, 3)], inf),
+			\spec2, Pseq([0, Pn(0.2, 3)], inf),
+			\noiseFreq, Pseq([14.7, Pn(5, 3)], inf),
+			\sigFreq, Pseq([56, Pn(35, 3)], inf),
+			\damp, Pseq([43.81, Pn(7.58, 3)], inf),
+			\source, Pseq([1, Pn(0, 3)], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
 		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([0.5, Rest(2), 2], inf),
@@ -2000,15 +2040,21 @@
 	~song8Part6 = {
 		"song8 part6".postln;
 		~song8InitPart.value;
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
-		/*Pbindef(\unit2,
-			\dur, Pseq([0.5, Rest(2), 2/**/, 2.5, 2], inf),
-			\delTimeL, Pseq([0.3, 0.15, 0/**/, 0, 0.15], inf)
+		Pbindef(\unit1,
+			\amp, Pseq([0.4, 1, 0.58], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\release, 0.02,
+			\spec1, Pseq([0.01, 0.01, 0.03], inf),
+			\spec2, Pseq([0.2, 0.05, 0], inf),
+			\noiseFreq, Pseq([5, 20, 14.7], inf),
+			\sigFreq, Pseq([35, 20, 56], inf),
+			\spring, Pseq([0.87, 0, 0.87], inf),
+			\damp, Pseq([7.58, 70, 43.81], inf),
+			\beltmass, Pseq([8.95, 13.15, 8.95], inf),
+			\source, Pseq([0, 3, 1], inf),
+			\hpfFreq, Pseq([50, 8558, 50], inf)
 		).quant_(~globalQuant);
-		~resetControlBus.value("unit2delTimeL");*/
-		/*Pbindef(\unit2,
-			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2], inf)
-		).quant_(~globalQuant);*/
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([0.5, Rest(2), 2], inf),
 			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
@@ -2024,6 +2070,16 @@
 	~song8Part7 = {
 		"song8 part7".postln;
 		~song8InitPart.value;
+		Pbindef(\unit1,
+			\amp, Pseq([0.58, Pn(0.4, 3)], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\spec1, Pseq([0.03, Pn(0.00001, 3), 0.03, Pn(0.01, 3), 0.03, Pn(0.0001, 3), 0.03, Pn(0.01, 3)], inf),
+			\spec2, Pseq([0, Pn(0.2, 3)], inf),
+			\noiseFreq, Pseq([14.7, Pn(5, 3)], inf),
+			\sigFreq, Pseq([56, Pn(35, 3)], inf),
+			\damp, Pseq([43.81, Pn(7.58, 3)], inf),
+			\source, Pseq([1, Pn(0, 3)], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
 		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2/**/, Rest(0.5), 2, Rest(2), 0.5, Rest(4)], inf),
@@ -2042,6 +2098,19 @@
 	~song8Part8 = {
 		"song8 part8".postln;
 		~song8InitPart.value;
+		Pbindef(\unit1,
+			\amp, Pseq([0.4, 0.07], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\release, Pseq([0.02, 0.26], inf),
+			\spec1, Pseq([0.01, 1, 0.01, 1, 0.01, 1, 0.01, 1], inf),
+			\spec2, Pseq([0.2, 0.74], inf),
+			\noiseFreq, Pseq([5, 38.2], inf),
+			\sigFreq, Pseq([35, 28], inf),
+			\damp, Pseq([7.58, 51.13], inf),
+			\beltmass, Pseq([8.95, 0.02], inf),
+			\source, Pseq([0, 5], inf),
+			\hpfFreq, Pseq([50, 20], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
 		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([0.5, Rest(2), 2], inf),
