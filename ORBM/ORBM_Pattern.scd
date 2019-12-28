@@ -3813,7 +3813,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song8Pattern3 = Pbind(
 	\instrument, \zeynep,
 	\dur, Pdefn(\patt3_4_dur),
-	\amp, 0.02 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\amp, 0.025 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\freq, 990,
 	\envL1, 0,
 	\envL2, 1.27,
