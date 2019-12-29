@@ -2123,7 +2123,7 @@
 		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			//\dur, Pseq([0.5, Rest(2), 2], inf),
-			\dur, Pseq([Rest(1.5), 3, Rest(1), 3.5], inf),
+			\dur, Pseq([Rest(0.5), 4, Rest(1.5), 3], inf), // 4.5/
 			\amp, 0.054 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\delTimeL, 0,
 			\delTimeR, 0
