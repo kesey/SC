@@ -1967,7 +1967,7 @@
 			\hpf, 2615,
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit3");
-		72.0.wait;
+		18.0.wait;
 	};
 
 	~song8Part2 = {
@@ -2123,7 +2123,7 @@
 		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			//\dur, Pseq([0.5, Rest(2), 2], inf),
-			\dur, Pseq([Rest(0.5), 4, Rest(1.5), 3], inf), // 4.5/
+			\dur, Pseq([Rest(0.5), 4, Rest(1.5), 3], inf),
 			\amp, 0.054 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\delTimeL, 0,
 			\delTimeR, 0
@@ -2342,6 +2342,379 @@
 		~song8Part6.value;
 		~song8Part7.value;
 		~song8Part8.value;
+	}
+};
+
+~song8Bis = {// ~globalQuant = 9; // !!! change globalQuant before song !!!
+	t.tempo = 199 / 60; // 212 / 60
+	t.beatsPerBar = 9;
+
+	// Part
+
+	~song8BisInitPart = {
+		~changePattern.value(Pdef(\unit1), ~song8BisPattern1);
+		~changePattern.value(Pdef(\unit2), ~song8BisPattern2);
+		~changePattern.value(Pdef(\unit3), ~song8BisPattern3);
+		~changePattern.value(Pdef(\unit4), ~song8BisPattern4);
+		~changePattern.value(Pdef(\unit5), ~song8BisPattern5);
+		~changePattern.value(Pdef(\unit6), ~song8BisPattern6);
+		~changePattern.value(Pdef(\unit7), ~song8BisPattern7);
+		~changePattern.value(Pdef(\unit8), ~song8BisPattern8);
+		Pdefn(\patt1_5_dur, Pseq([Rest(3), 2.5, 2, 1.5], inf)).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		~resetAllControlBus.value;
+	};
+
+	~song8BisPart1 = {
+		"song8Bis part1".postln;
+		~song8BisInitPart.value;
+		36.0.wait;
+	};
+
+	~song8BisPart2 = {
+		"song8Bis part2".postln;
+	    ~song8BisInitPart.value;
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(0.5), 3.5, Rest(4.5)/**/, Rest(1), 1.5, Rest(7)], inf)
+		).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit5,
+			\echohz1, 9.68,
+			\echohz2, 0,
+			\curve, -38.3,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit5");
+		36.0.wait;
+	};
+
+	~song8BisPart3 = {
+		"song8Bis part3".postln;
+		~song8BisInitPart.value;
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(1.5), 2.5, Rest(4.5)/**/, Rest(1), 1.5, Rest(7)], inf)
+		).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit7,
+			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\envL2, 0,
+			\decay, 0.04,
+			\release, 0.12,
+			\punch, 0.08,
+			\envfLev2, 14990,
+			\envfTime, 0,
+			\envfCurve, -1.05,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit7");
+		Pbindef(\unit8,
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
+			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.02, 0.32], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		36.0.wait;
+	};
+
+	~song8BisPart4 = {
+		"song8Bis part4".postln;
+		~song8BisInitPart.value;
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(1.5), 2.5, Rest(4.5)/**/, Rest(1), 1.5, Rest(7)], inf)
+		).quant_(~globalQuant);
+		/*Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2, 1, Rest(1), Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);*/
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
+			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.02, 0.32], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		72.0.wait;
+	};
+
+	~song8BisPart5 = {
+		"song8Bis part5".postln;
+		~song8BisInitPart.value;
+		Pbindef(\unit2,
+			\dur, Pseq([0.5, Rest(2), 2], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.15, 0.15, 0], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pbindef(\unit5,
+			\echohz1, 9.68,
+			\echohz2, 0,
+			\curve, Pseq([-38.3, 0, -38.3], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit5");
+		Pbindef(\unit6,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit6");
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
+			\rel, 0.22
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		72.0.wait;
+	};
+
+	~song8BisPart6 = {
+		"song8Bis part6".postln;
+		~song8BisInitPart.value;
+		~changePattern.value(Pdef(\unit1), ~song8BisPattern9);
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, Rest(0.5)/**/, Rest(1), 1, Rest(2.5), Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit6,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit6");
+		Pbindef(\unit8,
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
+			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.06, 0.45], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		72.0.wait;
+	};
+
+	~song8BisPart7 = {
+		"song8Bis part7".postln;
+		~song8BisInitPart.value;
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
+			\delTimeL, Pseq([Pn(0, 7), 0.15], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, Rest(0.5)/**/, Rest(1), 1, Rest(2.5), Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit6,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit6");
+		Pbindef(\unit7,
+			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\envL2, 0,
+			\decay, 0.04,
+			\release, 0.12,
+			\punch, 0.08,
+			\envfLev2, 14990,
+			\envfTime, 0,
+			\envfCurve, -1.05,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit7");
+		Pbindef(\unit8,
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
+			\rel, Pseq([Pseq([0.58, 0.12, 0.032], 2), 0.9, 0.32], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		36.0.wait;
+	};
+
+	~song8BisPart8 = {
+		"song8Bis part8".postln;
+		~song8BisInitPart.value;
+		~changePattern.value(Pdef(\unit1), ~song8BisPattern9);
+		Pbindef(\unit2,
+			\dur, Pseq([0.5, Rest(2), 2], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.15, 0.15, 0, Pseq([0, 0.15, 0], 2)], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit5,
+			\att, 0.45,
+			\echohz1, Pseq([9.68, 0, 9.68], inf),
+			\echohz2, 0,
+			\curve, Pseq([33.93, 4, 33.93], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit5");
+		Pbindef(\unit6,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit6");
+		Pbindef(\unit7,
+			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\envL2, 0,
+			\decay, 0.04,
+			\release, 0.12,
+			\punch, 0.08,
+			\envfLev2, 14990,
+			\envfTime, 0,
+			\envfCurve, -1.05,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit7");
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
+			\rel, 0.22
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		72.0.wait;
+	};
+
+	// Synth + Fx Preset
+
+	{
+		// Synth
+
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.07);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(0.11);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(6.05);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "curve").valueAction_(-4);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(53);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.94);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.19);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
+
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.91);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "loopNode").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "attack").valueAction_(0.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "release").valueAction_(4);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "curve").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel1").valueAction_(20);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel2").valueAction_(44.2);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel3").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel4").valueAction_(40);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel5").valueAction_(40);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envLevel6").valueAction_(0);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime1").valueAction_(0.42);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime2").valueAction_(0.44);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime3").valueAction_(0.32);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime4").valueAction_(0.64);
+		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "envTime5").valueAction_(1.56);
+
+		// aux 1
+
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.8);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.04);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.67);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(3);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "nType5Chaos").valueAction_(0.48);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(1.15);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impSource").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(4);
+
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
+
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.02);
+
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.24);
+		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "gain").valueAction_(32.3);
+
+		// aux 2
+
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(0.28);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.46);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync2").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync3").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync4").valueAction_(1);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
+
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(1);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(1);
+
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(-0.15);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(126);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.9);
+
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.33);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(0.81);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0.69);
+		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
+
+		~channel.at(\level2).valueAction_(0.07);
+	}.defer;
+
+	~songInit.value;
+
+	loop {
+		~song8BisPart1.value;
+		~song8BisPart2.value;
+		~song8BisPart3.value;
+		~song8BisPart4.value;
+		~song8BisPart5.value;
+		~song8BisPart6.value;
+		~song8BisPart7.value;
+		~song8BisPart8.value;
 	}
 };
 

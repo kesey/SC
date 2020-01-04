@@ -370,6 +370,114 @@ SynthDef(\complexosc, { arg out = 0, amp = 1, feedBack = 1, envL1 = 0, envL2 = 2
     OffsetOut.ar(out, outlet * env * amp);
 }, [\kr ! 11, \ar ! 14, \kr, \tr, \ir].flatten).add;
 
+SynthDef(\benjolis,{ |out = 0, amp = 1, fadeTime, 0.01, freq1= 40, freq2=4, scale=1, rungler1=0.16, rungler2=0.0, runglerFilt=9, loop=0, filtFreq=40, q=0.82, gain=1, filterType=0, outSignal=6, doneAction = 2|
+	var osc1, osc2, tri1, tri2, sh0, sh1, sh2, sh3, sh4, sh5, sh6, sh7, sh8=1, rungler, pwm, filt, output;
+	var sr;
+	var osc2freq, buf, bufR;
+
+	bufR = LocalIn.ar(2,0);
+	rungler = bufR.at(0);
+	buf = bufR.at(1);
+
+	sr = SampleDur.ir;
+	//sr = ControlDur.ir;
+	tri1 = LFTri.ar((rungler*rungler1)+freq1);
+	tri2 = LFTri.ar((rungler*rungler2)+freq2);
+	osc1 = PulseDPW.ar((rungler*rungler1)+freq1);
+	osc2 = PulseDPW.ar((rungler*rungler2)+freq2);
+
+	//pwm = tri1 > tri2;
+	pwm = BinaryOpUGen('>', (tri1 + tri2),(0));
+
+	osc1 = ((buf*loop)+(osc1* (loop* -1 +1)));
+	sh0 = BinaryOpUGen('>', osc1, 0.5);
+	sh0 = BinaryOpUGen('==', (sh8 > sh0), (sh8 < sh0));
+	sh0 = (sh0 * -1) + 1;
+
+	sh1 = DelayN.ar(Latch.ar(sh0,osc2),0.01,sr);
+	sh2 = DelayN.ar(Latch.ar(sh1,osc2),0.01,sr*2);
+	sh3 = DelayN.ar(Latch.ar(sh2,osc2),0.01,sr*3);
+	sh4 = DelayN.ar(Latch.ar(sh3,osc2),0.01,sr*4);
+	sh5 = DelayN.ar(Latch.ar(sh4,osc2),0.01,sr*5);
+	sh6 = DelayN.ar(Latch.ar(sh5,osc2),0.01,sr*6);
+	sh7 = DelayN.ar(Latch.ar(sh6,osc2),0.01,sr*7);
+	sh8 = DelayN.ar(Latch.ar(sh7,osc2),0.01,sr*8);
+
+	//rungler = ((sh6/8)+(sh7/4)+(sh8/2)); //original circuit
+	//rungler = ((sh5/16)+(sh6/8)+(sh7/4)+(sh8/2));
+
+	rungler = ((sh1/2.pow(8))+(sh2/2.pow(7))+(sh3/2.pow(6))+(sh4/2.pow(5))+(sh5/2.pow(4))+(sh6/2.pow(3))+(sh7/2.pow(2))+(sh8/2.pow(1)));
+
+	buf = rungler;
+	rungler = (rungler * scale.linlin(0,1,0,127));
+	rungler = rungler.midicps;
+
+	LocalOut.ar([rungler,buf]);
+
+
+
+	filt = Select.ar(filterType, [
+		RLPF.ar(pwm,(rungler*runglerFilt)+filtFreq,q* -1 +1,gain),
+		//BMoog.ar(pwm,(rungler*runglerFilt)+filtFreq,q,0,gain),
+		RHPF.ar(pwm,(rungler*runglerFilt)+filtFreq,q* -1 +1,gain),
+		SVF.ar(pwm,(rungler*runglerFilt)+filtFreq,q,1,0,0,0,0,gain),
+		DFM1.ar(pwm,(rungler*runglerFilt)+filtFreq,q,gain,1)
+	]);
+
+
+	output = Select.ar(outSignal, [
+		tri1, osc1, tri2, osc2, pwm, sh0, filt
+
+	]);
+	output = LeakDC.ar(output * amp ! 2);
+	OffsetOut.ar(out, output * EnvGate(fadeTime: fadeTime, doneAction: doneAction));
+}).add;
+
+SynthDef(\bytebeats, { arg out = 0, amp = 1, fadeTime = 0.01, srDiv = 6, freq = 232, doneAction = 2;
+	//var sr = SampleRate.ir/6; //fix sample rate
+	var counter;
+	var sr = SampleRate.ir/srDiv; //variable sample rate
+	//var freq = 10;
+	var n = 16; //bit resolution
+	var t= Phasor.ar(1,freq*((2**n)/sr),0,((2**n)-1)); //creating a raising value from 0 to 2**n
+	//t = t & (2**(n-1)); // few tests
+	//equations: try one at the time
+	t = t * 4;
+	counter = LFSaw.ar(0.5,0,3.5,3.5); // browse the equations
+	//counter = LFDNoise0.ar(MouseY.kr(1,0.1),3.5,3.5);
+	//counter.poll;
+	t = Select.ar(counter,[
+
+	t*(((t>>12)|(t>>8))&(63&(t>>4))),
+	t*(((t>>9)|(t>>13))&(25&(t>>6))),
+	t*(((t>>5)|(t>>8)) & 63),
+	t*(((t>>11)&(t>>8))&(123&(t>>3))),
+	t*(t>>8*((t>>15)|(t>>8))&(20|(t>>19)*5>>t|(t>>3))),
+	t*(t>>((t>>9)|(t>>8))&(63&(t>>4))),
+	(t>>7|t|t>>6)*10+4*(t&t>>13|t>>6)
+	]);
+
+	t = t % (2**(n));// avoiding number beyond 2**(bit resolution)
+	t = t*(0.5**(n-1)) - 1;//scaling to -1, 1
+
+	t = LeakDC.ar((t * amp).dup);
+	OffsetOut.ar(out, t * EnvGate(fadeTime: fadeTime, doneAction: doneAction));
+}).add;
+
+SynthDef(\feedbackOsc, {|out=0, amp = 1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
+	var w= [0, width*2pi];
+	var buf= LocalBuf(1).clear;
+	var buf2= LocalBuf(1, 2).clear;
+	var osc= sin(LFSaw.ar(mFrq).range(0, 2pi)+(Dbufrd(buf)*mFB));
+	var snd= Duty.ar(SampleDur.ir, 0, Dbufwr(osc, buf));
+	var osc2= sin(LFSaw.ar(freq+(snd*mul)).range(0, 2pi)+(Dbufrd(buf2)*fB)+w);
+	var snd2= Duty.ar(SampleDur.ir, 0, Dbufwr(osc2, buf2));
+	//var filter= RLPF.ar(snd2, ffreq, rq);
+	var filter = DFM1.ar(snd2, ffreq, rq);
+	//var env = EnvGen.ar(Env.asr(attack,sustain,release),gate,doneAction:2);
+	OffsetOut.ar(out,filter * amp * EnvGate(gate: gate, doneAction: doneAction));
+}).add;
+
 SynthDef(\salledutemps, { arg out = 0, amp = 1, tu = 1, dur = 9, attack = 1, release = 4, gate = 1, doneAction = 2;
 	var sig, rand, env;
 	env = Linen.kr(gate, attack, 1, release, doneAction);
