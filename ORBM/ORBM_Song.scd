@@ -2368,12 +2368,14 @@
 	~song8BisPart1 = {
 		"song8Bis part1".postln;
 		~song8BisInitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(3), 3.55, 2.45], inf)).quant_(~globalQuant);
 		36.0.wait;
 	};
 
 	~song8BisPart2 = {
 		"song8Bis part2".postln;
 	    ~song8BisInitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(3), 3.55, 2.45], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([Rest(0.5), 3.5, Rest(4.5)/**/, Rest(1), 1.5, Rest(7)], inf)
 		).quant_(~globalQuant);
@@ -2390,6 +2392,7 @@
 	~song8BisPart3 = {
 		"song8Bis part3".postln;
 		~song8BisInitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(3), 3.55, 2.45], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([Rest(1.5), 2.5, Rest(4.5)/**/, Rest(1), 1.5, Rest(7)], inf)
 		).quant_(~globalQuant);
@@ -2410,7 +2413,7 @@
 			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.02, 0.32], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit8rel");
-		36.0.wait;
+		72.0.wait;
 	};
 
 	~song8BisPart4 = {
@@ -2426,7 +2429,7 @@
 			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.02, 0.32], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit8rel");
-		72.0.wait;
+		36.0.wait;
 	};
 
 	~song8BisPart5 = {
@@ -2477,6 +2480,11 @@
 		"song8Bis part6".postln;
 		~song8BisInitPart.value;
 		~changePattern.value(Pdef(\unit1), ~song8BisPattern9);
+		Pbindef(\unit1,
+			\amp, 0.12 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\rungler2, 0.88
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1rungler2");
 		Pbindef(\unit2,
 			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
 			\delTimeL, Pseq([0, 0.15, 0, 0], inf)

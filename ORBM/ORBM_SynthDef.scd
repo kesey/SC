@@ -2626,9 +2626,9 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 
 
 	filt = Select.ar(filterType, [
-		RLPF.ar(pwm,(rungler*runglerFilt)+filtFreq,rq* -1 +1,gain),
+		RLPF.ar(pwm,(rungler*runglerFilt)+filtFreq,rq/** -1 +1*/,gain),
 		//BMoog.ar(pwm,(rungler*runglerFilt)+filtFreq,rq,0,gain),
-		RHPF.ar(pwm,(rungler*runglerFilt)+filtFreq,rq* -1 +1,gain),
+		RHPF.ar(pwm,(rungler*runglerFilt)+filtFreq,rq/** -1 +1*/,gain),
 		SVF.ar(pwm,(rungler*runglerFilt)+filtFreq,rq,1,0,0,0,0,gain),
 		DFM1.ar(pwm,(rungler*runglerFilt)+filtFreq,rq,gain,1)
 	]);
