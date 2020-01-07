@@ -2369,6 +2369,7 @@
 		"song8Bis part1".postln;
 		~song8BisInitPart.value;
 		Pdefn(\patt1_5_dur, Pseq([Rest(3), 3.55, 2.45], inf)).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
 		36.0.wait;
 	};
 
