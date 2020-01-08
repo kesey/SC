@@ -1920,9 +1920,9 @@
 
 
 
-~song8 = {// ~globalQuant = 9; // !!! change globalQuant before song !!!
-	t.tempo = 212 / 60;
-	t.beatsPerBar = 9;
+~song8 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
+	t.tempo = 232 / 60; // 212 / 60
+	t.beatsPerBar = 7;
 
 	// Part
 
@@ -1935,118 +1935,43 @@
 		~changePattern.value(Pdef(\unit6), ~song8Pattern6);
 		~changePattern.value(Pdef(\unit7), ~song8Pattern7);
 		~changePattern.value(Pdef(\unit8), ~song8Pattern8);
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1], inf)).quant_(~globalQuant);
-		Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2/**/, 1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1.125), 1.875], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 1, Rest(0.5), 2, 1, 1.5, 1.5], inf)).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Rest(0.55), 3.45, 3], inf)).quant_(~globalQuant);
 		~resetAllControlBus.value;
 	};
 
 	~song8Part1 = {
 		"song8 part1".postln;
 		~song8InitPart.value;
-		Pbindef(\unit1,
-			\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\spec1, Pseq([0.03, Pn(0.00001, 3), 0.03, Pn(0.01, 3), 0.03, Pn(0.0001, 3), 0.03, Pn(0.01, 3)], inf),
-			\spec2, Pseq([0, Pn(0.2, 3)], inf),
-			\noiseFreq, Pseq([14.7, Pn(5, 3)], inf),
-			\sigFreq, Pseq([57.5, Pn(35, 3)], inf),
-			\damp, Pseq([43.81, Pn(7.58, 3)], inf),
-			\source, Pseq([1, Pn(0, 3)], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pbindef(\unit3,
-			\amp, 0.03 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\freq, 362, // 458,
-			\envL2, 2.89,
-			\envL3, 0.67,
-			\envL4, 4.79,
-			\envT2, 0,
-			\envT3, 0.18,
-			\envT4, 0.14,
-			\beats, 1.8,
-			\lpf, 12714,
-			\hpf, 2615,
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit3");
-		18.0.wait;
+		28.0.wait;
 	};
 
 	~song8Part2 = {
 		"song8 part2".postln;
 	    ~song8InitPart.value;
-	    Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
-	    Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), Rest(0.5), Rest(1), 2, 1, 1.5, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(2.5), 4, Rest(2), 2.5, 3], inf)
+		).quant_(~globalQuant);
 		Pbindef(\unit5,
 			\echohz1, 9.68,
 			\echohz2, 0,
 			\curve, -38.3,
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit5");
-		18.0.wait;
+		14.0.wait;
 	};
 
 	~song8Part3 = {
 		"song8 part3".postln;
 		~song8InitPart.value;
-		Pbindef(\unit1,
-			\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\spec1, Pseq([0.03, 0.00001, 0.03, 0.01, 0.03, 0.0001, 0.03, 0.01], inf),
-			\spec2, Pseq([0, 0.2], inf),
-			\noiseFreq, Pseq([14.7, 5], inf),
-			\sigFreq, Pseq([57.5, 35], inf),
-			\damp, Pseq([43.81, 7.58], inf),
-			\source, Pseq([1, 0], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
-		Pbindef(\unit2,
-			\dur, Pseq([Rest(1.5), 3.5, Rest(3), 1], inf),
-			\amp, 0.054 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\delTimeL, 0,
-			\delTimeR, 0
-		).quant_(~globalQuant);
-		~resetControlBus.value(#["clappingunit2delTimeL", "clappingunit2delTimeR"]);
-		36.0.wait;
-	};
-
-	~song8Part4 = {
-		"song8 part4".postln;
-		~song8InitPart.value;
-		Pbindef(\unit1,
-			\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\spec1, Pseq([0.03, 0.00001, 0.00001, 0.03, 0.01, 0.01, 0.03, 0.0001, 0.0001, 0.03, 0.01, 0.01], inf),
-			\spec2, Pseq([0, 0.2, 0.2], inf),
-			\noiseFreq, Pseq([14.7, 5, 5], inf),
-			\sigFreq, Pseq([57.5, 35, 35], inf),
-			\damp, Pseq([43.81, 7.58, 7.58], inf),
-			\source, Pseq([1, 0, 0], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pbindef(\unit2,
-			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit2delTimeL");
-		Pbindef(\unit3,
-			\amp, 0.03 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\freq, 458,
-			\envL2, 2.89,
-			\envL3, 0.67,
-			\envL4, 4.79,
-			\envT1, 0.05,
-			\envT2, 0,
-			\envT3, 0.35,
-			\envT4, 0.14,
-			\beats, 1.8,
-			\lpf, 12714,
-			\hpf, 2615,
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit3");
-		Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 0.5, Rest(1), 2, 1, 1.5, 1.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit7,
-			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\dur, 0.875, // Pseq([Pn(Pseq([0.875, 1]), 3), 0.875, 0.5], inf),
+			\amp, 0.055 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\envL2, 0,
 			\decay, 0.04,
-			\release, 0.12, // Pseq([0, 0.14], inf),
+			\release, 0.12,
 			\punch, 0.08,
 			\envfLev2, 14990,
 			\envfTime, 0,
@@ -2054,184 +1979,211 @@
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit7");
 		Pbindef(\unit8,
-			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
-			\amp, 0.065 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\rel, Pseq([0.08, 0.1, 0.08, 0.08, 0.18, 0.08, 0.23, 0.08, 0.08, 0.08, 0.1, 0.08], inf),
-			\curve, 0
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 2)], inf),
+			\rel, Pseq([0.58, 0.12, 0.32, 1.02, 0.32, 0.12], inf)
 		).quant_(~globalQuant);
-		~resetControlBus.value(#["cymnewunit8rel", "cymnewunit8curve"]);
-		72.0.wait;
+		~resetControlBus.value("unit8rel");
+		28.0.wait;
+	};
+
+	~song8Part4 = {
+		"song8 part4".postln;
+		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 2, 0.5, Rest(1), 1, 1.5, 1.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(3.5), 3, Rest(3), 2.5, Rest(2)], inf)
+		).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([Pn(0.5, 2), 1, Pn(0.5, 3)], inf),
+			\rel, Pseq([0.58, 0.12, 0.32, 1.02, 0.12, 0.32], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
+		28.0.wait;
 	};
 
 	~song8Part5 = {
 		"song8 part5".postln;
 		~song8InitPart.value;
-		Pbindef(\unit1,
-			\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\spec1, Pseq([0.03, Pn(0.00001, 3), 0.03, Pn(0.01, 3), 0.03, Pn(0.0001, 3), 0.03, Pn(0.01, 3)], inf),
-			\spec2, Pseq([0, Pn(0.2, 3)], inf),
-			\noiseFreq, Pseq([14.7, Pn(5, 3)], inf),
-			\sigFreq, Pseq([57.5, Pn(35, 3)], inf),
-			\damp, Pseq([43.81, Pn(7.58, 3)], inf),
-			\source, Pseq([1, Pn(0, 3)], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\dur, Pseq([0.5, Rest(2), 2], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
+			\delTimeL, Pseq([0, 0.15, 0, 0.15, 0.15, 0], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
 		Pbindef(\unit5,
 			\echohz1, 9.68,
 			\echohz2, 0,
-			\curve, Pseq([-38.3, 0, -38.3], inf),
+			\curve, Pseq([-38.3, 0, -38.3], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit5");
 		Pbindef(\unit6,
-			\drumFilter, 3247,
-			\modIndex, 12,
-			\modFreq, 6.83,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14,
 		).quant_(~globalQuant);
-		~resetControlBus.value(#["sosKickunit6drumFilter", "sosKickunit6modIndex", "sosKickunit6modFreq"]);
-		Pbindef(\unit7,
-			\dur, Pseq([0.5, 0.5, 1, Rest(0.25)/**/, 0.5, 0.5, Rest(0.25), 1], inf)
-		).quant_(~globalQuant);
+		~resetControlBus.value("unit6");
 		Pbindef(\unit8,
 			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
+			\rel, 0.22
 		).quant_(~globalQuant);
-		36.0.wait;
+		~resetControlBus.value("unit8rel");
+		72.0.wait;
 	};
 
 	~song8Part6 = {
 		"song8 part6".postln;
 		~song8InitPart.value;
+		~changePattern.value(Pdef(\unit1), ~song8Pattern9);
 		Pbindef(\unit1,
-			\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\release, 0.02,
-			\spec1, Pseq([0.01, 0.01, 0.03], inf),
-			\spec2, Pseq([0.2, 0.05, 0], inf),
-			\noiseFreq, Pseq([5, 20, 14.7], inf),
-			\sigFreq, Pseq([35, 20, 57.5], inf),
-			\spring, Pseq([0.87, 0, 0.87], inf),
-			\damp, Pseq([7.58, 70, 43.81], inf),
-			\beltmass, Pseq([8.95, 13.15, 8.95], inf),
-			\source, Pseq([0, 3, 1], inf),
-			\hpfFreq, Pseq([50, 8558, 50], inf)
+			\amp, 0.12 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\rungler2, 0.88
 		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		~resetControlBus.value("unit1rungler2");
 		Pbindef(\unit2,
-			//\dur, Pseq([0.5, Rest(2), 2], inf),
-			\dur, Pseq([Rest(0.5), 4, Rest(1.5), 3], inf),
-			\amp, 0.054 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\delTimeL, 0,
-			\delTimeR, 0
+			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0], inf)
 		).quant_(~globalQuant);
-		~resetControlBus.value(#["clappingunit2delTimeL", "clappingunit2delTimeR"]);
-		Pbindef(\unit3,
-			\amp, 0.03 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\freq, 458,
-			\envL2, 2.89,
-			\envL3, 0.67,
-			\envL4, 4.79,
-			\envT1, 0.05,
-			\envT2, 0,
-			\envT3, 0.05,
-			\envT4, 0.14,
-			\beats, 1.8,
-			\lpf, 12714,
-			\hpf, 2615,
+		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, Rest(0.5)/**/, Rest(1), 1, Rest(2.5), Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pbindef(\unit6,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14,
 		).quant_(~globalQuant);
-		~resetControlBus.value("unit3");
-		Pdefn(\patt3_4_dur, Pseq([1, 1.5, 3, 0.5, Rest(3)/**/, 1, 1.5, 3, 0.5, Rest(1), 2], inf)).quant_(~globalQuant);
-		Pbindef(\unit5,
-			\echohz1, 9.68,
-			\echohz2, Pseq([38.77, 0], inf),
-			\curve, Pseq([-38.3, 0, -38.3], inf),
+		~resetControlBus.value("unit6");
+		Pbindef(\unit8,
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
+			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.06, 0.45], inf)
 		).quant_(~globalQuant);
-		~resetControlBus.value("unit5");
-		Pbindef(\unit7,
-			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf)
-		).quant_(~globalQuant);
+		~resetControlBus.value("unit8rel");
 		72.0.wait;
 	};
 
 	~song8Part7 = {
 		"song8 part7".postln;
 		~song8InitPart.value;
-		Pbindef(\unit1,
-			\amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\spec1, Pseq([0.03, Pn(0.00001, 3), 0.03, Pn(0.01, 3), 0.03, Pn(0.0001, 3), 0.03, Pn(0.01, 3)], inf),
-			\spec2, Pseq([0, Pn(0.2, 3)], inf),
-			\noiseFreq, Pseq([14.7, Pn(5, 3)], inf),
-			\sigFreq, Pseq([57.5, Pn(35, 3)], inf),
-			\damp, Pseq([43.81, Pn(7.58, 3)], inf),
-			\source, Pseq([1, Pn(0, 3)], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 1, Rest(0.25), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
-			\dur, Pseq([Rest(0.5), 2, Rest(2), 0.5, Rest(2), 2/**/, Rest(0.5), 2, Rest(2), 0.5, Rest(4)], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3/**/, 0, 0.15, 0, 0.3, 0.3], inf)
+			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
+			\delTimeL, Pseq([Pn(0, 7), 0.15], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, Rest(0.5)/**/, Rest(1), 1, Rest(2.5), Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit6,
-			\drumFreq, 40,
-			\drumSweep, 2.23,
-			\curve, 3.87,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14
 		).quant_(~globalQuant);
-		~resetControlBus.value(#["sosKickunit6drumFreq", "sosKickunit6drumSweep", "sosKickunit6curve"]);
+		~resetControlBus.value("unit6");
 		Pbindef(\unit7,
-			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf),
+			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+			\envL2, 0,
+			\decay, 0.04,
+			\release, 0.12,
+			\punch, 0.08,
+			\envfLev2, 14990,
+			\envfTime, 0,
+			\envfCurve, -1.05,
 		).quant_(~globalQuant);
+		~resetControlBus.value("unit7");
 		Pbindef(\unit8,
-			\dur, Pseq([0.25, 0.5, Rest(0.25), 0.5, 0.5, Rest(0.25)/**/, 0.25, 0.5, Rest(0.5), 0.25, Rest(0.5), 0.25], inf)
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
+			\rel, Pseq([Pseq([0.58, 0.12, 0.032], 2), 0.9, 0.32], inf)
 		).quant_(~globalQuant);
-		72.0.wait;
+		~resetControlBus.value("unit8rel");
+		36.0.wait;
 	};
 
-	~song8Part8 = {
+	~song8BisPart8 = {
 		"song8 part8".postln;
 		~song8InitPart.value;
-		Pbindef(\unit1,
-			\amp, Pseq([0.4, 0.06], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\release, Pseq([0.02, 0.26], inf),
-			\spec1, Pseq([0.01, 1, 0.01, 1, 0.01, 1, 0.01, 1], inf),
-			\spec2, Pseq([0.2, 0.74], inf),
-			\noiseFreq, Pseq([5, 38.2], inf),
-			\sigFreq, Pseq([35, 28], inf),
-			\damp, Pseq([7.58, 51.13], inf),
-			\beltmass, Pseq([8.95, 0.02], inf),
-			\source, Pseq([0, 5], inf),
-			\hpfFreq, Pseq([50, 20], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1");
-		Pdefn(\patt1_5_dur, Pseq([Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, Rest(0.75), 0.5, 1/**/, Rest(0.5), 1.75, 0.125, Rest(1.125), 1/**/, Rest(0.5), 1.75, 1.125, Rest(1.125)], inf)).quant_(~globalQuant);
+		~changePattern.value(Pdef(\unit1), ~song8Pattern9);
 		Pbindef(\unit2,
 			\dur, Pseq([0.5, Rest(2), 2], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0.15, 0.3], inf)
+			\delTimeL, Pseq([0, 0.15, 0, 0.15, 0.15, 0, Pseq([0, 0.15, 0], 2)], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit5,
-			\att, 0.65,
+			\att, 0.45,
 			\echohz1, Pseq([9.68, 0, 9.68], inf),
 			\echohz2, 0,
 			\curve, Pseq([33.93, 4, 33.93], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit5");
 		Pbindef(\unit6,
-			\drumFreq, 40,
-			\drumSweep, 2.23,
-			\curve, 3.87,
+			\subamp, 1.65,
+			\drumAmp, 1.38,
+			\clickAmp, 3.3,
+			\startsubfreq, 75,
+			\endsubfreq, 25,
+			\linesubdur, 0.84,
+			\subdecay, 6.05,
+			\sublowpass, 1884,
+			\drumFreq, 15,
+			\drumHarmonic, 4,
+			\drumSweep, 2.4,
+			\drumAtt, 0.02,
+			\drumRel, 0.57,
+			\curve, 3.45,
+			\drumFilter, 2772,
+			\modIndex, 5063,
+			\modFreq, 0.06,
+			\clkffreq, 11341,
+			\clkres, 0.14
 		).quant_(~globalQuant);
-		~resetControlBus.value(#["sosKickunit6drumFreq", "sosKickunit6drumSweep", "sosKickunit6curve"]);
+		~resetControlBus.value("unit6");
 		Pbindef(\unit7,
-			\dur, Pseq([0.5, Rest(0.5), 1, Rest(0.25)/**/, Rest(0.5), 0.5, Rest(0.25), 1], inf),
 			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\envL2, 0,
 			\decay, 0.04,
-			\release, 0.12, // Pseq([0, 0.14], inf),
+			\release, 0.12,
 			\punch, 0.08,
 			\envfLev2, 14990,
 			\envfTime, 0,
@@ -2240,11 +2192,9 @@
 		~resetControlBus.value("unit7");
 		Pbindef(\unit8,
 			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
-			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\rel, Pn(Pseq([0.08, 0.1, 0.08], 3)),
-			\curve, 0
+			\rel, 0.22
 		).quant_(~globalQuant);
-		~resetControlBus.value(#["cymnewunit8rel", "cymnewunit8curve"]);
+		~resetControlBus.value("unit8rel");
 		72.0.wait;
 	};
 
@@ -2253,13 +2203,13 @@
 	{
 		// Synth
 
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.1);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.07);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(0.11);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "release").valueAction_(6.05);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "curve").valueAction_(-4);
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(62);
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(1);
-		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "buffer").valueAction_(53);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "rate").valueAction_(0.94);
+		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "startPos").valueAction_(0.19);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "loop").valueAction_(0);
 
 		~autoGuiControl.at("sinBass" ++ ~nodeId.at("sinBass") ++ "amp").valueAction_(0.91);
@@ -2338,10 +2288,10 @@
 		~song8Part2.value;
 		~song8Part3.value;
 		~song8Part4.value;
-		~song8Part5.value;
+		/*~song8Part5.value;
 		~song8Part6.value;
 		~song8Part7.value;
-		~song8Part8.value;
+		~song8Part8.value;*/
 	}
 };
 

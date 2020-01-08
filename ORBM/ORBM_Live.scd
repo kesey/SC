@@ -28,11 +28,11 @@ Tdef(\song, ~song6).play(t, true, ~globalQuant);*/
 /*~globalQuant = 7; // !!! change globalQuant before song !!!
 Tdef(\song, ~song7).play(t, true, ~globalQuant);*/
 
-/*~globalQuant = 9; // !!! change globalQuant before song !!!
-Tdef(\song, ~song8).play(t, true, ~globalQuant);*/
+~globalQuant = 7; // !!! change globalQuant before song !!!
+Tdef(\song, ~song8).play(t, true, ~globalQuant);
 
-~globalQuant = 9; // !!! change globalQuant before song !!!
-Tdef(\song, ~song8Bis).play(t, true, ~globalQuant);
+/*~globalQuant = 9; // !!! change globalQuant before song !!!
+Tdef(\song, ~song8Bis).play(t, true, ~globalQuant);*/
 
 if (~sequencerTransport.isPlaying.not, { ~sequencerTransport = p.play(t, quant: ~globalQuant); });
 )
