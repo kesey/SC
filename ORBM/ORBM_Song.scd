@@ -1965,9 +1965,8 @@
 	~song8Part3 = {
 		"song8 part3".postln;
 		~song8InitPart.value;
-		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 0.5, Rest(1), 2, 1, 1.5, 1.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit7,
-			\dur, 0.875, // Pseq([Pn(Pseq([0.875, 1]), 3), 0.875, 0.5], inf),
+			\dur, 0.875,
 			\amp, 0.055 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\envL2, 0,
 			\decay, 0.04,
@@ -1998,17 +1997,19 @@
 			\rel, Pseq([0.58, 0.12, 0.32, 1.02, 0.12, 0.32], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit8rel");
-		28.0.wait;
+		56.0.wait;
 	};
 
 	~song8Part5 = {
 		"song8 part5".postln;
 		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), Rest(1), Rest(0.5), 2, 1.5, 1.5, 1/**/, Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 1, Rest(0.5), 2, 1, 1.5, 1.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
-			\dur, Pseq([0.5, Rest(2), 2], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0.15, 0.15, 0], inf)
+			\dur, Pseq([Rest(3.5), 3, Rest(3), 2.5, Rest(2)], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0, 0], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
+		Pdefn(\patt3_4_dur, Pseq([Pn(Pseq([Rest(0.55), 3.45, 3]), 3)/**/, Rest(0.55), 1.45, 2, 3], inf)).quant_(~globalQuant); // ((0.55+3.45+3)*3)+0.55+1.45+2+3
 		Pbindef(\unit5,
 			\echohz1, 9.68,
 			\echohz2, 0,
@@ -2037,29 +2038,19 @@
 			\clkres, 0.14,
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit6");
-		Pbindef(\unit8,
-			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
-			\rel, 0.22
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit8rel");
-		72.0.wait;
+		56.0.wait;
 	};
 
 	~song8Part6 = {
 		"song8 part6".postln;
 		~song8InitPart.value;
 		~changePattern.value(Pdef(\unit1), ~song8Pattern9);
-		Pbindef(\unit1,
-			\amp, 0.12 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-			\rungler2, 0.88
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit1rungler2");
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 1, Rest(0.5), 1, 2, 1.5, 1.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
-			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0], inf)
+			\dur, Pseq([Rest(3.5), 3, Rest(3), 2.5, Rest(2)], inf),
+			\delTimeL, Pseq([0, 0.15, 0, 0.3, 0], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
-		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, Rest(0.5)/**/, Rest(1), 1, Rest(2.5), Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit6,
 			\subamp, 1.65,
 			\drumAmp, 1.38,
@@ -2083,22 +2074,23 @@
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit6");
 		Pbindef(\unit8,
-			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
-			\rel, Pseq([Pseq([0.58, 0.12, 0.32], 2), 1.06, 0.45], inf)
+			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 2)], inf),
+			\rel, Pseq([0.12, 0.32, 0.58, 0.12, 1.02, 0.32], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit8rel");
-		72.0.wait;
+		56.0.wait;
 	};
 
 	~song8Part7 = {
 		"song8 part7".postln;
 		~song8InitPart.value;
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 2, 1, Rest(0.5), 1, 1.5, 1.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
-			\dur, Pseq([Rest(2.5), 2, Rest(2), 2.5], inf),
-			\delTimeL, Pseq([Pn(0, 7), 0.15], inf)
+			\dur, Pseq([Rest(3.5), 3, Rest(3), 2.5, Rest(2)], inf),
+			\delTimeL, Pseq([0, 0.26, 0, 0.15, 0], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
-		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, Rest(0.5)/**/, Rest(1), 1, Rest(2.5), Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Pn(Pseq([Rest(0.55), 3.45, 3]), 2)/**/, Rest(0.55), 1.45, 2, 3/**/, Rest(0.55), 1.45, Rest(2), 3], inf)).quant_(~globalQuant); // ((0.55+3.45+3)*2)+0.55+1.45+2+3+0.55+1.45+2+3
 		Pbindef(\unit6,
 			\subamp, 1.65,
 			\drumAmp, 1.38,
@@ -2122,6 +2114,7 @@
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit6");
 		Pbindef(\unit7,
+			\dur, 0.875,
 			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\envL2, 0,
 			\decay, 0.04,
@@ -2132,24 +2125,20 @@
 			\envfCurve, -1.05,
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit7");
-		Pbindef(\unit8,
-			\dur, Pseq([Pn(0.5, 3), 1, Pn(0.5, 4)], inf),
-			\rel, Pseq([Pseq([0.58, 0.12, 0.032], 2), 0.9, 0.32], inf)
-		).quant_(~globalQuant);
-		~resetControlBus.value("unit8rel");
-		36.0.wait;
+		56.0.wait;
 	};
 
-	~song8BisPart8 = {
+	~song8Part8 = {
 		"song8 part8".postln;
 		~song8InitPart.value;
 		~changePattern.value(Pdef(\unit1), ~song8Pattern9);
+		Pdefn(\patt1_5_dur, Pseq([Rest(1), 1.5, 1, 1.5, 1, Rest(0.5), 2, 1, Rest(0.5), 1, 1.5, 1.5], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
-			\dur, Pseq([0.5, Rest(2), 2], inf),
-			\delTimeL, Pseq([0, 0.15, 0, 0.15, 0.15, 0, Pseq([0, 0.15, 0], 2)], inf)
+			\dur, Pseq([Rest(3.5), 3, Rest(3), 2.5, Rest(2)], inf),
+			\delTimeL, Pseq([0, 0.26, 0, 0.15, 0], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2delTimeL");
-		Pdefn(\patt3_4_dur, Pseq([Rest(1), Rest(1), 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5/**/, Rest(1), 1, 2.5, Rest(0.5), 1, Rest(1), 1.5, 0.5], inf)).quant_(~globalQuant);
+		Pdefn(\patt3_4_dur, Pseq([Pn(Pseq([Rest(0.55), 3.45, 3]), 2)/**/, Rest(0.55), 1.45, 2, 3/**/, Rest(0.55), 1.45, Rest(2), 3], inf)).quant_(~globalQuant); // ((0.55+3.45+3)*2)+0.55+1.45+2+3+0.55+1.45+2+3
 		Pbindef(\unit5,
 			\att, 0.45,
 			\echohz1, Pseq([9.68, 0, 9.68], inf),
@@ -2180,6 +2169,7 @@
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit6");
 		Pbindef(\unit7,
+			\dur, 0.875,
 			\amp, 0.06 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\envL2, 0,
 			\decay, 0.04,
@@ -2191,11 +2181,11 @@
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit7");
 		Pbindef(\unit8,
-			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.5, 0.25/**/, 0.25, 0.5, 0.5, 0.25, 0.5, 0.25], inf),
-			\rel, 0.22
+			\dur, Pseq([Pn(0.5, 2), 1, Pn(0.5, 3)], inf),
+			\rel, Pseq([0.58, 0.12, 0.32, 1.02, 0.12, 0.32], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit8rel");
-		72.0.wait;
+		56.0.wait;
 	};
 
 	// Synth + Fx Preset
@@ -2288,10 +2278,10 @@
 		~song8Part2.value;
 		~song8Part3.value;
 		~song8Part4.value;
-		/*~song8Part5.value;
+		~song8Part5.value;
 		~song8Part6.value;
 		~song8Part7.value;
-		~song8Part8.value;*/
+		~song8Part8.value;
 	}
 };
 
