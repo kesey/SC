@@ -886,7 +886,7 @@ SynthDef(\technokick, {
 	sig = Compander.ar(sig,sig, thresh: 0.5,
 		slopeBelow: 0.59, slopeAbove: 1,
 		clampTime: 0.002, relaxTime: 0.1, mul: 1);
-	OffsetOut.ar(out, sig * env);
+	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
 )

@@ -1241,8 +1241,8 @@ SynthDef(\kik3Br, { arg out = 0, amp = 1, pan = 0, freq = 66, att = 0.01, dec = 
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-SynthDef(\technokick, {
-	| out=0, amp=0.5, attack = 0.01, release = 6, freq=51.913087197493, rel=0.28571428571429, click=0.008, spread=0.1, damp=0.6 gate=1, doneAction = 2 |
+~technokickSynthDef = SynthDef(\technokick, {
+	| out=0, amp=0.5, attack = 0.01, release = 6, freq=51.913087197493, rel=0.28571428571429, click=0.008, spread=0.1, damp=0.6, gate=1, doneAction = 2 |
 	var sig, env, env1, aEnv, env2, wEnv, vEnv, low, high, dry, verb, verbHi, verbLo;
 	// env.ar is really good for this since thie envelopes are so short
 	env = EnvGen.kr(Env.linen(attack, 1, release), doneAction: doneAction);
@@ -1296,7 +1296,7 @@ SynthDef(\technokick, {
 	sig = Compander.ar(sig,sig, thresh: 0.5,
 		slopeBelow: 0.59, slopeAbove: 1,
 		clampTime: 0.002, relaxTime: 0.1, mul: 1);
-	OffsetOut.ar(out, sig * env);
+	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
 ///////////////////////////////////////  Snare
@@ -2674,7 +2674,7 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 	OffsetOut.ar(out, t * env);
 }).add;
 
-SynthDef(\feedbackOsc, {|out=0, amp = 1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
+~feedbackOscSynthDef = SynthDef(\feedbackOsc, {|out=0, amp = 1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
 	var w= [0, width*2pi];
 	var buf= LocalBuf(1).clear;
 	var buf2= LocalBuf(1, 2).clear;
