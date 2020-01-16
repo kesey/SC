@@ -2693,11 +2693,12 @@
 		~changePattern.value(Pdef(\unit1), ~song9Pattern1);
 		/*~changePattern.value(Pdef(\unit2), ~song9Pattern2);
 		~changePattern.value(Pdef(\unit3), ~song9Pattern3);
-		~changePattern.value(Pdef(\unit4), ~song9Pattern4);
-		~changePattern.value(Pdef(\unit5), ~song9Pattern5);*/
+		~changePattern.value(Pdef(\unit4), ~song9Pattern4);*/
+		~changePattern.value(Pdef(\unit5), ~song9Pattern5);
 		~changePattern.value(Pdef(\unit6), ~song9Pattern6);
 		/*~changePattern.value(Pdef(\unit7), ~song9Pattern7);
 		~changePattern.value(Pdef(\unit8), ~song9Pattern8);*/
+		Pdefn(\patt1_6_dur, Pseq([1, 0.15625, 0.6875, 0.46875, 0.6875, 1, 1], inf)).quant_(~globalQuant);
 		~resetAllControlBus.value;
 	};
 

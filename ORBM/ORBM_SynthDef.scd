@@ -1295,7 +1295,7 @@ SynthDef(\kik3Br, { arg out = 0, amp = 1, pan = 0, freq = 66, att = 0.01, dec = 
 	sig = dry + verb;
 	sig = Compander.ar(sig,sig, thresh: 0.5,
 		slopeBelow: 0.59, slopeAbove: 1,
-		clampTime: 0.002, relaxTime: 0.1, mul: 1);
+		clampTime: 0.002, relaxTime: 0.1, mul: 1)!2;
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
@@ -2642,7 +2642,7 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 	OffsetOut.ar(out, output * EnvGate(fadeTime: fadeTime, doneAction: doneAction));
 }).add;
 
-~bytebeatsSynthDef = SynthDef(\bytebeats, { arg out = 0, amp = 1, att = 0.01, rel = 0.01, srDiv = 6, freq = 232, doneAction = 2;
+~bytebeatsSynthDef = SynthDef(\bytebeats, { arg out = 0, amp = 1, envL1 = 0, envL2 = 1, envL3 = 0.2, envL4 = 3.2, envL5 = 0, envT1 = 0.12, envT2 = 0.02, envT3 = 0, envT4 = 0.2, curve1 = (-4), curve2 = (-4), curve3 = (-4), curve4 = (-4), counterFreq = 1, counterMul = 3.5, counterAdd = 3.5, srDiv = 6, freq = 232, doneAction = 2;
 	//var sr = SampleRate.ir/6; //fix sample rate
 	var counter, env;
 	var sr = SampleRate.ir/srDiv; //variable sample rate
@@ -2650,13 +2650,13 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 	var n = 16; //bit resolution
 	var t= Phasor.ar(1,freq*((2**n)/sr),0,((2**n)-1)); //creating a raising value from 0 to 2**n
 	//t = t & (2**(n-1)); // few tests
-	env = EnvGen.kr(Env.linen(att, 1, rel), doneAction: doneAction);
+	env = EnvGen.kr(Env([envL1, envL2, envL3, envL4, envL5], [envT1, envT2, envT3, envT4], [curve1, curve2, curve3, curve4]), doneAction: doneAction);
 	//equations: try one at the time
 	t = t * 4;
-	counter = LFSaw.ar(0.5,0,3.5,3.5); // browse the equations
-	//counter = LFDNoise0.ar(MouseY.kr(1,0.1),3.5,3.5);
+	//counter = LFSaw.ar(0.5,0,3.5,3.5); // browse the equations
+	counter = LFDNoise0.ar(counterFreq, counterMul, counterAdd);
 	//counter.poll;
-	t = Select.ar(counter,[
+	t = SelectX.ar(counter,[
 
 	t*(((t>>12)|(t>>8))&(63&(t>>4))),
 	t*(((t>>9)|(t>>13))&(25&(t>>6))),
@@ -2674,7 +2674,7 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 	OffsetOut.ar(out, t * env);
 }).add;
 
-~feedbackOscSynthDef = SynthDef(\feedbackOsc, {|out=0, amp = 1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
+SynthDef(\feedbackOsc, {|out=0, amp = 1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
 	var w= [0, width*2pi];
 	var buf= LocalBuf(1).clear;
 	var buf2= LocalBuf(1, 2).clear;

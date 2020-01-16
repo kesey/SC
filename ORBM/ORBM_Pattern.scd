@@ -4767,21 +4767,28 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ///////////////////// song9
 
 ~song9Pattern1 = Pbind(
-	\instrument, \feedbackOsc,
-	\dur, Pseq([1, 0.15625, 0.6875, 0.46875, 0.6875, 1, 1], inf),
+	\instrument, \bytebeats,
+	\dur, Pdefn(\patt1_6_dur),
 	\amp, 0.03 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-	\mFrq, 313,
-	\mFB, 1,
-	\freq, 11779,
-	\fB, 1,
-	\width, 0,
-	\mul, 500,
-	\ffreq, 1000,
-	\rq, 1,
-	\attack, 0.01,
-	\sustain, 1,
-	\release, 1,
-	\out, ~channelBus[0],
+	\envL1, 0,
+	\envL2, 1,
+	\envL3, 0.2,
+	\envL4, 3.2,
+	\envL5, 0,
+	\envT1, 0.12,
+	\envT2, 0.02,
+	\envT3, 0.13,
+	\envT4, 0.19,
+	\curve1, -60,
+	\curve2, 0,
+	\curve3, 18.71,
+	\curve4, -9.91,
+	\counterFreq, 0.9,
+	\counterMul, 3.5,
+	\counterAdd, 3.5,
+	\srDiv, 0.4,
+	\freq, 27,
+	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
@@ -4793,21 +4800,28 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 			midiChan = ~pdefMidiChan.asInt;
 			{
 				~removePrev.value(synthWindowKey);
-				~autoGui.value(v, ~feedbackOscSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+				~autoGui.value(v, ~bytebeatsSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
 					"doneAction", ["none"],
 					"gate", ["none"],
 					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
-					"mFrq", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\mFrq)), true],
-					"mFB", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\mFB)), true],
+					"envL1", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL1)), true],
+					"envL2", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL2)), true],
+					"envL3", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL3)), true],
+					"envL4", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL4)), true],
+					"envL5", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\envL5)), true],
+					"envT1", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT1)), true],
+					"envT2", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT2)), true],
+					"envT3", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT3)), true],
+					"envT4", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\envT4)), true],
+					"curve1", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve1)), true],
+					"curve2", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve2)), true],
+					"curve3", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve3)), true],
+					"curve4", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve4)), true],
+					"counterFreq", ["knob", ControlSpec(0.1, 100, step: 0.1, default: event.at(\counterFreq)), true],
+					"counterMul", ["knob", ControlSpec(0, 10, step: 0.1, default: event.at(\counterMul)), true],
+					"counterAdd", ["knob", ControlSpec(0, 10, step: 0.1, default: event.at(\counterAdd)), true],
 					"freq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freq)), true],
-					"fB", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\fB)), true],
-					"width", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\width)), true],
-					"mul", ["knob", ControlSpec(0, 10000, step: 0.1, default: event.at(\mul)), true],
-					"ffreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\ffreq)), true],
-					"rq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\rq)), true],
-					"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\attack)), true],
-					"sustain", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\sustain)), true],
-					"release", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\release)), true]
+					"srDiv", ["knob", ControlSpec(0.1, 1000, step: 0.1, default: event.at(\srDiv)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -4818,8 +4832,8 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song9Pattern6 = Pbind(
 	\instrument, \technokick,
-	\dur, Pseq([1, 0.15625, 0.6875, 0.46875, 0.6875, 1, 1], inf),
-	\amp, 1.3 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\dur, Pdefn(\patt1_6_dur),
+	\amp, 1 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\attack, 0.01,
 	\release, 6,
 	\freq, 65.76,
