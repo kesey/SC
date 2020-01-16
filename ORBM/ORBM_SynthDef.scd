@@ -968,10 +968,10 @@ SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, tridDur = 0.12
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
-SynthDef(\kicky,{ arg out = 0, startFreq=80, endFreq=15, decay=4, lowpass=800, amp=1, noiseAmp=0.0, gain=1, dur=6, doneAction = 2;
+~kickySynthDef = SynthDef(\kicky,{ arg out = 0, amp=1, startFreq=80, endFreq=15, length=6, decay=4, lowpass=800, noiseAmp=0.0, gain=1, doneAction = 2;
 	var sig, env, freq;
-	freq = Line.kr(PinkNoise.kr(6,startFreq), PinkNoise.kr(3,endFreq), dur, 1, 0);
-	env = EnvGen.kr(Env.perc(0.014, dur, 1, -5), 1, doneAction: doneAction);
+	freq = Line.kr(PinkNoise.kr(6,startFreq), PinkNoise.kr(3,endFreq), length, 1, 0);
+	env = EnvGen.kr(Env.perc(0.014, length, 1, -5), 1, doneAction: doneAction);
 	sig = {(LPF.ar(Ringz.ar(Impulse.ar(0), freq, decay), lowpass) * amp) ! 2};
 	sig = LPF.ar(sig,BrownNoise.kr(500,1500))*0.3;
 	sig = sig * gain;
@@ -979,14 +979,14 @@ SynthDef(\kicky,{ arg out = 0, startFreq=80, endFreq=15, decay=4, lowpass=800, a
 	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
-SynthDef(\kickey,{ arg out = 0, amp = 1, att = 0.0014, rel = 0.8, curve = (-5), startFreq = 60, endFreq = 10, decay = 0.8, lowpass = 500, noiseAmp = 0.00, gain = 1, linedur = 0.8, doneAction = 2;
+~kickeySynthDef = SynthDef(\kickey,{ arg out = 0, amp = 1, att = 0.0014, rel = 0.8, curve = (-5), startFreq = 60, endFreq = 10, linedur = 0.8, decay = 0.8, lowpass = 500, rq = 1, gain = 1, smoothLo = (-1), smoothHi = 1, foldRange = 1, smoothAmount = 0.5, doneAction = 2;
 	var sig, env, freq;
 	freq = XLine.kr(startFreq, endFreq, linedur, 1, 0);
 	env = EnvGen.kr(Env.perc(att, rel, 1, curve), 1, doneAction: doneAction);
-	sig = {(LPF.ar(Ringz.ar(Impulse.ar(0), freq, decay), lowpass) * amp) ! 2};
-	sig = sig + LPF.ar((noiseAmp*BrownNoise.ar(1)),lowpass);
+	sig = {(RLPF.ar(Ringz.ar(Impulse.ar(0), freq, decay), lowpass, rq)) ! 2};
 	sig = sig * gain;
-	sig = sig.softclip * amp * env;
+	//sig = sig.softclip * amp * env;
+	sig = SmoothFoldS.ar(sig, smoothLo, smoothHi, foldRange, smoothAmount) * amp * env;
 	OffsetOut.ar(out, [sig,sig]);
 }).add;
 

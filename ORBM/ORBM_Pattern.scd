@@ -4775,9 +4775,9 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\envL3, 0.2,
 	\envL4, 3.2,
 	\envL5, 0,
-	\envT1, 0.12,
+	\envT1, 0.12, // Pseq([0.12, 0.24], inf),
 	\envT2, 0.02,
-	\envT3, 0.13,
+	\envT3, Pseq([0.13, 0.24, 0.13, 0.03, 0.42, 0.02, 0.13], inf),
 	\envT4, 0.19,
 	\curve1, -60,
 	\curve2, 0,
@@ -4822,6 +4822,104 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"counterAdd", ["knob", ControlSpec(0, 10, step: 0.1, default: event.at(\counterAdd)), true],
 					"freq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freq)), true],
 					"srDiv", ["knob", ControlSpec(0.1, 1000, step: 0.1, default: event.at(\srDiv)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
+/*~song9Pattern5 = Pbind(
+	\instrument, \kicky,
+	\dur, 1.25,
+	\amp, 1.23 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\startFreq, 80,
+	\endFreq, 15,
+	\length, 6,
+	\decay, 4,
+	\lowpass, 800,
+	\noiseAmp, 0.0,
+	\gain, 1,
+	\out, ~channelBus[0],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~kickySynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"gate", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"startFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\startFreq)), true],
+					"endFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\endFreq)), true],
+					"length", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\length)), true],
+					"decay", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\decay)), true],
+					"lowpass", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\lowpass)), true],
+					"noiseAmp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\noiseAmp)), true],
+					"gain", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\gain)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);*/
+
+~song9Pattern5 = Pbind(
+	\instrument, \kickey,
+	\dur, 1.25, // Pseq([1.25, 1, 1, Rest(0.5), 1.25], inf),
+	\amp, Pseq([0.07, 0.04, 0.07, 0.07, 0.04], inf) * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\att, 0.0014,
+	\rel, 10,
+	\curve, 103.29,
+	\startFreq, 44,
+	\endFreq, 10,
+	\linedur, 7.37,
+	\decay, 2.11,
+	\lowpass, 11945,
+	\rq, 0.02,
+	\gain, 19.84,
+	\smoothLo, -1,
+	\smoothHi, 1,
+	\foldRange, Pseq([0.01, 1, 0.01, 0.01, 1], inf),
+	\smoothAmount, 1,
+	\out, ~channelBus[0],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~kickeySynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"gate", ["none"],
+					"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\amp)), true],
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"curve", ["knob", ControlSpec(-200, 200, step: 0.01, default: event.at(\curve)), true],
+					"startFreq", ["knob", ControlSpec(10, 20000, step: 1, default: event.at(\startFreq)), true],
+					"endFreq", ["knob", ControlSpec(10, 20000, step: 1, default: event.at(\endFreq)), true],
+					"linedur", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\linedur)), true],
+					"decay", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\decay)), true],
+					"lowpass", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\lowpass)), true],
+					"rq", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\rq)), true],
+					"gain", ["knob", ControlSpec(0, 50, step: 0.01, default: event.at(\gain)), true],
+					"smoothLo", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\smoothLo)), true],
+					"smoothHi", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\smoothHi)), true],
+					"foldRange", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\foldRange)), true],
+					"smoothAmount", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\smoothAmount)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
