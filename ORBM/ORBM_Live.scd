@@ -61,7 +61,6 @@ Tdef(\song, ~song2).play(t, true, ~globalQuant); // Play Song
 Tdef(\song).pause;
 Tdef(\song).resume(t, ~globalQuant);
 
-
 Tdef(\song).stop;
 Tdef(\song).reset;
 

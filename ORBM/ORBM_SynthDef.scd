@@ -831,23 +831,6 @@ SynthDef(\kickAw, {arg out = 0, amp = 0.5, pan = 0, att = 0.01, rel = 0.45, sinf
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
-SynthDef(\ringkick, { arg out = 0, amp = 0.2, decay = 0.25, freq = 40, doneAction = 2;
-	var snd;
-	snd = Ringz.ar(
-		in: LPF.ar(
-			in: Impulse.ar(0),
-			freq: 1000
-		),
-		freq: freq,
-		decaytime: decay,
-		mul: 7 * amp
-	).tanh.sin*2;
-
-	DetectSilence.ar(in: snd, doneAction: doneAction);
-
-	OffsetOut.ar(out, snd!2);
-}).add;
-
 SynthDef(\tweetBassLeak, { arg out = 0, amp = 0.2, attack = 0.01, release = 1, att = 0.01, dec = 0.4, freq = 2, rq = 0.1, t_trig = 1, doneAction = 2;
 	var sig, demand, env, globenv;
 	demand = Demand.kr(
@@ -968,7 +951,7 @@ SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, tridDur = 0.12
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
-~kickySynthDef = SynthDef(\kicky,{ arg out = 0, amp=1, startFreq=80, endFreq=15, length=6, decay=4, lowpass=800, noiseAmp=0.0, gain=1, doneAction = 2;
+SynthDef(\kicky,{ arg out = 0, amp=1, startFreq=80, endFreq=15, length=6, decay=4, lowpass=800, noiseAmp=0.0, gain=1, doneAction = 2;
 	var sig, env, freq;
 	freq = Line.kr(PinkNoise.kr(6,startFreq), PinkNoise.kr(3,endFreq), length, 1, 0);
 	env = EnvGen.kr(Env.perc(0.014, length, 1, -5), 1, doneAction: doneAction);
@@ -979,7 +962,7 @@ SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, tridDur = 0.12
 	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
-~kickeySynthDef = SynthDef(\kickey,{ arg out = 0, amp = 1, att = 0.0014, rel = 0.8, curve = (-5), startFreq = 60, endFreq = 10, linedur = 0.8, decay = 0.8, lowpass = 500, rq = 1, gain = 1, smoothLo = (-1), smoothHi = 1, foldRange = 1, smoothAmount = 0.5, doneAction = 2;
+SynthDef(\kickey,{ arg out = 0, amp = 1, att = 0.0014, rel = 0.8, curve = (-5), startFreq = 60, endFreq = 10, linedur = 0.8, decay = 0.8, lowpass = 500, rq = 1, gain = 1, smoothLo = (-1), smoothHi = 1, foldRange = 1, smoothAmount = 0.5, doneAction = 2;
 	var sig, env, freq;
 	freq = XLine.kr(startFreq, endFreq, linedur, 1, 0);
 	env = EnvGen.kr(Env.perc(att, rel, 1, curve), 1, doneAction: doneAction);
@@ -1019,14 +1002,14 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	OffsetOut.ar(out, Pan2.ar(son * amp));
 }).add;
 
-SynthDef(\kick_oto309Br, { arg out = 0, amp = 0.5, pan = 0, att = 0.005, rel = 0.29, curve = -4,
+~kick_oto309BrSynthDef = SynthDef(\kick_oto309Br, { arg out = 0, amp = 0.5, pan = 0, envpL1 = 110, envpL2 = 59, envpL3 = 29, envpT1 = 0.01, envpT2 = 0.2, envL1 = 0.5, envL2 = 1, envL3 = 0.5, envL4 = 0, envT1 = 0.005, envT2 = 0.058, envT3 = 0.261, curve = -4,
 	//Other Controls:
 	filterHarmonic = 1.5, preamp = 1.25, pulseAmp = 0.5, noiseAmp = 1, sineAmp = 1,
 	doneAction = 2;
 	var env, envp, snd;
 
-	env = Env.new(levels: [0.5, 1, 0.5, 0], times: [att, rel * 0.2, rel * 0.9], curve: [curve, curve/2, curve]).kr(doneAction: doneAction);
-	envp = Env.new(levels: [110, 59, 29], times: [att, rel], curve: [curve, curve * 1.25]).kr.midicps;
+	env = Env.new(levels: [envL1, envL2, envL3, envL4], times: [envT1, envT2, envT3], curve: [curve, curve/2, curve]).kr(doneAction: doneAction);
+	envp = Env.new(levels: [envpL1, envpL2, envpL3], times: [envpT1, envpT2], curve: [curve, curve * 1.25]).kr.midicps;
 
 	snd = LFPulse.ar(freq: envp).range(-1 * pulseAmp, pulseAmp);
 	snd = snd + WhiteNoise.ar(mul: noiseAmp);
@@ -1093,19 +1076,36 @@ SynthDef(\kick_oto309Br, { arg out = 0, amp = 0.5, pan = 0, att = 0.005, rel = 0
 	OffsetOut.ar(out, Pan2.ar(snd * env, pan));
 }).add;
 
-SynthDef(\kickRingz, { arg out = 0, pan = 0, freq = 40, amp = 1, decay = 0.25, ffreq = 1000, doneAction = 2;
+SynthDef(\ringkick, { arg out = 0, amp = 0.2, decay = 0.25, freq = 40, doneAction = 2;
 	var snd;
+	snd = Ringz.ar(
+		in: LPF.ar(
+			in: Impulse.ar(0),
+			freq: 1000
+		),
+		freq: freq,
+		decaytime: decay,
+		mul: 7 * amp
+	).tanh.sin*2;
 
+	DetectSilence.ar(in: snd, doneAction: doneAction);
+
+	OffsetOut.ar(out, snd!2);
+}).add;
+
+~kickRingzSynthDef = SynthDef(\kickRingz, { arg out = 0, amp = 1, pan = 0, envL1 = 0.1, envL2 = 1.2, envL3 = 3, envL4 = 2.1, envL5 = 0.1, envT1 = 0.1, envT2 = 0.2, envT3 = 0, envT4 = 0.1, curve = (-4), envpL1 = 0.1, envpL2 = 1.2, envpL3 = 3, envpL4 = 2.1, envpT1 = 0.1, envpT2 = 0, envpT3 = 1.2, curvep = (-4), freq = 40, decay = 0.25, ffreq = 1000, doneAction = 2;
+	var snd, env, envp;
+
+	env = EnvGen.kr(Env([envL1, envL2, envL3, envL4, envL5], [envT1, envT2, envT3, envT4], [curve, curve/2, curve]), doneAction: doneAction);
+	envp = EnvGen.kr(Env([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3], [curvep, curvep*1.25, curvep].midicps), doneAction: doneAction);
 	snd = Ringz.ar(
 		    in: LPF.ar(in: Impulse.ar(0), freq: ffreq),
-		    freq: freq,
+		    freq: freq * envp,
 		    decaytime: decay,
 		    mul: amp
 	);
 
-	snd = snd.tanh.sin * 2;
-
-	DetectSilence.ar(in: snd, doneAction: doneAction);
+	snd = snd.tanh.sin * 2 * env;
 
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
