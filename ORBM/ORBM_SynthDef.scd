@@ -1322,16 +1322,18 @@ SynthDef(\snare, { arg out=0, amp=0.1, pan = 0, tu=1, t_gate=1, freq=200, doneAc
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\snarenew, { arg out=0,tu=1, amp=0.1, t_gate=1, pan=0, freq=200;
-    var sig;
-    var env = EnvGen.ar(Env.perc(0,0.8));
-    var enf = EnvGen.ar(Env([16000,57,15000,11188.8],[0.001,0.001,0.0001],-4));
-    sig = SinOsc.ar(tu*enf,0,0.5)*env;
-    sig = (PinkNoise.ar*env)+sig;
-    sig = RHPF.ar(sig, \hpf.kr(80)*tu, \rq.kr(0.8));
-    sig = sig + Mix.ar(BPF.ar(sig,[527,530],[0.5,0.5])*0.1);
-    sig = RHPF.ar(sig, \lpf.kr(100), \rq.kr(0.8));
-    sig = sig * EnvGen.ar(Env.perc(0,\rel.kr(1),4,-8),t_gate,doneAction:2);
+~snarenewSynthDef = SynthDef(\snarenew, { arg out = 0, amp = 0.1, pan = 0, tu = 1, envpL1 = 110, envpL2 = 59, envpL3 = 29, envpT1 = 0.01, envpT2 = 0.2, curvep = (-4), envL1 = 0.5, envL2 = 1, envL3 = 0.5, envL4 = 0, envT1 = 0.005, envT2 = 0.058, envT3 = 0.261, curve = (-4), mixNoise = 0.5, hpf = 80, rqhpf = 0.8, freq1bpf = 527, freq2bpf = 530, rq1bpf = 0.5, rq2bpf = 0.5, lpf = 100, rqlpf = 0.8, mixBpf = 0.1, doneAction = 2;
+    var sig, env, envp;
+    /*var env = EnvGen.ar(Env.perc(0,0.8));
+    var enf = EnvGen.ar(Env([16000,57,15000,11188.8],[0.001,0.001,0.0001],-4));*/
+	env = Env.new(levels: [envL1, envL2, envL3, envL4], times: [envT1, envT2, envT3], curve: [curve, curve/2, curve]).kr(doneAction: doneAction);
+	envp = Env.new(levels: [envpL1, envpL2, envpL3], times: [envpT1, envpT2], curve: [curvep, curvep * 1.25]).kr.midicps;
+    sig = SinOsc.ar(tu*envp,0,0.5)*env;
+	sig = ((PinkNoise.ar*env) * mixNoise) + (sig * (1 - mixNoise));
+    sig = RHPF.ar(sig, hpf*tu, rqhpf);
+	sig = (Mix.ar(BPF.ar(sig,[freq1bpf, freq2bpf],[rq1bpf, rq2bpf])) * mixBpf) + (sig * (1 - mixBpf));
+    sig = RLPF.ar(sig, lpf, rqlpf);
+    // sig = sig * EnvGen.ar(Env.perc(0,\rel.kr(1),4,-8),t_gate, doneAction: doneAction);
     //sig = DelayL.ar(sig,0.05,0.001)+sig;
     //sig = DelayL.ar(sig,0.05,0.01)+sig;
     //sig = DelayL.ar(sig,0.1,0.1)+sig;
@@ -1712,6 +1714,16 @@ SynthDef(\hat, { | out = 0, amp = 1 |
 	osc1 = WhiteNoise.ar(amp);
 	env = EnvGen.kr(Env.perc(0, 0.01), doneAction: 2);
 	OffsetOut.ar(out, Pan2.ar(osc1, 0, env));
+}).add;
+
+~hatenSynthDef = SynthDef(\haten, { arg out = 0, amp = 1, pan = 0, envL1 = 0, envL2 = 3, envL3 = 0, envL4 = 5, envT1 = 0, envT2 = 0.2, randFreq = 1, randAmt = 0.5, envT3 = 0.9, envT4 = 0.03, mixNoise = 0.5, sinFreq = 200, mixSaw = 0.5, sawFreq = 0, hpfreq = 400, hprq = 0.2, doneAction = 2;
+	var sig, env;
+	env = EnvGen.kr(Env.step([envL1, envL2, envL3, envL4], [envT1, envT2 * LFNoise2.ar(randFreq, randAmt), envT3, envT4]), doneAction: 2);
+	sig = (WhiteNoise.ar(amp) * mixNoise) + (FSinOsc.ar(sinFreq) * (1 - mixNoise));
+	sig = (VarSaw.ar(sawFreq) * mixSaw) + (sig * (1 - mixSaw));
+	sig = RHPF.ar(sig, hpfreq, hprq);
+	sig = sig * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
 ~ikedaHiNoiseSynthDef = SynthDef(\IkedaHiNoise, { arg out = 0, level = 10, pan = 0, attack = 0.02, decay = 0.1, rq = 0.9, amp = 0.05, t_trig = 0, doneAction = 2;
