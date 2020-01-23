@@ -1720,8 +1720,18 @@ SynthDef(\hat, { | out = 0, amp = 1 |
 	var sig, env;
 	env = EnvGen.kr(Env.step([envL1, envL2, envL3, envL4], [envT1, envT2 * LFNoise2.ar(randFreq, randAmt), envT3, envT4]), doneAction: 2);
 	sig = (WhiteNoise.ar(amp) * mixNoise) + (FSinOsc.ar(sinFreq) * (1 - mixNoise));
-	sig = (VarSaw.ar(sawFreq) * mixSaw) + (sig * (1 - mixSaw));
+	sig = (LFSaw.ar(sawFreq) * mixSaw) + (sig * (1 - mixSaw));
 	sig = RHPF.ar(sig, hpfreq, hprq);
+	sig = sig * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+~haten1SynthDef = SynthDef(\haten1, { arg out = 0, amp = 1, pan = 0, envL1 = 0, envL2 = 3, envL3 = 0, envL4 = 5, envL5 = 0, envT1 = 0, envT2 = 0.2, randFreq = 1, randAmt = 0.5, envT3 = 0.9, envT4 = 0.03, curve = (-4), mixNoise = 0.5, sinFreq = 142, sinAmp = 0.2, fsinFreq = 200, fsinAmp = 0, mixSaw = 0.5, sawFreq = 0, resfreq = 400, resrq = 0.2, doneAction = 2;
+	var sig, env;
+	env = EnvGen.kr(Env([envL1, envL2, envL3, envL4, envL5], [envT1, envT2 * LFNoise2.ar(randFreq, randAmt), envT3, envT4], curve), doneAction: 2);
+	sig = (WhiteNoise.ar(1) * mixNoise) + ((SinOsc.ar(sinFreq, 0, sinAmp) + FSinOsc.ar(fsinFreq, 0, fsinAmp)) * (1 - mixNoise));
+	sig = (VarSaw.ar(sawFreq) * mixSaw) + (sig * (1 - mixSaw));
+	sig = RHPF.ar(sig, resfreq, resrq);
 	sig = sig * env;
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
