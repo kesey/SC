@@ -5231,7 +5231,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song9Pattern8 = Pbind(
 	\instrument, \haten1,
 	\dur, 0.25,
-	\amp, 0.04 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\amp, 0.02 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, Pwhite(-0.8, 0.8),
 	\envL1, 4.39,
 	\envL2, 0,
@@ -5252,8 +5252,8 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\fsinAmp, 0.26,
 	\mixSaw, 0.11,
 	\sawFreq, 14012,
-	\resfreq, 14069,
-	\resrq, 0,
+	\hpfreq, 14069,
+	\hprq, 0,
 	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
@@ -5289,8 +5289,8 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"fsinAmp", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\fsinAmp)), true],
 					"mixSaw", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\mixSaw)), true],
 					"sawFreq", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\sawFreq)), true],
-					"resfreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\resfreq)), true],
-					"resrq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\resrq)), true]
+					"hpfreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\hpfreq)), true],
+					"hprq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\hprq)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
