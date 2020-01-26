@@ -35,7 +35,7 @@ s.bind { ~sinBass = Synth(\sinBass, [\out, ~channelBus[0], \amp, 1.34, \gate, 0,
 ~aux2Bus = Bus.audio(s, 2);
 
 // Aux 1
-s.bind { ~noiseInjection = Synth(\noiseInjection, [\in, ~aux1, \out, ~aux1Bus], aux1Group, addAction: 'addToHead'); };
+s.bind { ~noiseInjection = Synth(\noiseInjection, [\in, ~aux1, \out, ~aux1Bus, \doneAction, 0], aux1Group, addAction: 'addToHead'); };
 s.bind { ~distoCrossOver = Synth(\distoCrossOver, [\in, ~aux1Bus, \out, ~aux1Bus], ~noiseInjection, addAction: 'addAfter'); };
 s.bind { ~distoInsideOut = Synth(\distoInsideOut, [\in, ~aux1Bus, \out, ~aux1Bus], ~distoCrossOver, addAction: 'addAfter'); };
 s.bind {

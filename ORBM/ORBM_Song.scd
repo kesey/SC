@@ -2744,15 +2744,36 @@
 
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(1);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.2);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(3.04);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(3);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(0.1);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "hpfFreqGate").valueAction_(20);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "lpfFreqGate").valueAction_(673.1);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "sinGateTrh").valueAction_(0.01);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqL1").valueAction_(20);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqL2").valueAction_(44.2);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqL3").valueAction_(49.2);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqL4").valueAction_(40);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqL5").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqT1").valueAction_(0.1);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqT2").valueAction_(0.33);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqT3").valueAction_(1.84);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqT4").valueAction_(0.26);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqC1").valueAction_(-12);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqC2").valueAction_(-2.46);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqC3").valueAction_(2.28);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "envFrqC4").valueAction_(7.08);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "sinAtt").valueAction_(0.02);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "sinRel").valueAction_(10);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "sinCurve").valueAction_(-8.46);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "sinLevelPre").valueAction_(0.09);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseType").valueAction_(0);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "nType5Chaos").valueAction_(0.82);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(0.44);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "noiseLevel").valueAction_(0.8);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "sinLevelPost").valueAction_(0.17);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impSource").valueAction_(0);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(34);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(32);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(0.57);
 
-		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-0.37);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.14);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "smooth").valueAction_(0.1);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "level").valueAction_(0.44);
@@ -2774,12 +2795,12 @@
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp3").valueAction_(0);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp4").valueAction_(0);
 
-		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(-0.09);
-		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0);
-		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.06);
-		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "drywet").valueAction_(0.02);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchRatio").valueAction_(0.03);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "pitchDisper").valueAction_(0.08);
+		~autoGuiControl.at("pitchShifter" ++ ~nodeId.at("pitchShifter") ++ "timeDisper").valueAction_(0.04);
 
-		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(-0.15);
+		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "drywet").valueAction_(-1);
 		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fgfreq").valueAction_(126);
 		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.9);
 

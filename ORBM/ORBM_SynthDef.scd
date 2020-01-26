@@ -2263,7 +2263,7 @@ var sig = LatoocarfianL.ar(
     OffsetOut.ar(0,sig*amp);
 }).add;*/
 
-~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
+/*~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
 	var input, sig, inputAmp, imp;
 	input = InFeedback.ar(in, 2);
 	inputAmp = Amplitude.kr(input, attack, release);
@@ -2281,6 +2281,40 @@ var sig = LatoocarfianL.ar(
 		Dust.ar(impFreq, inputAmp)
 	]);
 	sig = (sig * noiseLevel) + (imp * impLevel);
+	sig = XFade2.ar(input, sig, drywet);
+	ReplaceOut.ar(out, sig);
+	//XOut.ar(out, drywet, sig);
+}).add;*/
+
+~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, hpfFreqGate = 20, lpfFreqGate = 20000, sinGateTrh = 0.08, envFrqL1 = 20, envFrqL2 = 80, envFrqL3 = 49.2, envFrqL4 = 60, envFrqL5 = 0, envFrqT1 = 0.1, envFrqT2 = 0.2, envFrqT3 = 0.2, envFrqT4 = 0.23, envFrqC1 = (-4), envFrqC2 = (-4), envFrqC3 = (-4), envFrqC4 = (-4), sinAtt = 0.02, sinRel = 1.4, sinCurve = (-4), sinLevelPre = 0, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, sinLevelPost = 0, impSource = 0, impFreq = 52.9, impLevel = 0, doneAction = 0;
+	var input, inputAmp, sinGate, freqEnv, env, sin, noise, imp, sig;
+	input = InFeedback.ar(in, 2);
+	inputAmp = Amplitude.ar(input, attack, release);
+	sinGate = LPF.ar(HPF.ar(inputAmp, hpfFreqGate), lpfFreqGate) * 5 > sinGateTrh;
+
+	freqEnv = EnvGen.kr(Env([envFrqL1, envFrqL2, envFrqL3, envFrqL4, envFrqL5], [envFrqT1, envFrqT2, envFrqT3, envFrqT4], [envFrqC1, envFrqC2, envFrqC3, envFrqC4]), sinGate);
+	env = EnvGen.kr(Env.asr(sinAtt, 1, sinRel, sinCurve), sinGate, doneAction: doneAction);
+	sin = SinOsc.ar(freqEnv, 0, env);
+	sin = BHiPass4.ar(sin, 20, 1, env);
+
+	inputAmp = inputAmp + (sin * sinLevelPre);
+
+	noiseType = noiseType.max(0).min(5);
+	noise = Select.ar(noiseType, [
+		WhiteNoise.ar(inputAmp),
+		BrownNoise.ar(inputAmp),
+		GrayNoise.ar(inputAmp),
+		PinkNoise.ar(inputAmp),
+		ClipNoise.ar(inputAmp),
+		Crackle.ar(nType5Chaos, inputAmp)
+	]);
+
+	imp = Select.ar(impSource, [
+		Impulse.ar(impFreq, 0, inputAmp),
+		Dust.ar(impFreq, inputAmp)
+	]);
+
+	sig = (sin * sinLevelPost) + (noise * noiseLevel) + (imp * impLevel);
 	sig = XFade2.ar(input, sig, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, sig);
@@ -4042,7 +4076,9 @@ SynthDef(\bass,{arg out=0, gate = 1 ,dis = 0.5,freq=60,tu = 1,amp=1,atf = 80, re
 	var freqEnv, env, sig;
 	freqEnv = EnvGen.kr(Env([envLevel1, envLevel2, envLevel3, envLevel4, envLevel5, envLevel6], [envTime1, envTime2, envTime3, envTime4, envTime5], curve), gate);
 	env = EnvGen.kr(Env.asr(attack, 1, release, curve), gate, doneAction: doneAction);
-	sig = HPF.ar(SinOsc.ar(freqEnv, mul: env), 20);
+	sig = SinOsc.ar(freqEnv, mul: env);
+	//sig = HPF.ar(sig, 20);
+	sig = BHiPass4.ar(sig, 20, 1, env);
 	OffsetOut.ar(out, Pan2.ar(sig, pan, Lag.kr(amp, 0.5)));
 }).add;
 
