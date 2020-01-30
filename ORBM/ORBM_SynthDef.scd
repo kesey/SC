@@ -151,21 +151,35 @@ SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5,
 	//XOut.ar(out, drywet, sig);
 }).add;
 
+~filterBusSynthDef = SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, bpfFeq = 3200, bpRq = 1, bpDb = 0, lpfInFreq = 20000;
+	var input, inputFilt, sig;
+	input = InFeedback.ar(in, 2);
+	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
+	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(bpfFeq.max(20).min(20000), 0.5), bpRq, bpDb);
+	sig = XFade2.ar(input, inputFilt, drywet);
+	ReplaceOut.ar(out, sig);
+	//XOut.ar(out, drywet, effect);
+}).add;
+
 ///////////////////////////////////////  Distortion
 
-~distoInsideOutSynthDef = SynthDef(\distoInsideOut, { arg in = 0, out = 0, drywet = -0.5, level = 0.02;
-	var input, effect, sig;
+~distoInsideOutSynthDef = SynthDef(\distoInsideOut, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, level = 0.02;
+	var input, inputFilt, effect, sig;
 	input = InFeedback.ar(in, 2);
-	effect = InsideOut.ar(input, level);
+	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
+	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
+	effect = InsideOut.ar(inputFilt, level);
 	sig = XFade2.ar(input, effect, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, effect);
 }).add;
 
-~distoCrossOverSynthDef = SynthDef(\distoCrossOver, { arg in = 0, out = 0, drywet = -0.05, amp = 0.14, smooth = 0.1, level = 0.4;
-	var input, effect, sig;
+~distoCrossOverSynthDef = SynthDef(\distoCrossOver, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, amp = 0.14, smooth = 0.1, level = 0.03;
+	var input, inputFilt, effect, sig;
 	input = InFeedback.ar(in, 2);
-	effect = CrossoverDistortion.ar(input , Lag2.kr(amp.max(0.001)), Lag2.kr(smooth.max(0.01)), level);
+	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
+	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
+	effect = CrossoverDistortion.ar(inputFilt , Lag2.kr(amp.max(0.001)), Lag2.kr(smooth.max(0.01)), level);
 	sig = XFade2.ar(input, effect, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, effect);
@@ -200,9 +214,12 @@ SynthDef(\awdistortion, {arg in = 0, out = 0, gate = 1;
 
 }).add;
 
-~waveShapeSynthDef = SynthDef(\waveShape, { arg in = 0, out = 0, mix = 1, gain = 1, shaperbuf;
-	var input = In.ar(in, 2);
-	var sig = XFade2.ar(input, Shaper.ar(shaperbuf, input * gain), mix.linlin(0,1.0,-1,1.0));
+~waveShapeSynthDef = SynthDef(\waveShape, { arg in = 0, out = 0, mix = 1, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, gain = 1, shaperbuf;
+	var input, inputFilt, sig;
+	input = In.ar(in, 2);
+	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
+	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
+	sig = XFade2.ar(input, Shaper.ar(shaperbuf, inputFilt * gain), mix.linlin(0,1.0,-1,1.0));
 	ReplaceOut.ar(out, sig);
 }).add;
 
@@ -2263,10 +2280,12 @@ var sig = LatoocarfianL.ar(
     OffsetOut.ar(0,sig*amp);
 }).add;*/
 
-/*~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
-	var input, sig, inputAmp, imp;
+~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
+	var input, inputFilt, sig, inputAmp, imp;
 	input = InFeedback.ar(in, 2);
-	inputAmp = Amplitude.kr(input, attack, release);
+	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
+	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
+	inputAmp = Amplitude.kr(inputFilt, attack, release);
 	noiseType = noiseType.max(0).min(5);
 	sig = Select.ar(noiseType, [
 		WhiteNoise.ar(inputAmp),
@@ -2284,9 +2303,9 @@ var sig = LatoocarfianL.ar(
 	sig = XFade2.ar(input, sig, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, sig);
-}).add;*/
+}).add;
 
-~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, hpfFreqGate = 20, lpfFreqGate = 20000, sinGateTrh = 0.08, envFrqL1 = 20, envFrqL2 = 80, envFrqL3 = 49.2, envFrqL4 = 60, envFrqL5 = 0, envFrqT1 = 0.1, envFrqT2 = 0.2, envFrqT3 = 0.2, envFrqT4 = 0.23, envFrqC1 = (-4), envFrqC2 = (-4), envFrqC3 = (-4), envFrqC4 = (-4), sinAtt = 0.02, sinRel = 1.4, sinCurve = (-4), sinLevelPre = 0, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, sinLevelPost = 0, impSource = 0, impFreq = 52.9, impLevel = 0, doneAction = 0;
+~noiseSinInjectionSynthDef = SynthDef(\noiseSinInjection, { arg in = 0, out = 0, drywet = -0.6, attack = 0.01, release = 0.01, hpfFreqGate = 20, lpfFreqGate = 20000, sinGateTrh = 0.08, envFrqL1 = 20, envFrqL2 = 80, envFrqL3 = 49.2, envFrqL4 = 60, envFrqL5 = 0, envFrqT1 = 0.1, envFrqT2 = 0.2, envFrqT3 = 0.2, envFrqT4 = 0.23, envFrqC1 = (-4), envFrqC2 = (-4), envFrqC3 = (-4), envFrqC4 = (-4), sinAtt = 0.02, sinRel = 1.4, sinCurve = (-4), sinLevelPre = 0, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, sinLevelPost = 0, impSource = 0, impFreq = 52.9, impLevel = 0, doneAction = 0;
 	var input, inputAmp, sinGate, freqEnv, env, sin, noise, imp, sig;
 	input = InFeedback.ar(in, 2);
 	inputAmp = Amplitude.ar(input, attack, release);
@@ -2903,11 +2922,11 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
 ~inputSigSynthDef = SynthDef(\inputSig, { arg out = 0, in = 0, gate = 1, amp = 0.5, pan = 0, attack = 0.5, release = 1, curve = (-4), delaytime = 0, lpfreq = 20000, band1freq = 8000, band1rq = 1, band1db = 0, band2freq = 1200, band2rq = 1, band2db = 0, band3freq = 80, band3rq = 1, band3db = 0, hpfreq = 20, doneAction = 2;
 	var input, sig;
 	input = SoundIn.ar(in);
-	sig = BHiPass.ar(input, Lag2.kr(hpfreq.max(20).min(20000), 0.5)); // HPF
+	sig = BHiPass4.ar(input, Lag2.kr(hpfreq.max(20).min(20000), 0.5)); // HPF
 	sig = BPeakEQ.ar(sig, Lag2.kr(band1freq.max(20).min(20000), 0.5), band1rq, band1db); // Band 1
 	sig = BPeakEQ.ar(sig, Lag2.kr(band2freq.max(20).min(20000), 0.5), band2rq, band2db); // Band 2
 	sig = BPeakEQ.ar(sig, Lag2.kr(band3freq.max(20).min(20000), 0.5), band3rq, band3db); // Band 3
-	sig = BLowPass.ar(sig, Lag2.kr(lpfreq.max(20).min(20000), 0.5)); // LPF
+	sig = BLowPass4.ar(sig, Lag2.kr(lpfreq.max(20).min(20000), 0.5)); // LPF
 	sig = sig * EnvGen.kr(Env.asr(attack, 1, release, curve), gate, gate, doneAction: doneAction);
 	sig = DelayL.ar(sig, 1, delaytime);
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
