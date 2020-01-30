@@ -2709,6 +2709,28 @@
 		10.0.wait;
 	};
 
+	~song9Part2 = {
+		"song9 part2".postln;
+		~song9InitPart.value;
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.25), 0.75, 0.15625, 0.6875, 0.65625, Rest(0.25), 0.90625, 0.6875, 0.65625], inf)).quant_(~globalQuant);
+		10.0.wait;
+	};
+
+	/*~song9Part2 = {
+		"song9 part2".postln;
+		~song9InitPart.value;
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.25), 0.75, 0.15625, 0.6875, 0.578125, 0.5, 0.25, 0.25, 0.6875, 0.390625, 0.25, 0.25], inf)).quant_(~globalQuant);
+		10.0.wait;
+	};*/
+
+	~song9Part3 = {
+		"song9 part3".postln;
+		~song9InitPart.value;
+		/*Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.25, 0.375, 0.25, 0.5, 0.078125, 0.578125, 0.34375], inf)).quant_(~globalQuant);*/
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.25), 0.5, 0.75, 0.5, 1, 0.15625, 1.15625, 0.6875]/2, inf)).quant_(~globalQuant);
+		10.0.wait;
+	};
+
 	// Synth + Fx Preset
 
 	{
@@ -2800,8 +2822,8 @@
 
 	loop {
 		~song9Part1.value;
-		/*~song9Part2.value;
-		~song9Part3.value;
+		~song9Part2.value;
+		/*~song9Part3.value;
 		~song9Part4.value;
 		~song9Part5.value;
 		~song9Part6.value;
