@@ -4777,7 +4777,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\envL5, 0,
 	\envT1, 0.12, // Pseq([0.12, 0.24], inf),
 	\envT2, 0.02,
-	\envT3, Pseq([0.13, 0.24, 0.13, 0.03, 0.42, 0.02, 0.13], inf),
+	\envT3, Pseq([0.13, 0.24, 0.13, 0.03, 0.42, 0.02, 0.13, 0.13], inf),
 	\envT4, 0.19,
 	\curve1, -60,
 	\curve2, 0,
@@ -4977,7 +4977,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song9Pattern4 = Pbind(
 	\instrument, \snarenew,
-	\dur, Pseq([Rest(1), 1, 0.5], inf),
+	\dur, Pseq([Rest(2), 0.5], inf),
 	\amp, 2.38 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, 0,
 	\tu, 0.16,
@@ -5130,7 +5130,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\dur, Pdefn(\patt1_6_dur),
 	\amp, 0.8 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\attack, 0.01,
-	\release, 6,
+	\release, 1.84,
 	\freq, 65.76,
 	\rel, 0.28571428571429,
 	\click, 0.008,
