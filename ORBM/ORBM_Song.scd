@@ -2721,10 +2721,14 @@
 	~song9Part3 = {
 		"song9 part3".postln;
 		~song9InitPart.value;
+		Pbindef(\unit1,
+			\dur, Pdefn(\patt1_6_dur) * 2
+		).quant_(~globalQuant);
 		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.078125, 0.578125, 0.34375], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\envpL2, 153.2,
-			\envpT2, 0.17,
+			\envpT1, Pseq([0.68, 1.58, 0.68], inf),
+			\envpT2, Pseq([0, 0, 0.17], inf),
 			\envL3, 0,
 	        \envL4, 5,
 			\envT2, 1.21,
@@ -2745,12 +2749,14 @@
 		Pbindef(\unit2,
 			\envpL1, 6.7,
 			\envpL2, 153.2,
-			\envpT1, 0.36,
+			\envpT1, 1.07,
 			\envpT2, 0.53,
 			\envL3, 0,
 	        \envL4, 5,
 			\envT2, 1.21,
 			\envT3, 0.53,
+			\preamp, 1.11,
+			\noiseAmp, 0,
 			\filterHarmonic, 140.9 // Pseq([140.9, 200, 200, 140.9], inf)
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2");
@@ -2759,6 +2765,166 @@
 		).quant_(~globalQuant);
 		Pbindef(\unit8,
 			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.25, 0.25, 0.5], inf)
+		).quant_(~globalQuant);
+		10.0.wait;
+	};
+
+	~song9Part5 = {
+		"song9 part5".postln;
+		~song9InitPart.value;
+		Pbindef(\unit1,
+			\envT1, Pseq([0.24, 0.13, 0.13, 0.03, 0.02, 0.13, 0.42, 0.13], inf),
+			\curve1, -24.58,
+			\counterFreq, 0.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\envpL2, 153.2,
+			\envpT1, Pseq([0.68, 1.58, 0.68], inf),
+			\envpT2, Pseq([0, 0, 0.17], inf),
+			\envL3, 0,
+	        \envL4, 5,
+			\envT2, 1.21,
+			\envT3, 0.53,
+			\filterHarmonic, 140.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		10.0.wait;
+	};
+
+	~song9Part6 = {
+		"song9 part6".postln;
+		~song9InitPart.value;
+		Pbindef(\unit1,
+			\dur, Pdefn(\patt1_6_dur) * 2,
+			\envT1, Pseq([0.24, 0.13, 0.13, 0.03, 0.02, 0.13, 0.42, 0.13], inf),
+			\curve1, 24.58,
+			\counterFreq, 0.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 1], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\envpL1, 6.7,
+			\envpL2, 153.2,
+			\envpT1, Pseq([0.68, 1.58, 0.68], inf),
+			\envpT2, 0.53,
+			\envL3, 0,
+	        \envL4, 5,
+			\envT2, 1.21,
+			\envT3, 0.53,
+			\preamp, 1.11,
+			\noiseAmp, 0,
+			\filterHarmonic, 140.9 // Pseq([140.9, 200, 200, 140.9], inf)
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, 0.25, 0.5, 0.25, 0.25, 0.5], inf)
+		).quant_(~globalQuant);
+		10.0.wait;
+	};
+
+	~song9Part7 = {
+		"song9 part7".postln;
+		~song9InitPart.value;
+		Pbindef(\unit1,
+			\envT1, Pseq([0.24, 0.13, 0.13, 0.03, 0.02, 0.13, 0.42, 0.13], inf),
+			\curve1, -24.58,
+			\counterFreq, 0.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.578125, 0.5, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.078125, 0.578125, 0.34375], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\envpL2, 153.2,
+			\envpT1, Pseq([0.68, 1.58, 0.68], inf),
+			\envpT2, Pseq([0, 0, 0.17], inf),
+			\envL3, 0,
+	        \envL4, 5,
+			\envT2, 1.21,
+			\envT3, 0.53,
+			\filterHarmonic, 140.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		Pbindef(\unit3,
+			\dur, Pseq([Rest(0.5), 1.5, 0.5], inf),
+			\level, 0.45,
+			\release, 0.79,
+			\noise, 6.35,
+			\freq3, 29,
+			\dc, 0.8,
+			\aamp2, 0.58,
+			\aamp3, 0.35,
+			\aamp4, 0,
+			\curve1, 11.46,
+			\curve2, -25.5,
+			\curve3, -27.52,
+			\famp1, 0,
+			\famp3, 0.75,
+			\p1, 0.49,
+			\oamp, 0,
+			\owhich2, 2,
+			\ochoose, 0.59,
+			\filter, 448,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit3");
+		Pbindef(\unit7,
+			\dur, Pseq([0.0625, 0.125, 0.0625], inf)
+		).quant_(~globalQuant);
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.5, 0.25, 0.5, Pn(0.25, 4)], inf)
+		).quant_(~globalQuant);
+		10.0.wait;
+	};
+
+	~song9Part8 = {
+		"song9 part8".postln;
+		~song9InitPart.value;
+		Pbindef(\unit1,
+			\dur, Pdefn(\patt1_6_dur) * 2,
+			\envT1, Pseq([0.24, 0.13, 0.13, 0.03, 0.02, 0.13, 0.42, 0.13], inf),
+			\curve1, -24.58,
+			\counterFreq, 0.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit1");
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 1, 0.5/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 1], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\envpL1, 6.7,
+			\envpL2, 153.2,
+			\envpT1, 1.07,
+			\envpT2, 0.53,
+			\envL3, 0,
+	        \envL4, 5,
+			\envT2, 1.21,
+			\envT3, 0.53,
+			\preamp, 1.11,
+			\noiseAmp, 0,
+			\filterHarmonic, 140.9
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2");
+		Pbindef(\unit3,
+			\dur, Pseq([Rest(0.5), 1.5, 0.5], inf),
+			\level, 0.45,
+			\release, 0.79,
+			\noise, 6.35,
+			\freq3, 29,
+			\dc, 0.8,
+			\aamp2, 0.58,
+			\aamp3, 0.35,
+			\aamp4, 0,
+			\curve1, 11.46,
+			\curve2, -25.5,
+			\curve3, -27.52,
+			\famp1, 0,
+			\famp3, 0.75,
+			\p1, 0.49,
+			\oamp, 0,
+			\owhich2, 2,
+			\ochoose, 0.59,
+			\filter, 448,
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit3");
+		Pbindef(\unit8,
+			\dur, Pseq([0.25, 0.25, 0.5, Pn(0.25, 4), 0.5], inf)
 		).quant_(~globalQuant);
 		10.0.wait;
 	};
@@ -2857,10 +3023,10 @@
 		~song9Part2.value;
 		~song9Part3.value;
 		~song9Part4.value;
-		/*~song9Part5.value;
+		~song9Part5.value;
 		~song9Part6.value;
 		~song9Part7.value;
-		~song9Part8.value;*/
+		~song9Part8.value;
 	}
 };
 

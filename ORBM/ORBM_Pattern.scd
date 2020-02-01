@@ -4775,7 +4775,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\envL3, 0.2,
 	\envL4, 3.2,
 	\envL5, 0,
-	\envT1, 0.12, // Pseq([0.12, 0.24], inf),
+	\envT1, Pseq([0.24, 0.03, 0.13, 0.13, 0.02, 0.13, 0.24, 0.13], inf), // 0.12,
 	\envT2, 0.02,
 	\envT3, Pseq([0.13, 0.24, 0.13, 0.03, 0.42, 0.02, 0.13, 0.13], inf),
 	\envT4, 0.19,
