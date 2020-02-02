@@ -2833,7 +2833,7 @@
 			\counterFreq, 0.9
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
-		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.578125, 0.5, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.078125, 0.578125, 0.34375], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.34375, 0.078125], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\envpL2, 153.2,
 			\envpT1, Pseq([0.68, 1.58, 0.68], inf),
@@ -2847,7 +2847,7 @@
 		~resetControlBus.value("unit2");
 		Pbindef(\unit3,
 			\dur, Pseq([Rest(0.5), 1.5, 0.5], inf),
-			\level, 0.45,
+			\level, 0.45 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\release, 0.79,
 			\noise, 6.35,
 			\freq3, 29,
@@ -2886,7 +2886,7 @@
 			\counterFreq, 0.9
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit1");
-		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 1, 0.5/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 1], inf)).quant_(~globalQuant);
+		Pdefn(\patt1_6_dur, Pseq([Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.421875/**/, Rest(0.125), 0.375, 0.25, 0.25, 0.5, 0.578125, 0.34375, 0.078125], inf)).quant_(~globalQuant);
 		Pbindef(\unit2,
 			\envpL1, 6.7,
 			\envpL2, 153.2,
@@ -2903,7 +2903,7 @@
 		~resetControlBus.value("unit2");
 		Pbindef(\unit3,
 			\dur, Pseq([Rest(0.5), 1.5, 0.5], inf),
-			\level, 0.45,
+			\level, 0.45 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 			\release, 0.79,
 			\noise, 6.35,
 			\freq3, 29,
