@@ -3027,6 +3027,8 @@
 		~song9Part6.value;
 		~song9Part7.value;
 		~song9Part8.value;
+		~song9Part3.value;
+		~song9Part4.value;
 	}
 };
 
