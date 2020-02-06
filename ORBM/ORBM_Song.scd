@@ -2705,7 +2705,7 @@
 	~song9Part1 = {
 		"song9 part1".postln;
 		~song9InitPart.value;
-		10.0.wait;
+		20.0.wait;
 	};
 
 	~song9Part2 = {
@@ -2739,7 +2739,7 @@
 		Pbindef(\unit8,
 			\dur, Pseq([0.25, 0.5, 0.25, 0.5, Pn(0.25, 4)], inf)
 		).quant_(~globalQuant);
-		10.0.wait;
+		20.0.wait;
 	};
 
 	~song9Part4 = {
@@ -2790,7 +2790,7 @@
 			\filterHarmonic, 140.9
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit2");
-		10.0.wait;
+		20.0.wait;
 	};
 
 	~song9Part6 = {
@@ -2873,7 +2873,7 @@
 		Pbindef(\unit8,
 			\dur, Pseq([0.25, 0.5, 0.25, 0.5, Pn(0.25, 4)], inf)
 		).quant_(~globalQuant);
-		10.0.wait;
+		20.0.wait;
 	};
 
 	~song9Part8 = {
@@ -2926,7 +2926,7 @@
 		Pbindef(\unit8,
 			\dur, Pseq([0.25, 0.25, 0.5, Pn(0.25, 4), 0.5], inf)
 		).quant_(~globalQuant);
-		10.0.wait;
+		20.0.wait;
 	};
 
 	// Synth + Fx Preset
