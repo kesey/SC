@@ -5299,6 +5299,95 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
+///////////////////// song10
+
+~song10Pattern1 = Pbind(
+	\instrument, \batuhan,
+	\dur, 3.5,
+	\amp, 0.2 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\att, 0.01,
+	\rel, 5,
+	\tridDur, 0.28,
+	\decayTime, 0.29,
+	\sawFreq, 8,
+	\brfFreq1, 38,
+	\brfFreq2, 45,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~batuhanSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"gate", ["none"],
+					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"tridDur", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\tridDur)), true],
+					"decayTime", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\decayTime)), true],
+					"sawFreq", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\sawFreq)), true],
+					"brfFreq1", ["knob", ControlSpec(20, 20000, step: 0.1, default: event.at(\brfFreq1)), true],
+					"brfFreq2", ["knob", ControlSpec(20, 20000, step: 0.1, default: event.at(\brfFreq2)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
+~song10Pattern8 = Pbind(
+	\instrument, \cymbal808,
+	\dur, 1,
+	\amp, 0.2 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\pan, 0,
+	\att, 0.002,
+	\dec, 0.25,
+	\rel, 0.05,
+	\freqMultiplier, 4.09,
+	\decLevel, 0.4,
+	\reverb, 0.33,
+	\size, 0.5,
+	\damp, 0.5,
+	\out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~cymbal808SynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"doneAction", ["none"],
+					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
+					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), true],
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"dec", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\dec)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"freqMultiplier", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\freqMultiplier)), true],
+					"decLevel", ["knob", ControlSpec(0, 10, step: 0.01, default: event.at(\decLevel)), true],
+					"reverb", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\reverb)), true],
+					"size", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\size)), true],
+					"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\damp)), true]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
 ///////////////////// test pattern
 
 ~pattern1 = Pbind(

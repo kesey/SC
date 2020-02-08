@@ -2,12 +2,9 @@
 
 ///////////////////////////////////////  SynthDef
 
-~aux1 = Bus.audio(s, 2);
-~aux2 = Bus.audio(s, 2);
-
 ///////////////////////////////////////  Mixer
 
-SynthDef(\ChannelStrip, { arg in = 0, out = 0, pan = 0, hpfreq = 20, band1freq = 8000, band1rq = 1, band1db = 0, band2freq = 1200, band2rq = 1, band2db = 0, band3freq = 80, band3rq = 1, band3db = 0, lpfreq = 20000, mute = 1, auxsend1 = 0, auxsend2 = 0, level = 0.5;
+SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0, hpfreq = 20, band1freq = 8000, band1rq = 1, band1db = 0, band2freq = 1200, band2rq = 1, band2db = 0, band3freq = 80, band3rq = 1, band3db = 0, lpfreq = 20000, mute = 1, auxsend1 = 0, auxsend2 = 0, level = 0.5;
 	var input, sig;
 	input = InFeedback.ar(in, 2);
 	sig = BHiPass4.ar(input, Lag2.kr(hpfreq.max(20).min(20000), 0.5)); // HPF
@@ -15,8 +12,8 @@ SynthDef(\ChannelStrip, { arg in = 0, out = 0, pan = 0, hpfreq = 20, band1freq =
 	sig = BPeakEQ.ar(sig, Lag2.kr(band2freq.max(20).min(20000), 0.5), band2rq, band2db); // Band 2
 	sig = BPeakEQ.ar(sig, Lag2.kr(band3freq.max(20).min(20000), 0.5), band3rq, band3db); // Band 3
 	sig = BLowPass4.ar(sig, Lag2.kr(lpfreq.max(20).min(20000), 0.5)); // LPF
-	Out.ar(~aux1, sig * auxsend1); // Aux 1 pre fader / pre mute / post eq
-	Out.ar(~aux2, sig * auxsend2); // Aux 2 pre fader / pre mute / post eq
+	Out.ar(outAux1, sig * auxsend1); // Aux 1 pre fader / pre mute / post eq
+	Out.ar(outAux2, sig * auxsend2); // Aux 2 pre fader / pre mute / post eq
 	sig = sig * Lag2.kr(mute, 0.2); // Mute
 	Out.ar(out, Balance2.ar(sig[0], sig[1], pan, level.curvelin(0, 1, 0, 1, log(10)))); // curvelin(blabla) to have a logarithmic scale
 }).add;
@@ -953,7 +950,7 @@ SynthDef(\mcld, { arg out = 0, amp = 1, att = 0.01, rel = 2, impFreq = 10, hpfFr
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, tridDur = 0.125, decayTime = 0.3, sawFreq = 8, brfFreq1 = 45.1, brfFreq2 = 45, gate = 1, doneAction = 2;
+~batuhanSynthDef = SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, tridDur = 0.125, decayTime = 0.3, sawFreq = 8, brfFreq1 = 45.1, brfFreq2 = 45, gate = 1, doneAction = 2;
 	var sig, env, core;
 	env = Linen.kr(gate, att, 1, rel, doneAction);
 	core = Duty.kr(tridDur, 0, Drand([0, Drand((0.4,0.5..1))], inf));
@@ -2013,7 +2010,7 @@ SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, r
 	OffsetOut.ar(out, signal*4*amp);
 }).add;
 
-SynthDef(\cymbal808, { arg out = 0, amp = 0.1, pan = 0, att = 0.002, dec = 0.25, rel = 0.05, freqMultiplier = 4.09, decLevel = 0.4, reverb = 0.33, size = 0.5, damp = 0.5, doneAction = 2;
+~cymbal808SynthDef = SynthDef(\cymbal808, { arg out = 0, amp = 0.1, pan = 0, att = 0.002, dec = 0.25, rel = 0.05, freqMultiplier = 4.09, decLevel = 0.4, reverb = 0.33, size = 0.5, damp = 0.5, doneAction = 2;
 	var snda, sndb, snd, env, pulseEnv, freqs;
 
 	freqs = [205.35, 304.41, 369.64, 522.71, 540.54, 812.21];
@@ -2030,7 +2027,7 @@ SynthDef(\cymbal808, { arg out = 0, amp = 0.1, pan = 0, att = 0.002, dec = 0.25,
 		curve: -0.5
 	).kr;
 
-	snd = Mix.ar(LFPulse.ar(freq: freqs * 4.09));
+	snd = Mix.ar(LFPulse.ar(freq: freqs * freqMultiplier));
 
 	snd = (BinaryOpUGen('==', snd, 6.0) * 0.6) + (BinaryOpUGen('==', snd, 2.0) * 0.2) + (BinaryOpUGen('==', snd, 1.0) * 0.9);
 
