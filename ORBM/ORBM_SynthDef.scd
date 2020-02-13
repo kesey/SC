@@ -950,17 +950,20 @@ SynthDef(\mcld, { arg out = 0, amp = 1, att = 0.01, rel = 2, impFreq = 10, hpfFr
 	OffsetOut.ar(out, sig);
 }).add;
 
-~batuhanSynthDef = SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, tridDur = 0.125, decayTime = 0.3, sawFreq = 8, brfFreq1 = 45.1, brfFreq2 = 45, gate = 1, doneAction = 2;
-	var sig, env, core;
-	env = Linen.kr(gate, att, 1, rel, doneAction);
-	core = Duty.kr(tridDur, 0, Drand([0, Drand((0.4,0.5..1))], inf));
-	sig = Decay2.kr(
-		core,
+~batuhanSynthDef = SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, eSawDec = 0.6, eSinL1 = 0, eSinL2 = 1, eSinL3 = 0, eSinL4 = 0.32, eSinT1 = 0.24, eSinT2 = 0.02, eSinT3 = 0.12, eSinC1 = (-4), eSinC2 = (-4), eSinC3 = (-4), sinFreq = 33, mix = 1, sawFreq = 8, subFreq = 62, subAmp = 0, subAtt = 0, subRel = 0.2, brfFreq1 = 45.1, brfFreq2 = 45, doneAction = 2;
+	var sig, env, trig, envSaw, envSin, sub;
+	trig = Impulse.kr(0);
+	env = Linen.kr(trig, att, 1, rel, doneAction);
+	envSaw = Decay2.kr(
+		trig,
 		0.01,
-		decayTime
+		eSawDec
 	);
-	sig = Saw.ar(sawFreq, sig) ** 1.5;
-	sig = BRF.ar(sig, core * 20 + [brfFreq1, brfFreq2], 0.1);
+	envSin = EnvGen.kr(Env.new([eSinL1, eSinL2, eSinL3, eSinL4], [eSinT1, eSinT2, eSinT3], [eSinC1, eSinC2, eSinC3]), trig);
+	sig = ((Saw.ar(sawFreq, envSaw) ** 1.5) * mix) + (SinOsc.ar(sinFreq, 0, envSin) * (mix - 1));
+	sig = BRF.ar(sig, trig * 20 + [brfFreq1, brfFreq2], 0.1);
+	sub = SinOsc.ar(/*envSaw **/ subFreq, 0, EnvGen.kr(Env.asr(subAtt, 1, subRel), trig)) * subAmp;
+	sig = Splay.ar(sig + sub, levelComp: false);
 	sig = LeakDC.ar(sig).tanh;
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
@@ -1135,55 +1138,53 @@ SynthDef(\kick_chirp, { arg out = 0, amp = 0.1, pan = 0, curve = -20, att = 0.00
 	OffsetOut.ar(out, Pan2.ar(snd, pan))
 }).add;
 
-SynthDef(\kick_electro, { arg out = 0, amp = 0.3, pan = 0, att = 0.005, rel = 0.3, doneAction = 2;
-    var body, bodyFreq, bodyAmp, pop, popFreq, popAmp, click, clickAmp, snd;
+~kick_electroSynthDef = SynthDef(\kick_electro, { arg out = 0, amp = 0.3, pan = 0, att = 0.01, rel = 0.3, envbfL1 = 261, envbfL2 = 120, envbfL3 = 51, envbfRel = 0.003, envbfC = (-4), envbaL1 = 0, envbaL2 = 1, envbaL3 = 0.1, envbaL4 = 0.8, envbaL5 = 0, envbaT1 = 0.2, envbaT2 = 0.1, envbaT3 = 0.03, envbaT4 = 0.2, envbaC1 = (-4), envbaC2 = (-4), envbaC3 = (-4), envbAmp = 1, pfSt = 750, pfEnd = 261, pfDur = 0.02, envpaL1 = 0, envpaL2 = 0.4, envpaL3 = 1, envpaL4 = 0.02, envpaL5 = 0, envpaT1 = 0.1, envpaT2 = 0.4, envpaT3 = 0.03, envpaT4 = 0.2, envpaC1 = (-4), envpaC2 = (-4), envpaC3 = (-4), envpAmp = 1, envcaAtt = 0, envcaRel = 0.2, envcAmp = 1, cFundFreq = 910, cFormFreq = 4760, cBwFreq = 2110, lpfFreq = 3140, doneAction = 2;
+    var env, body, bodyFreq, bodyAmp, pop, popFreq, popAmp, click, clickAmp, snd;
+
+	env = EnvGen.kr(Env.linen(att, 1, rel), doneAction: doneAction);
 
     // body starts midrange, quickly drops down to low freqs, and trails off
     bodyFreq = Env.new(
-		    levels: [261, 120, 51],
-		    times: [rel / 8.57, rel / 3.75],
-		    curve: \exp
-		).kr;
+		    levels: [envbfL1, envbfL2, envbfL3],
+		    times: [envbfRel / 8.57, envbfRel / 3.75],
+		    curve: envbfC
+	).kr;
 
-    bodyAmp = Env.linen(
-		    attackTime: att,
-		    sustainTime: rel / 3,
-		    releaseTime: rel
-	    ).kr;
+	bodyAmp = Env.new(
+		[envbaL1, envbaL2, envbaL3, envbaL4, envbaL5],
+		[envbaT1, envbaT2, envbaT3, envbaT4],
+		[envbaC1, envbaC2, envbaC3]
+	).kr(levelScale: envbAmp);
 
     body = SinOsc.ar(freq: bodyFreq, mul: bodyAmp);
 
     // pop sweeps over the midrange
-    popFreq = XLine.kr(start: 750, end: 261, dur: 0.02);
+    popFreq = XLine.kr(start: pfSt, end: pfEnd, dur: pfDur);
 
-	popAmp = Env.linen(
-		    attackTime: att / 5,
-		    sustainTime: rel / 15,
-		    releaseTime: rel / 30,
-		    level: 0.15
-	    ).kr;
+	popAmp = Env.new(
+		[envpaL1, envpaL2, envpaL3, envpaL4, envpaL5],
+		[envpaT1, envpaT2, envpaT3, envpaT4],
+		[envpaC1, envpaC2, envpaC3]
+	).kr(levelScale: envpAmp);
 
     pop = SinOsc.ar(freq: popFreq, mul: popAmp);
 
     // click is spectrally rich, covering the high-freq range
     // you can use Formant, FM, noise, whatever
-    clickAmp = Env.perc(
-		    attackTime: att / 5,
-		    releaseTime: rel / 300,
-		    level: 0.15
-	    ).kr;
+	clickAmp = Env.perc(
+		attackTime: envcaAtt,
+		releaseTime: envcaRel,
+		level: envcAmp
+	).kr;
 
-    click = LPF.ar(
-	    	in: Formant.ar(fundfreq: 910, formfreq: 4760, bwfreq: 2110),
-	    	freq: 3140,
-	    	mul: clickAmp
-	    );
+	click = LPF.ar(
+		in: Formant.ar(fundfreq: cFundFreq, formfreq: cFormFreq, bwfreq: cBwFreq, mul: clickAmp),
+		freq: lpfFreq
+	);
 
 	//Putting it all together:
 	snd = Mix.ar([body, pop, click]);
-    snd = snd.tanh * amp;
-
-	DetectSilence.ar(in: snd, doneAction: doneAction);
+    snd = snd.tanh * env;
 
     OffsetOut.ar(out, Pan2.ar(snd, pan, amp));
 }).add;
@@ -2010,7 +2011,7 @@ SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, r
 	OffsetOut.ar(out, signal*4*amp);
 }).add;
 
-~cymbal808SynthDef = SynthDef(\cymbal808, { arg out = 0, amp = 0.1, pan = 0, att = 0.002, dec = 0.25, rel = 0.05, freqMultiplier = 4.09, decLevel = 0.4, reverb = 0.33, size = 0.5, damp = 0.5, doneAction = 2;
+SynthDef(\cymbal808, { arg out = 0, amp = 0.1, pan = 0, att = 0.002, dec = 0.25, rel = 0.05, freqMultiplier = 4.09, decLevel = 0.4, reverb = 0.33, size = 0.5, damp = 0.5, doneAction = 2;
 	var snda, sndb, snd, env, pulseEnv, freqs;
 
 	freqs = [205.35, 304.41, 369.64, 522.71, 540.54, 812.21];

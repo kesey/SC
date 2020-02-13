@@ -33,28 +33,26 @@ s.bind { ~inputSoftPop = Synth(\inputSig, [\in, 2, \out, ~channelBus[1], \amp, 0
 s.bind { ~samplerStereo = Synth(\samplerStereo, [\out, ~channelBus[1], \gate, 0, \buffer, b[\sampler_stereo][15].bufnum, \amp, 0.23, \doneAction, 0], synthGroup) };
 s.bind { ~sinBass = Synth(\sinBass, [\out, ~channelBus[0], \amp, 1.34, \gate, 0, \doneAction, 0], synthGroup) };
 
-// Fx
-~aux1Bus = Bus.audio(s, 2);
-~aux2Bus = Bus.audio(s, 2);
+// Permanent Fx
 
 // Aux 1
-s.bind { ~noiseInjection = Synth(\noiseInjection, [\in, ~aux1, \out, ~aux1Bus], aux1Group, addAction: 'addToHead'); };
-s.bind { ~distoCrossOver = Synth(\distoCrossOver, [\in, ~aux1Bus, \out, ~aux1Bus], ~noiseInjection, addAction: 'addAfter'); };
+s.bind { ~noiseInjection = Synth(\noiseInjection, [\in, ~aux1, \out, ~aux1], aux1Group, addAction: 'addToHead'); };
+s.bind { ~distoCrossOver = Synth(\distoCrossOver, [\in, ~aux1, \out, ~aux1], ~noiseInjection, addAction: 'addAfter'); };
 s.bind {
 	h = Buffer.alloc(s, 1024, 1);
 	h.cheby([1, 0.5, 1, 0.125]); // fill buffer with wavetable to use the waveShape SynthDef
-	~waveShape = Synth(\waveShape, [\in, ~aux1Bus, \out, ~aux1Bus, \shaperbuf, h, \gain, 29.96, \mix, 0], ~distoCrossOver, addAction: 'addAfter');
+	~waveShape = Synth(\waveShape, [\in, ~aux1, \out, ~aux1, \shaperbuf, h, \gain, 29.96, \mix, 0], ~distoCrossOver, addAction: 'addAfter');
 };
-s.bind { ~distoInsideOut = Synth(\distoInsideOut, [\in, ~aux1Bus, \out, ~channelBus[2]], ~waveShape, addAction: 'addAfter'); };
+s.bind { ~distoInsideOut = Synth(\distoInsideOut, [\in, ~aux1, \out, ~channelBus[2]], ~waveShape, addAction: 'addAfter'); };
 
 // Aux 2
-s.bind { ~filterBus = Synth(\filterBus, [\in, ~aux2, \out, ~aux2Bus], aux2Group, addAction: 'addToHead'); };
-s.bind { ~quadDelay = Synth(\quadDelay, [\in, ~aux2Bus, \out, ~aux2Bus], ~filterBus, addAction: 'addAfter');
+s.bind { ~filterBus = Synth(\filterBus, [\in, ~aux2, \out, ~aux2], aux2Group, addAction: 'addToHead'); };
+s.bind { ~quadDelay = Synth(\quadDelay, [\in, ~aux2, \out, ~aux2], ~filterBus, addAction: 'addAfter');
 	~updateTempo.value(~quadDelay, t); // use it to keep sync when tempo change
 };
-s.bind { ~pitchShifter = Synth(\pitchShifter, [\in, ~aux2Bus, \out, ~aux2Bus], ~quadDelay, addAction: 'addAfter'); };
-s.bind { ~flanging = Synth(\flanging, [\in, ~aux2Bus, \out, ~aux2Bus], ~pitchShifter, addAction: 'addAfter'); };
-s.bind { ~verb = Synth(\verb, [\in, ~aux2Bus, \out, ~channelBus[3], \amp, 0.75], aux2Group, addAction: 'addToTail'); };
+s.bind { ~pitchShifter = Synth(\pitchShifter, [\in, ~aux2, \out, ~aux2], ~quadDelay, addAction: 'addAfter'); };
+s.bind { ~flanging = Synth(\flanging, [\in, ~aux2, \out, ~aux2], ~pitchShifter, addAction: 'addAfter'); };
+s.bind { ~verb = Synth(\verb, [\in, ~aux2, \out, ~channelBus[3], \amp, 0.75], aux2Group, addAction: 'addToTail'); };
 
 // s.meter; // level meter
 
