@@ -5419,7 +5419,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song10Pattern6 = Pbind(
 	\instrument, \batuhan,
 	\dur, Pseq([Rest(1.75), 3.5, 1.25, 2.25, 2.25, 3], inf),
-	\amp, 0.33 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\amp, 0.3 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\att, 0.02,
 	\rel, 5,
 	\eSawDec, 0.03,

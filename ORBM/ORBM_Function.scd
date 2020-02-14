@@ -426,4 +426,82 @@
 	});
 };
 
+~patternCodeGen = { arg synthDef; // Pass a SynthDef as argument and generates the corresponding pattern
+	var arguments, name, code, specList;
+	arguments = synthDef.allControlNames;
+	name = synthDef.name;
+	code = "Pbind(
+    \\instrument, " ++ name ++ ",
+	\\dur, 1,";
+	specList = "";
+	arguments.do{ arg control;
+		var codeAdd, controlName, controlNameLower, controlType, min, max, step, caseFind;
+		caseFind = false;
+		controlType = "knob";
+		min = "0";
+		max = "1";
+		step = "0.01";
+		controlName = control.name.asString;
+		controlNameLower = controlName.toLower;
+		if (["out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
+			codeAdd = "";
+			specList = specList ++ "\n					\"" ++ controlName ++ "\", [\"none\"],";
+		}, {
+			codeAdd = "\n    \\" ++ controlName ++ ", " ++ control.defaultValue.asString ++ ",";
+
+			case
+			{ ["pan"].includesEqual(controlNameLower) }
+			{
+				min = "-1";
+				caseFind = true;
+			}
+			{ ["frq", "freq", "frequence", "frequency", "cutoff", "hpf", "lpf"].includesEqual(controlNameLower) and: caseFind.not }
+			{
+				min = "20";
+				max = "20000";
+				step = "1";
+				caseFind = true;
+			}
+			{ ["att", "attack", "dec", "decay", "sus", "sustain", "rel", "release", "timescale", "envT"].includesEqual(controlNameLower) and: caseFind.not }
+			{
+				controlType = "slider";
+				max = "10";
+				caseFind = true;
+			}
+			{ ["curve", "crv", "envC"].includesEqual(controlNameLower) and: caseFind.not }
+			{
+				min = "-20";
+				max = "20";
+			};
+
+			specList = specList ++ "\n					\"" ++ controlName ++ "\", [\""++ controlType ++ "\", ControlSpec(" ++ min ++ ", " ++ max ++ ", step: " ++ step ++ ", default: event.at(\\" ++ controlName ++ ")), true],";
+		});
+		code = code ++ codeAdd;
+	};
+	code = code ++ "\n    \\out, ~channelBus[0],
+	\\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+				~autoGui.value(v, ~kick_electroSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[";
+	code = code ++ specList;
+	code = code ++ "\n				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);";
+	Post << code;
+};
+
+// ~patternCodeGen.value(~kick_electroSynthDef); // Pass a SynthDef as argument and generates the corresponding pattern
+
 )
