@@ -426,59 +426,69 @@
 	});
 };
 
-~patternCodeGen = { arg synthDef; // Pass a SynthDef as argument and generates the corresponding pattern
+~patternCodeGen = { arg synthDef = nil, unit = nil; // generates the code of the corresponding pattern. If arg unit is supply: get values from view, if not: get synthDef default values
 	var arguments, name, code, specList;
-	arguments = synthDef.allControlNames;
-	name = synthDef.name;
-	code = "Pbind(
-    \\instrument, " ++ name ++ ",
+	if (synthDef.notNil, {
+		arguments = synthDef.allControlNames;
+		name = synthDef.name.asString;
+		unit = unit.asString;
+		code = "Pbind(
+    \\instrument, \\" ++ name ++ ",
 	\\dur, 1,";
-	specList = "";
-	arguments.do{ arg control;
-		var codeAdd, controlName, controlNameLower, controlType, min, max, step, caseFind;
-		caseFind = false;
-		controlType = "knob";
-		min = "0";
-		max = "1";
-		step = "0.01";
-		controlName = control.name.asString;
-		controlNameLower = controlName.toLower;
-		if (["out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
-			codeAdd = "";
-			specList = specList ++ "\n					\"" ++ controlName ++ "\", [\"none\"],";
-		}, {
-			codeAdd = "\n    \\" ++ controlName ++ ", " ++ control.defaultValue.asString ++ ",";
+		specList = "";
+		arguments.do{ arg control;
+			var codeAdd, controlName, controlNameLower, controlValue, controlType, min, max, step, caseFind, key;
+			caseFind = false;
+			controlType = "knob";
+			min = "0";
+			max = "1";
+			step = "0.01";
+			controlName = control.name.asString;
+			controlNameLower = controlName.toLower;
+			key = name ++ unit ++ controlName;
 
-			case
-			{ ["pan"].includesEqual(controlNameLower) }
-			{
-				min = "-1";
-				caseFind = true;
-			}
-			{ ["frq", "freq", "frequence", "frequency", "cutoff", "hpf", "lpf"].includesEqual(controlNameLower) and: caseFind.not }
-			{
-				min = "20";
-				max = "20000";
-				step = "1";
-				caseFind = true;
-			}
-			{ ["att", "attack", "dec", "decay", "sus", "sustain", "rel", "release", "timescale", "envT"].includesEqual(controlNameLower) and: caseFind.not }
-			{
-				controlType = "slider";
-				max = "10";
-				caseFind = true;
-			}
-			{ ["curve", "crv", "envC"].includesEqual(controlNameLower) and: caseFind.not }
-			{
-				min = "-20";
-				max = "20";
-			};
+			if ((unit.notNil and: ~autoGuiControl.at(key).notNil), {
+				controlValue = ~autoGuiControl.at(key).value.asFloat; // get value from view
+			}, {
+				controlValue = control.defaultValue.asFloat; // get SynthDef default value
+			});
 
-			specList = specList ++ "\n					\"" ++ controlName ++ "\", [\""++ controlType ++ "\", ControlSpec(" ++ min ++ ", " ++ max ++ ", step: " ++ step ++ ", default: event.at(\\" ++ controlName ++ ")), true],";
-		});
-		code = code ++ codeAdd;
-	};
-	code = code ++ "\n    \\out, ~channelBus[0],
+			if (["out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
+				codeAdd = "";
+				specList = specList ++ "\n					\"" ++ controlName ++ "\", [\"none\"],";
+			}, {
+				codeAdd = "\n    \\" ++ controlName ++ ", " ++ controlValue.asString ++ ",";
+
+				case
+				{ ["pan"].includesEqual(controlNameLower) }
+				{
+					min = "-1";
+					caseFind = true;
+				}
+				{ (["frq", "freq", "frequence", "frequency", "cutoff", "hpf", "lpf"].includesEqual(controlNameLower) or: (controlValue > 200)) and: caseFind.not }
+				{
+					min = "20";
+					max = "20000";
+					step = "1";
+					caseFind = true;
+				}
+				{ ["att", "attack", "dec", "decay", "sus", "sustain", "rel", "release", "timescale", "envT"].includesEqual(controlNameLower) and: caseFind.not }
+				{
+					controlType = "slider";
+					max = "10";
+					caseFind = true;
+				}
+				{ (["curve", "crv", "envC"].includesEqual(controlNameLower) or: (controlValue <= (-4))) and: caseFind.not }
+				{
+					min = "-20";
+					max = "20";
+				};
+
+				specList = specList ++ "\n					\"" ++ controlName ++ "\", [\""++ controlType ++ "\", ControlSpec(" ++ min ++ ", " ++ max ++ ", step: " ++ step ++ ", default: event.at(\\" ++ controlName ++ ")), true],";
+			});
+			code = code ++ codeAdd;
+		};
+		code = code ++ "\n    \\out, ~channelBus[0],
 	\\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
@@ -490,18 +500,22 @@
 			midiChan = ~pdefMidiChan.asInt;
 			{
 				~removePrev.value(synthWindowKey);
-				~autoGui.value(v, ~kick_electroSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[";
-	code = code ++ specList;
-	code = code ++ "\n				]));
+~autoGui.value(v, ~" ++ name ++ "SynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[";
+		code = code ++ specList;
+		code = code ++ "\n				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
 		});
 		0;
 	})
 );";
-	Post << code;
+		Post << code;
+	}, {
+		"patternCodeGen wrong arguments".postln;
+	});
 };
 
-// ~patternCodeGen.value(~kick_electroSynthDef); // Pass a SynthDef as argument and generates the corresponding pattern
+// ~patternCodeGen.value(~batuhanSynthDef); // generates pattern with synthDef default values
+// ~patternCodeGen.value(~batuhanSynthDef, "unit6"); // generates pattern with actual view values
 
 )

@@ -106,9 +106,9 @@ s.waitForBoot({
 		"server boot complete".postln;
 		// s.plotTree; // node tree
 		~makeBuffers.value; // create and fill buffers with samples
-		s.sync;
-		this.executeFile(~path ++ "ORBM_SynthDef.scd");
 		s.sync; // wait for previous code compilation is done
+		this.executeFile(~path ++ "ORBM_SynthDef.scd");
+		s.sync;
 		this.executeFile(~path ++ "ORBM_Routing.scd");
 		s.sync;
 
