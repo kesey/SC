@@ -518,7 +518,7 @@
 // ~patternCodeGen.value(~batuhanSynthDef); // generates pattern with synthDef default values
 // ~patternCodeGen.value(~batuhanSynthDef, "unit6"); // generates pattern with actual view values
 
-~staticSynthCodeGen = { arg synthDef = nil, fromDefault = false;
+~synthSetCodeGen = { arg synthDef = nil, fromDefault = false;
 	var arguments, name, code;
 	if (synthDef.notNil, {
 		arguments = synthDef.allControlNames;
@@ -556,8 +556,8 @@
 	});
 };
 
-// ~staticSynthCodeGen.value(~samplerStereoSynthDef);
-// ~staticSynthCodeGen.value(~sinBassSynthDef); // generates code with actual view values
-// ~staticSynthCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
+// ~synthSetCodeGen.value(~samplerStereoSynthDef);
+// ~synthSetCodeGen.value(~sinBassSynthDef); // generates code with actual view values
+// ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
 )
