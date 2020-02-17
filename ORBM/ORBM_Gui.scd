@@ -355,7 +355,7 @@ u.canvas.layout = VLayout();
 
 // Aux 2
 
-~nodeId.put("verb",
+~nodeId.put(~verbSynthDef.name.asString,
 	~autoGui.value(u, ~verbSynthDef, ~verb, 111, 0, ~aux2Color, Dictionary.newFrom(
 		List[
 			"amp", ["none"],
@@ -365,7 +365,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("flanging",
+~nodeId.put(~flangingSynthDef.name.asString,
 	~autoGui.value(u, ~flangingSynthDef, ~flanging, 115, 0, ~aux2Color, Dictionary.newFrom(
 		List[
 			"fgfreq", ["slider", ControlSpec(0.01, 1000, step: 0.1, default: 0.1), true],
@@ -374,7 +374,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("pitchShifter",
+~nodeId.put(~pitchShifterSynthDef.name.asString,
 	~autoGui.value(u, ~pitchShifterSynthDef, ~pitchShifter, 118, 0, ~aux2Color, Dictionary.newFrom(
 		List[
 			"pitchRatio", ["slider", ControlSpec(0, 4, step: 0.01, default: 1), true],
@@ -383,7 +383,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("quadDelay",
+~nodeId.put(~quadDelaySynthDef.name.asString,
 	~autoGui.value(u, ~quadDelaySynthDef, ~quadDelay, 21, 1, ~aux2Color, Dictionary.newFrom(
 		List[
 			"tempoClock", ["none"],
@@ -401,7 +401,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("filterBus",
+~nodeId.put(~filterBusSynthDef.name.asString,
 	~autoGui.value(u, ~filterBusSynthDef, ~filterBus, 666, 666, ~aux2Color, Dictionary.newFrom(
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), false],
@@ -416,7 +416,7 @@ u.canvas.layout = VLayout();
 
 // Aux 1
 
-~nodeId.put("distoInsideOut",
+~nodeId.put(~distoInsideOutSynthDef.name.asString,
 	~autoGui.value(u, ~distoInsideOutSynthDef, ~distoInsideOut, 41, 1, ~aux1Color, Dictionary.newFrom(
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
@@ -429,7 +429,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("waveShape",
+~nodeId.put(~waveShapeSynthDef.name.asString,
 	~autoGui.value(u, ~waveShapeSynthDef, ~waveShape, 39, 1, ~aux1Color, Dictionary.newFrom(
 		List[
 			"shaperbuf", ["none"],
@@ -443,7 +443,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("distoCrossOver",
+~nodeId.put(~distoCrossOverSynthDef.name.asString,
 	~autoGui.value(u, ~distoCrossOverSynthDef, ~distoCrossOver, 43, 1, ~aux1Color, Dictionary.newFrom(
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
@@ -456,7 +456,7 @@ u.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("noiseInjection",
+~nodeId.put(~noiseInjectionSynthDef.name.asString,
 	~autoGui.value(u, ~noiseInjectionSynthDef, ~noiseInjection, 47, 1, ~aux1Color, Dictionary.newFrom(
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -0.6), true],
@@ -528,7 +528,7 @@ v.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("samplerStereo",
+~nodeId.put(~samplerStereoSynthDef.name.asString,
 	~autoGui.value(v, ~samplerStereoSynthDef, ~samplerStereo, 85, 0, Color.new255(205, 205, 0), Dictionary.newFrom(
 		List[
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
@@ -550,7 +550,7 @@ v.canvas.layout = VLayout();
 	)).asString;
 );
 
-~nodeId.put("sinBass",
+~nodeId.put(~sinBassSynthDef.name.asString,
 	~autoGui.value(v, ~sinBassSynthDef, ~sinBass, 94, 0, Color.new255(238, 230, 133), Dictionary.newFrom(
 		List[
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],

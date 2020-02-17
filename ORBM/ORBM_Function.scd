@@ -426,7 +426,7 @@
 	});
 };
 
-~patternCodeGen = { arg synthDef = nil, unit = nil; // generates the code of the corresponding pattern. If arg unit is supply: get values from view, if not: get synthDef default values
+~patternCodeGen = { arg synthDef = nil, unit = nil; // generates pattern based on SynthDef. If arg unit is supply: get values from view, if not: get synthDef default values
 	var arguments, name, code, specList;
 	if (synthDef.notNil, {
 		arguments = synthDef.allControlNames;
@@ -517,5 +517,47 @@
 
 // ~patternCodeGen.value(~batuhanSynthDef); // generates pattern with synthDef default values
 // ~patternCodeGen.value(~batuhanSynthDef, "unit6"); // generates pattern with actual view values
+
+~staticSynthCodeGen = { arg synthDef = nil, fromDefault = false;
+	var arguments, name, code;
+	if (synthDef.notNil, {
+		arguments = synthDef.allControlNames;
+		name = synthDef.name.asString;
+		code = "";
+
+		arguments.do{ arg control;
+			var controlName, controlNameLower, controlValue, key;
+			controlName = control.name.asString;
+			controlNameLower = controlName.toLower;
+
+			if (~nodeId.at(name).notNil, {
+				key = name ++ ~nodeId.at(name) ++ controlName;
+			}, {
+				key = name ++ "<check name in ~nodeId>" ++ controlName;
+			});
+
+			if ((fromDefault.not and: ~autoGuiControl.at(key).notNil), {
+				controlValue = ~autoGuiControl.at(key).value.asFloat; // get value from view
+			}, {
+				controlValue = control.defaultValue.asFloat; // get SynthDef default value
+			});
+
+			if (["out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
+				code = code ++ "";
+			}, {
+				code = code ++ "~autoGuiControl.at(\"" ++ name ++ "\"" ++ " ++ ~nodeId.at(\"" ++ name ++ "\") ++ " ++ "\"" ++ controlName ++ "\").valueAction_(" ++ controlValue ++ ");\n";
+			});
+
+		};
+
+		Post << code;
+	}, {
+		"staticSynthCodeGen wrong arguments".postln;
+	});
+};
+
+// ~staticSynthCodeGen.value(~samplerStereoSynthDef);
+// ~staticSynthCodeGen.value(~sinBassSynthDef); // generates code with actual view values
+// ~staticSynthCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
 )
