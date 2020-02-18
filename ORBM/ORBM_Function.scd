@@ -457,7 +457,12 @@
 				codeAdd = "";
 				specList = specList ++ "\n					\"" ++ controlName ++ "\", [\"none\"],";
 			}, {
-				codeAdd = "\n    \\" ++ controlName ++ ", " ++ controlValue.asString ++ ",";
+
+				if (["amp", "level", "vol", "volume"].includesEqual(controlNameLower), {
+					codeAdd = "\n    \\" ++ controlName ++ ", " ++ controlValue.asString ++ " * Pfunc({ 1 - ~muteState.at(~pdefName); }),";
+				}, {
+					codeAdd = "\n    \\" ++ controlName ++ ", " ++ controlValue.asString ++ ",";
+				});
 
 				case
 				{ ["pan"].includesEqual(controlNameLower) }
@@ -491,8 +496,7 @@
 		code = code ++ "\n    \\out, ~channelBus[0],
 	\\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
-		currentInstr = event.at(\instrument);
-
+		currentInstr = event.at(\\instrument);\n
 		if (currentInstr != ~pdefPrevInstr, {
 			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
 			instance = ~pdefName.asSymbol;

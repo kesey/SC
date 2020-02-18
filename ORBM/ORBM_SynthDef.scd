@@ -950,8 +950,8 @@ SynthDef(\mcld, { arg out = 0, amp = 1, att = 0.01, rel = 2, impFreq = 10, hpfFr
 	OffsetOut.ar(out, sig);
 }).add;
 
-~batuhanSynthDef = SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, eSawDec = 0.6, eSinL1 = 0, eSinL2 = 1, eSinL3 = 0, eSinL4 = 0.32, eSinT1 = 0.24, eSinT2 = 0.02, eSinT3 = 0.12, eSinC1 = (-4), eSinC2 = (-4), eSinC3 = (-4), sinFreq = 33, mix = 1, sawFreq = 8, subFreq = 62, subAmp = 0, subAtt = 0, subRel = 0.2, brfFreq1 = 45.1, brfFreq2 = 45, doneAction = 2;
-	var sig, env, trig, envSaw, envSin, sub;
+~batuhanSynthDef = SynthDef(\batuhan, { arg out = 0, amp = 0.2, att = 0.01, rel = 5, eSawDec = 0.6, eSinL1 = 0, eSinL2 = 1, eSinL3 = 0, eSinL4 = 0.32, eSinT1 = 0.24, eSinT2 = 0.02, eSinT3 = 0.12, eSinC1 = (-4), eSinC2 = (-4), eSinC3 = (-4), sinFreq = 33, sawMix = 1, sawFreq = 8, bpfFreq = 162, bpfRq = 1, bpfMix = 0, brfFreq1 = 45.1, brfFreq2 = 45, brfRq = 1, doneAction = 2;
+	var sig, env, trig, envSaw, envSin;
 	trig = Impulse.kr(0);
 	env = Linen.kr(trig, att, 1, rel, doneAction);
 	envSaw = Decay2.kr(
@@ -960,10 +960,10 @@ SynthDef(\mcld, { arg out = 0, amp = 1, att = 0.01, rel = 2, impFreq = 10, hpfFr
 		eSawDec
 	);
 	envSin = EnvGen.kr(Env.new([eSinL1, eSinL2, eSinL3, eSinL4], [eSinT1, eSinT2, eSinT3], [eSinC1, eSinC2, eSinC3]), trig);
-	sig = ((Saw.ar(sawFreq, envSaw) ** 1.5) * mix) + (SinOsc.ar(sinFreq, 0, envSin) * (mix - 1));
-	sig = BRF.ar(sig, trig * 20 + [brfFreq1, brfFreq2], 0.1);
-	sub = SinOsc.ar(/*envSaw **/ subFreq, 0, EnvGen.kr(Env.asr(subAtt, 1, subRel), trig)) * subAmp;
-	sig = Splay.ar(sig + sub, levelComp: false);
+	sig = ((Saw.ar(sawFreq, envSaw) ** 1.5) * sawMix) + (SinOsc.ar(sinFreq, 0, envSin) * (1 - sawMix));
+	sig = (sig * (1 - bpfMix)) + (BPF.ar(sig, bpfFreq, bpfRq.max(0.01)) * bpfMix);
+	sig = BRF.ar(sig, trig * 20 + [brfFreq1, brfFreq2], brfRq.max(0.01));
+	sig = Splay.ar(sig, levelComp: false);
 	sig = LeakDC.ar(sig).tanh;
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
@@ -2282,7 +2282,7 @@ var sig = LatoocarfianL.ar(
 	var input, inputFilt, sig, inputAmp, imp;
 	input = InFeedback.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
-	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
+	inputFilt = BRF.ar(inputFilt, brfInFreq, Lag2.kr(brfInRq.max(0.01)));
 	inputAmp = Amplitude.kr(inputFilt, attack, release);
 	noiseType = noiseType.max(0).min(5);
 	sig = Select.ar(noiseType, [
