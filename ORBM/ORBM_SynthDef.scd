@@ -962,6 +962,7 @@ SynthDef(\mcld, { arg out = 0, amp = 1, att = 0.01, rel = 2, impFreq = 10, hpfFr
 	sig = BRF.ar(sig, trig * 20 + [brfFreq1, brfFreq2], brfRq.max(0.01));
 	sig = Splay.ar(sig, levelComp: false);
 	sig = LeakDC.ar(sig).tanh;
+	sig = HPF.ar(sig, 28);
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
@@ -1090,7 +1091,7 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	OffsetOut.ar(out, Pan2.ar(snd * env, pan));
 }).add;
 
-~ringkickSynthDef = SynthDef(\ringkick, { arg out = 0, amp = 0.2, attack = 0.01, decay = 0.25, lpfFreq = 1000, freq = 40, envfL1 = 34, envfL2 = 20, envfL3 = 0.1, envfL4 = 20, envfL5 = 0, envfT1 = 0.2, envfT2 = 1, envfT3 = 0.9, envfT4 = 0.14, curve = (-4), envfAmt = 0, lfnFrq = 230, lfnAmt = 100, sinFreq = 18000, sinFb = 1.2, sinDecDiv = 16, sinAmp = 0.5, doneAction = 2;
+~ringkickSynthDef = SynthDef(\ringkick, { arg out = 0, amp = 0.2, attack = 0.01, decay = 0.25, lpfFreq = 1000, freq = 40, envfL1 = 34, envfL2 = 20, envfL3 = 0.1, envfL4 = 20, envfL5 = 0, envfT1 = 0.2, envfT2 = 1, envfT3 = 0.9, envfT4 = 0.14, curve = (-4), envfAmt = 0, lfnFrq = 230, lfnAmt = 100, ringAmp = 0.04, sawFreq = 0, sawPh = pi, sawDecDiv = 1, sawAmp = 0, sinFreq = 18000, sinFb = 1.2, sinDecDiv = 16, sinAmp = 0.5, doneAction = 2;
 	var snd, env, trig, envf, mod;
 	mod = LFNoise2.kr(lfnFrq, lfnAmt).range(1, lfnAmt);
 	env = EnvGen.kr(Env.linen(attack, 1, decay), doneAction: doneAction);
@@ -1103,13 +1104,15 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 		),
 		freq: freq * envf.range(1, envfAmt), /*+ (freq * envf)*/
 		decaytime: decay,
-		mul: 7 * amp
+		mul: 7 * ringAmp
 	).tanh.sin*2;
+
+	snd = snd + SawDPW.ar(sawFreq, sawPh, Decay.ar(trig, decay / sawDecDiv) * sawAmp);
 
 	snd = snd + SinOscFB.ar(sinFreq * envf.range(1, envfAmt), sinFb, Decay.ar(trig, decay / sinDecDiv) * sinAmp);
 
 	snd = (snd * env) ! 2;
-	OffsetOut.ar(out, snd);
+	OffsetOut.ar(out, snd * amp);
 }).add;
 
 ~kickRingzSynthDef = SynthDef(\kickRingz, { arg out = 0, amp = 1, pan = 0, envL1 = 0.1, envL2 = 1.2, envL3 = 3, envL4 = 2.1, envL5 = 0.1, envT1 = 0.1, envT2 = 0.2, envT3 = 0, envT4 = 0.1, curve = (-4), envpL1 = 0.1, envpL2 = 1.2, envpL3 = 3, envpL4 = 2.1, envpT1 = 0.1, envpT2 = 0, envpT3 = 1.2, curvep = (-4), freq = 40, decay = 0.25, ffreq = 1000, doneAction = 2;
