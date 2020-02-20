@@ -2964,8 +2964,9 @@
 
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.74);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "hpfInFreq").valueAction_(322);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "brfInFreq").valueAction_(20000);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "brfInRq").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqFreq").valueAction_(20000);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqRq").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqDb").valueAction_(0);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "lpfInFreq").valueAction_(20000);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.2);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(8.95);
@@ -3039,11 +3040,11 @@
 	// Part /4
 
 	~song10InitPart = {
-		~changePattern.value(Pdef(\unit1), ~song10Pattern1);
-		/*~changePattern.value(Pdef(\unit2), ~song10Pattern2);
-		~changePattern.value(Pdef(\unit3), ~song10Pattern3);
+		/*~changePattern.value(Pdef(\unit1), ~song10Pattern1);
+		~changePattern.value(Pdef(\unit2), ~song10Pattern2);
+		~changePattern.value(Pdef(\unit3), ~song10Pattern3);*/
 		~changePattern.value(Pdef(\unit4), ~song10Pattern4);
-		~changePattern.value(Pdef(\unit5), ~song10Pattern5);*/
+		~changePattern.value(Pdef(\unit5), ~song10Pattern5);
 		~changePattern.value(Pdef(\unit6), ~song10Pattern6);
 		/*~changePattern.value(Pdef(\unit7), ~song10Pattern7);
 		~changePattern.value(Pdef(\unit8), ~song10Pattern8);*/
@@ -3091,8 +3092,9 @@
 
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-0.74);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "hpfInFreq").valueAction_(322);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "brfInFreq").valueAction_(20000);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "brfInRq").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqFreq").valueAction_(20000);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqRq").valueAction_(0);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqDb").valueAction_(0);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "lpfInFreq").valueAction_(20000);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "attack").valueAction_(0.2);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "release").valueAction_(8.95);

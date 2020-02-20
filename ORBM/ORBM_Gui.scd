@@ -406,9 +406,9 @@ u.canvas.layout = VLayout();
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), false],
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
-			"bpfFeq", ["knob", ControlSpec(20, 20000, step: 1, default: 3200), false],
-			"bpRq", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
-			"bpDb", ["knob", ControlSpec(-60, 60, step: 0.01, default: 0), false],
+			"eqFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 3200), false],
+			"eqRq", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
+			"eqDb", ["knob", ControlSpec(-60, 60, step: 0.01, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 		]
 	)).asString;
@@ -421,8 +421,6 @@ u.canvas.layout = VLayout();
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
-			"brfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
-			"brfInRq", ["knob", ControlSpec(0, 5, step: 0.01, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 			"level", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), false]
 		]
@@ -435,8 +433,6 @@ u.canvas.layout = VLayout();
 			"shaperbuf", ["none"],
 			"mix", ["slider", ControlSpec(0, 1, step: 0.01, default: 0), true],
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
-			"brfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
-			"brfInRq", ["knob", ControlSpec(0, 5, step: 0.01, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 			"gain", ["knob", ControlSpec(0, 100, step: 0.1, default: 29.9), true]
 		]
@@ -448,8 +444,6 @@ u.canvas.layout = VLayout();
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
-			"brfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
-			"brfInRq", ["knob", ControlSpec(0, 5, step: 0.01, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 			"level", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), false]
 		]
@@ -461,8 +455,9 @@ u.canvas.layout = VLayout();
 		List[
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -0.6), true],
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
-			"brfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
-			"brfInRq", ["knob", ControlSpec(0, 5, step: 0.01, default: 0), false],
+			"eqFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
+			"eqRq", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), false],
+			"eqDb", ["knob", ControlSpec(-60, 60, step: 0.1, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 			"attack", ["slider", ControlSpec(0.01, 10, step: 0.01, default: 0.01), true],
 			"release", ["slider", ControlSpec(0.01, 10, step: 0.01, default: 0.01), true],

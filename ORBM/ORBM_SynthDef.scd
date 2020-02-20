@@ -148,11 +148,11 @@ SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5,
 	//XOut.ar(out, drywet, sig);
 }).add;
 
-~filterBusSynthDef = SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, bpfFeq = 3200, bpRq = 1, bpDb = 0, lpfInFreq = 20000;
+~filterBusSynthDef = SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, eqFreq = 3200, eqRq = 1, eqDb = 0, lpfInFreq = 20000;
 	var input, inputFilt, sig;
 	input = InFeedback.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
-	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(bpfFeq.max(20).min(20000), 0.5), bpRq, bpDb);
+	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(eqFreq.max(20).min(20000), 0.5), eqRq, eqDb);
 	sig = XFade2.ar(input, inputFilt, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, effect);
@@ -160,22 +160,20 @@ SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5,
 
 ///////////////////////////////////////  Distortion
 
-~distoInsideOutSynthDef = SynthDef(\distoInsideOut, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, level = 0.02;
+~distoInsideOutSynthDef = SynthDef(\distoInsideOut, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, lpfInFreq = 20000, level = 0.02;
 	var input, inputFilt, effect, sig;
 	input = InFeedback.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
-	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
 	effect = InsideOut.ar(inputFilt, level);
 	sig = XFade2.ar(input, effect, drywet);
 	ReplaceOut.ar(out, sig);
 	//XOut.ar(out, drywet, effect);
 }).add;
 
-~distoCrossOverSynthDef = SynthDef(\distoCrossOver, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, amp = 0.14, smooth = 0.1, level = 0.03;
+~distoCrossOverSynthDef = SynthDef(\distoCrossOver, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, lpfInFreq = 20000, amp = 0.14, smooth = 0.1, level = 0.03;
 	var input, inputFilt, effect, sig;
 	input = InFeedback.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
-	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
 	effect = CrossoverDistortion.ar(inputFilt , Lag2.kr(amp.max(0.001)), Lag2.kr(smooth.max(0.01)), level);
 	sig = XFade2.ar(input, effect, drywet);
 	ReplaceOut.ar(out, sig);
@@ -211,11 +209,10 @@ SynthDef(\awdistortion, {arg in = 0, out = 0, gate = 1;
 
 }).add;
 
-~waveShapeSynthDef = SynthDef(\waveShape, { arg in = 0, out = 0, mix = 1, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, gain = 1, shaperbuf;
+~waveShapeSynthDef = SynthDef(\waveShape, { arg in = 0, out = 0, mix = 1, hpfInFreq = 20, lpfInFreq = 20000, gain = 1, shaperbuf;
 	var input, inputFilt, sig;
 	input = In.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
-	inputFilt = BRF.ar(inputFilt, brfInFreq, brfInRq);
 	sig = XFade2.ar(input, Shaper.ar(shaperbuf, inputFilt * gain), mix.linlin(0,1.0,-1,1.0));
 	ReplaceOut.ar(out, sig);
 }).add;
@@ -1093,21 +1090,26 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	OffsetOut.ar(out, Pan2.ar(snd * env, pan));
 }).add;
 
-SynthDef(\ringkick, { arg out = 0, amp = 0.2, decay = 0.25, freq = 40, doneAction = 2;
-	var snd;
+~ringkickSynthDef = SynthDef(\ringkick, { arg out = 0, amp = 0.2, attack = 0.01, decay = 0.25, lpfFreq = 1000, freq = 40, envfL1 = 34, envfL2 = 20, envfL3 = 0.1, envfL4 = 20, envfL5 = 0, envfT1 = 0.2, envfT2 = 1, envfT3 = 0.9, envfT4 = 0.14, curve = (-4), envfAmt = 0, lfnFrq = 230, lfnAmt = 100, sinFreq = 18000, sinFb = 1.2, sinDecDiv = 16, sinAmp = 0.5, doneAction = 2;
+	var snd, env, trig, envf, mod;
+	mod = LFNoise2.kr(lfnFrq, lfnAmt).range(1, lfnAmt);
+	env = EnvGen.kr(Env.linen(attack, 1, decay), doneAction: doneAction);
+	envf = EnvGen.kr(Env([envfL1, envfL2, envfL3, envfL4, envfL5], [envfT1, envfT2, envfT3, envfT4], [curve, curve/2, curve]), levelScale: envfAmt * mod, doneAction: doneAction);
+	trig = Impulse.ar(0);
 	snd = Ringz.ar(
 		in: LPF.ar(
-			in: Impulse.ar(0),
-			freq: 1000
+			in: trig,
+			freq: lpfFreq
 		),
-		freq: freq,
+		freq: freq * envf.range(1, envfAmt), /*+ (freq * envf)*/
 		decaytime: decay,
 		mul: 7 * amp
 	).tanh.sin*2;
 
-	DetectSilence.ar(in: snd, doneAction: doneAction);
+	snd = snd + SinOscFB.ar(sinFreq * envf.range(1, envfAmt), sinFb, Decay.ar(trig, decay / sinDecDiv) * sinAmp);
 
-	OffsetOut.ar(out, snd!2);
+	snd = (snd * env) ! 2;
+	OffsetOut.ar(out, snd);
 }).add;
 
 ~kickRingzSynthDef = SynthDef(\kickRingz, { arg out = 0, amp = 1, pan = 0, envL1 = 0.1, envL2 = 1.2, envL3 = 3, envL4 = 2.1, envL5 = 0.1, envT1 = 0.1, envT2 = 0.2, envT3 = 0, envT4 = 0.1, curve = (-4), envpL1 = 0.1, envpL2 = 1.2, envpL3 = 3, envpL4 = 2.1, envpT1 = 0.1, envpT2 = 0, envpT3 = 1.2, curvep = (-4), freq = 40, decay = 0.25, ffreq = 1000, doneAction = 2;
@@ -2278,11 +2280,12 @@ var sig = LatoocarfianL.ar(
     OffsetOut.ar(0,sig*amp);
 }).add;*/
 
-~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, hpfInFreq = 20, brfInFreq = 20000, brfInRq = 0, lpfInFreq = 20000, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
+~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, hpfInFreq = 20, eqFreq = 20000, eqRq = 0, eqDb = 0, lpfInFreq = 20000, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
 	var input, inputFilt, sig, inputAmp, imp;
 	input = InFeedback.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
-	inputFilt = BRF.ar(inputFilt, brfInFreq, Lag2.kr(brfInRq.max(0.01)));
+	// inputFilt = BRF.ar(inputFilt, brfInFreq, Lag2.kr(brfInRq.max(0.01)));
+	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(eqFreq.max(20).min(20000), 0.5), eqRq, eqDb);
 	inputAmp = Amplitude.kr(inputFilt, attack, release);
 	noiseType = noiseType.max(0).min(5);
 	sig = Select.ar(noiseType, [
