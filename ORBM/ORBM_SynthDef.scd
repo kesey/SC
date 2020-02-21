@@ -1887,6 +1887,19 @@ SynthDef(\haty,{ arg out = 0, att = 0.001, rel = 0.1, curve = (-4), amp = 0.75, 
 	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
+~haty48SynthDef = SynthDef(\haty48,{ arg out = 0, amp = 0.75, att = 0.001, rel = 2.89, curve = (-4), envaL1 = 0.1, envaL2 = 1, envaL3 = 0.2, envaL4 = 2, envaL5 = 0, envaT1 = 0.2, envaT2 = 1.6, envaT3 = 0.24, envaT4 = 0.05, envaCrv = (-4), envpL1 = 230, envpL2 = 421, envpL3 = 312, envpL4 = 201, envpT1 = 0.02, envpT2 = 0.21, envpT3 = 0.01, envpT4 = 0.45, envpCrv = (-4), modFreq = 46, modAmt = 0, sinFreq = 9867, sinfAdd = 0.2, sinPhase = 0, sinpAdd = pi, rf1Freq = 39, rf1Rq = 0.25, rf2Freq = 39.2, rf2Rq = 0.65, hpfFreq = 4000, doneAction = 2;
+	var mod, env, enva, envp, sig;
+	mod = LFNoise0.ar(modFreq, modAmt).range(1, modAmt);
+	env = EnvGen.kr(Env.linen(att, 1, rel, 1, curve), 1, doneAction: doneAction);
+	enva = EnvGen.kr(Env([envaL1, envaL2, envaL3, envaL4, envaL5], [envaT1, envaT2, envaT3, envaT4], [envaCrv, envaCrv.neg, envaCrv.abs]));
+	envp = EnvGen.kr(Env.circle([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3, envpT4], [envpCrv, envpCrv * mod, envpCrv.neg, (envpCrv / 2) * mod]));
+	sig = SinOsc.ar([(sinFreq + envp) * mod, ((sinFreq + sinfAdd) + envp) * mod], [sinPhase, (sinPhase + sinpAdd)], enva);
+	sig = Resonz.ar(sig, [rf1Freq, rf2Freq], [rf1Rq, rf2Rq]);
+	sig = HPF.ar(sig, hpfFreq);
+	sig = Splay.ar(sig, levelComp: true);
+	OffsetOut.ar(out, [sig,sig] * amp * env);
+}).add;
+
 SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, rootIndex = 238.5, rq = 1,
 	// Initial envelopes
 	initAtt = 0.005, initRel = 0.1, initAmp = 1, initStart = 15000, initEnd = 9000,
@@ -2256,6 +2269,26 @@ var sig = CuspN.ar(
 
 SynthDef(\noise,{arg out = 0, amp = 1, pan = 0, att = 0.01, rel  = 0.25, curve1 = -4, curve2 = -2, curve3 = -4, coeff = 4, avar = 3, bvar = -3, cvar = 0.5, dvar = 1.5, xi = 0.5, yi = 0.5, hpf = 1000, doneAction = 2;
 var env0 =  EnvGen.ar(Env.new([0.1, 1, 0.3, 0], [att, rel], [curve1, curve2, curve3]), doneAction: doneAction);
+var sig = LatoocarfianL.ar(
+		SampleRate.ir/coeff,
+		avar.max(-3).min(3),
+		bvar.max(-3).min(3),
+		cvar.max(0.5).min(1.5),
+		dvar.max(0.5).min(1.5),
+		xi,
+		yi
+	);
+	sig = HPF.ar(sig,hpf);
+	sig = Limiter.ar(sig,0.4);
+	sig =	[sig, DelayL.ar(sig,0.1,100/44100)];
+	//sig = PitchShift.ar(sig,0.2,1*coeff);
+	//sig = Compander.ar(sig,In.ar(0,1),0.01,1,0.01,0.01,0.1);
+	sig=  sig.tanh*env0;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+~newNoise48SynthDef = SynthDef(\newNoise48,{arg out = 0, amp = 1, pan = 0, env0L1 = 0.1, env0L2 = 1, env0L3 = 0.3, env0L4 = 0, env0T1 = 0.01, env0T2 = 0.2, env0T3 = 0.25, env0T4 = 0.25, offset = 0, timeScale = 1, coeff = 4, avar = 3, bvar = -3, cvar = 0.5, dvar = 1.5, xi = 0.5, yi = 0.5, hpf = 1000, t_trig = 1, doneAction = 2;
+var env0 =  EnvGen.ar(Env.step([env0L1, env0L2, env0L3, env0L4], [env0T1, env0T2, env0T3, env0T4], offset), t_trig, timeScale: timeScale, doneAction: doneAction);
 var sig = LatoocarfianL.ar(
 		SampleRate.ir/coeff,
 		avar.max(-3).min(3),

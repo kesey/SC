@@ -3046,8 +3046,8 @@
 		~changePattern.value(Pdef(\unit4), ~song10Pattern4);
 		~changePattern.value(Pdef(\unit5), ~song10Pattern5);
 		~changePattern.value(Pdef(\unit6), ~song10Pattern6);
-		/*~changePattern.value(Pdef(\unit7), ~song10Pattern7);
-		~changePattern.value(Pdef(\unit8), ~song10Pattern8);*/
+		~changePattern.value(Pdef(\unit7), ~song10Pattern7);
+		~changePattern.value(Pdef(\unit8), ~song10Pattern8);
 		~resetAllControlBus.value;
 	};
 
