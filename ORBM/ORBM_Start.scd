@@ -127,7 +127,7 @@ s.waitForBoot({
 			~sequencer.put(name,
 				Penvir(
 					(pdefName: name, pdefPrevInstr: nil, pdefCcStart: 21, pdefMidiChan: i + 2, muteState: ~muteState),
-					Pdef(name, ~initPattern);
+					Pdef(name, ~initPattern).quant_(~globalQuant);
 				)
 			);
 		});

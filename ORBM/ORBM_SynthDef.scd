@@ -1887,17 +1887,17 @@ SynthDef(\haty,{ arg out = 0, att = 0.001, rel = 0.1, curve = (-4), amp = 0.75, 
 	OffsetOut.ar(out, [sig,sig]);
 }).add;
 
-~haty48SynthDef = SynthDef(\haty48,{ arg out = 0, amp = 0.75, att = 0.001, rel = 2.89, curve = (-4), envaL1 = 0.1, envaL2 = 1, envaL3 = 0.2, envaL4 = 2, envaL5 = 0, envaT1 = 0.2, envaT2 = 1.6, envaT3 = 0.24, envaT4 = 0.05, envaCrv = (-4), envpL1 = 230, envpL2 = 421, envpL3 = 312, envpL4 = 201, envpT1 = 0.02, envpT2 = 0.21, envpT3 = 0.01, envpT4 = 0.45, envpCrv = (-4), modFreq = 46, modAmt = 0, sinFreq = 9867, sinfAdd = 0.2, sinPhase = 0, sinpAdd = pi, rf1Freq = 39, rf1Rq = 0.25, rf2Freq = 39.2, rf2Rq = 0.65, hpfFreq = 4000, doneAction = 2;
+~haty48SynthDef = SynthDef(\haty48,{ arg out = 0, amp = 0.75, pan = 0, att = 0.001, rel = 2.89, curve = (-4), envaL1 = 0.1, envaL2 = 1, envaL3 = 0.2, envaL4 = 2, envaL5 = 0, envaT1 = 0.2, envaT2 = 1.6, envaT3 = 0.24, envaT4 = 0.05, envaCrv = (-4), envpL1 = 230, envpL2 = 421, envpL3 = 312, envpL4 = 201, envpT1 = 0.02, envpT2 = 0.21, envpT3 = 0.01, envpT4 = 0.45, envpCrv = (-4), modFreq = 46, modAmt = 0, sinfAdd = 0.2, sinPhase = 0, sinpAdd = pi, rf1Freq = 39, rf1Rq = 0.25, rf2Freq = 39.2, rf2Rq = 0.65, hpfFreq = 4000, doneAction = 2;
 	var mod, env, enva, envp, sig;
-	mod = LFNoise0.ar(modFreq, modAmt).range(1, modAmt);
-	env = EnvGen.kr(Env.linen(att, 1, rel, 1, curve), 1, doneAction: doneAction);
-	enva = EnvGen.kr(Env([envaL1, envaL2, envaL3, envaL4, envaL5], [envaT1, envaT2, envaT3, envaT4], [envaCrv, envaCrv.neg, envaCrv.abs]));
-	envp = EnvGen.kr(Env.circle([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3, envpT4], [envpCrv, envpCrv * mod, envpCrv.neg, (envpCrv / 2) * mod]));
-	sig = SinOsc.ar([(sinFreq + envp) * mod, ((sinFreq + sinfAdd) + envp) * mod], [sinPhase, (sinPhase + sinpAdd)], enva);
-	sig = Resonz.ar(sig, [rf1Freq, rf2Freq], [rf1Rq, rf2Rq]);
+	env = EnvGen.kr(Env.linen(att, rel, rel/2, 1, curve), 1, doneAction: doneAction);
+	enva = EnvGen.kr(Env([envaL1, envaL2, envaL3, envaL4, envaL5], [envaT1, envaT2, envaT3, envaT4], [envaCrv, envaCrv / 2, envaCrv.neg]));
+	envp = EnvGen.kr(Env.circle([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3, envpT4], [envpCrv, envpCrv * 2 , envpCrv.neg, envpCrv / 2]));
+	mod = LFNoise0.ar(modFreq * envp.range(0.1, 4), modAmt * enva).range(1, modAmt);
+	sig = SinOsc.ar([envp, envp + sinfAdd], [sinPhase, (sinPhase + sinpAdd)]);
+	sig = Resonz.ar(sig, [rf1Freq, rf2Freq] * mod, [rf1Rq, rf2Rq], enva);
 	sig = HPF.ar(sig, hpfFreq);
-	sig = Splay.ar(sig, levelComp: true);
-	OffsetOut.ar(out, [sig,sig] * amp * env);
+	sig = (sig[0] + sig[1]) * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
 SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, rootIndex = 238.5, rq = 1,
