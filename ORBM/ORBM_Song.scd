@@ -3034,20 +3034,22 @@
 };
 
 ~song10 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
-	t.tempo = 82 / 60;
+	t.tempo = 52 / 60;
 	t.beatsPerBar = 7;
 
 	// Part /4
 
 	~song10InitPart = {
-		/*~changePattern.value(Pdef(\unit1), ~song10Pattern1);
-		~changePattern.value(Pdef(\unit2), ~song10Pattern2);
-		~changePattern.value(Pdef(\unit3), ~song10Pattern3);*/
+		~changePattern.value(Pdef(\unit1), ~song10Pattern1);
+		// ~changePattern.value(Pdef(\unit2), ~song10Pattern2);
+		~changePattern.value(Pdef(\unit3), ~song10Pattern3);
 		~changePattern.value(Pdef(\unit4), ~song10Pattern4);
 		~changePattern.value(Pdef(\unit5), ~song10Pattern5);
 		~changePattern.value(Pdef(\unit6), ~song10Pattern6);
 		~changePattern.value(Pdef(\unit7), ~song10Pattern7);
 		~changePattern.value(Pdef(\unit8), ~song10Pattern8);
+		Pdefn(\patt1_5, Pseq([Rest(0.75), 1, Rest(0.75), 0.5, 0.21875, 0.28125/**/, Rest(0.75), 1, Rest(0.75), 0.5, 0.21875, Rest(0.28125)], inf));
+		Pdefn(\patt3_6_dur, Pseq([0.5, 0.375, 0.25, 0.375, 0.25/**/, 0.5, 0.375, 0.25, 0.5, 0.125], inf));
 		~resetAllControlBus.value;
 	};
 

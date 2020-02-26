@@ -161,7 +161,7 @@
 		if(key.contains("unit"), {
 			value.removeAll;
 			value.remove;
-			{ ~synthWindow.removeAt(key); }.defer; // need to be delayed
+			{ ~synthWindow.removeAt(key); }.defer(s.latency * 2); // need to be delayed
 		});
 	});
 	~resetAllControlBus.value;
@@ -519,8 +519,8 @@
 	});
 };
 
-// ~patternCodeGen.value(~haty48SynthDef); // generates pattern with synthDef default values
-// ~patternCodeGen.value(~haty48SynthDef, "unit8"); // generates pattern with actual view values
+// ~patternCodeGen.value(~feedbackOscSynthDef); // generates pattern with synthDef default values
+// ~patternCodeGen.value(~feedbackOscSynthDef, "unit1"); // generates pattern with actual view values
 
 ~synthSetCodeGen = { arg synthDef = nil, fromDefault = false;
 	var arguments, name, code;

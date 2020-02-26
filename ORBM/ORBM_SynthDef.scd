@@ -2667,15 +2667,22 @@ SynthDef(\lmcd, { arg out = 0, amp = 1, att = 0.01, rel = 5, trigDur = 0.1, lfCu
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
-SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 0.8, rel = 0.1, dustfreq = 2, dustdecay = 0.7, freq = 200, fmfreq = 100, t_trig = 1, doneAction = 2;
-    var sig, dust;
+~plouxSynthDef = SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 0.8, rel = 0.1, feedBack = 0, fbPost = 0, dustfreq = 2, dustdecay = 0.7, freq = 200, fmfreq = 100, folAtt = 0.01, folDec = 0.2, sinMix = 1, a = 1, b = 3, c = 0.5, d = 0.5, xi = 0.5, yi = 0.5, t_trig = 1, doneAction = 2;
+    var sig, dust, input, inMod, envFol, freqMod;
+	input = LocalIn.ar(2);
+	inMod = input * feedBack;
     dust = Dust.ar(dustfreq);
     dust = Decay.ar(dust, dustdecay);
-    sig = SinOsc.ar(freq * ( SinOsc.ar(fmfreq * dust) * 1 + 1 ));
+	freqMod = SinOsc.ar(fmfreq * dust) * inMod + 1;
+    sig = SinOsc.ar(freq * freqMod);
+	envFol = Amplitude.kr(sig, folAtt, folDec);
+	sig = (sig * sinMix) + (RHPF.ar(LatoocarfianN.ar(freqMod.range(2000, 22050), a, b, c, d, xi, yi, LFNoise0.kr(dust)), input.range(20, 20000)) * (1 - sinMix));
     sig = sig * EnvGen.kr(Env.adsr(att, dec, sus, rel), t_trig, doneAction: doneAction);
+	LocalOut.ar(sig * fbPost);
+	sig = sig.tanh;
     sig = Pan2.ar(sig, pan, amp);
     OffsetOut.ar(out, sig);
-}, [\kr ! 11, \tr, \ir].flat).add;
+}, [\kr ! 22, \tr, \ir].flat).add;
 
 ~complexoscSynthDef = SynthDef(\complexosc, { arg out = 0, amp = 1, feedBack = 1, envL1 = 0, envL2 = 2.2, envL3 = 0.12, envL4 = 0, envT1 = 0.01, envT2 = 0.24, envT3 = 0.12, envCurve = (-4), freq1 = 40, fm1 = 0.1, pm1 = 0, amp1 = 1, ring1 = 1, offset1 = 0, freq2 = 0.5, fm2 = 0.1, pm2 = 0, amp2 = 1, ring2 = 1, offset2 = 0, fold = 0.8, wrap = 0.9, switch = 2, t_trig = 1, doneAction = 2;
     var osc1, osc2, fbk, outlet, folded, wrapped, env, sigenv;
@@ -2786,7 +2793,7 @@ SynthDef(\ploux, { arg out = 0, amp = 0.1, pan = 0, att = 0.1, dec = 0.1, sus = 
 	OffsetOut.ar(out, t * env);
 }).add;
 
-SynthDef(\feedbackOsc, {|out=0, amp = 1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
+~feedbackOscSynthDef = SynthDef(\feedbackOsc, {|out=0, amp = 0.2, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
 	var w= [0, width*2pi];
 	var buf= LocalBuf(1).clear;
 	var buf2= LocalBuf(1, 2).clear;
