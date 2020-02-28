@@ -2492,7 +2492,7 @@ SynthDef(\tweetErosion, { arg out = 0, amp = 0.3, attack = 0.01, release = 10, f
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\harshTexture, { arg out = 0, amp = 1, impFreq = 2, delTimeMod = 0.5, attack = 0.01, release = 10, t_trig = 1, doneAction = 2;
+SynthDef(\harshTexture, { arg out = 0, amp = 1, attack = 0.01, release = 10, impFreq = 2, delTimeMod = 0.5, t_trig = 1, doneAction = 2;
 	var sig, env;
 	//env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
 	env = Linen.kr(t_trig, attack, 1, release, doneAction);

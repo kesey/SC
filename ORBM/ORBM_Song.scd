@@ -3129,9 +3129,7 @@
 		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "lpfInFreq").valueAction_(12254);
 
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(1);
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "amp").valueAction_(1);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.34);
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "tempoClock").valueAction_(1);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "time1").valueAction_(0.25);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "division1").valueAction_(0.67);
@@ -3163,7 +3161,6 @@
 		~autoGuiControl.at("flanging" ++ ~nodeId.at("flanging") ++ "fdback").valueAction_(0.26);
 
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "drywet").valueAction_(0.06);
-		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amp").valueAction_(1);
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "feedback").valueAction_(0.74);
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "room").valueAction_(0.05);
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(1);

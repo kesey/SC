@@ -5355,7 +5355,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song10Pattern2 = Pbind(
     \instrument, \attWind,
 	\dur, Pseq([Rest(3), 0.5/**/, Rest(2.75), 0.75], inf),
-    \amp, 0.07 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+    \amp, 0.08 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
     \attack, 0.01,
 	\release, Pwrand([2, 1.3, 3.8, 0.9], [0.5, 0.2, 0.15, 0.15].normalizeSum, inf),
     \seq1, 0.18,

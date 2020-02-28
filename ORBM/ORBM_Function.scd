@@ -519,7 +519,7 @@
 	});
 };
 
-// ~patternCodeGen.value(~attWindSynthDef); // generates pattern with synthDef default values
+// ~patternCodeGen.value(~werkit2SynthDef); // generates pattern with synthDef default values
 // ~patternCodeGen.value(~attWindSynthDef, "unit2"); // generates pattern with actual view values
 
 ~synthSetCodeGen = { arg synthDef = nil, fromDefault = false;
