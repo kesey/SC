@@ -519,8 +519,8 @@
 	});
 };
 
-// ~patternCodeGen.value(~feedbackOscSynthDef); // generates pattern with synthDef default values
-// ~patternCodeGen.value(~feedbackOscSynthDef, "unit1"); // generates pattern with actual view values
+// ~patternCodeGen.value(~attWindSynthDef); // generates pattern with synthDef default values
+// ~patternCodeGen.value(~attWindSynthDef, "unit2"); // generates pattern with actual view values
 
 ~synthSetCodeGen = { arg synthDef = nil, fromDefault = false;
 	var arguments, name, code;
@@ -560,8 +560,8 @@
 	});
 };
 
-// ~synthSetCodeGen.value(~samplerStereoSynthDef);
-// ~synthSetCodeGen.value(~sinBassSynthDef); // generates code with actual view values
+// ~synthSetCodeGen.value(~quadDelaySynthDef);
+// ~synthSetCodeGen.value(~filterBusSynthDef); // generates code with actual view values
 // ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
 )

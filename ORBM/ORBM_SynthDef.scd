@@ -151,7 +151,7 @@ SynthDef(\sagrain, { arg in = 0, out = 0, drywet = 0.5, amp = 1, panWidth = 0.5,
 ~filterBusSynthDef = SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, eqFreq = 3200, eqRq = 1, eqDb = 0, lpfInFreq = 20000;
 	var input, inputFilt, sig;
 	input = InFeedback.ar(in, 2);
-	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
+	inputFilt = LPF.ar(HPF.ar(input, Lag3.kr(hpfInFreq)), Lag3.kr(lpfInFreq));
 	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(eqFreq.max(20).min(20000), 0.5), eqRq, eqDb);
 	sig = XFade2.ar(input, inputFilt, drywet);
 	ReplaceOut.ar(out, sig);
@@ -2478,7 +2478,7 @@ SynthDef(\res, { | out=0 pan=0 freq=40 fltBus t_gate=1 doneAction=2|
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\tweetErosion, { arg out = 0, amp = 1, attack = 0.01, release = 10, feedBack = 1, t_trig = 1, doneAction = 2;
+SynthDef(\tweetErosion, { arg out = 0, amp = 0.3, attack = 0.01, release = 10, feedBack = 1, t_trig = 1, doneAction = 2;
 	var sig, env, input, div;
 	input = LocalIn.ar(2).range(0,0.9)+0.1;
 	div = LagUD.ar(input, 0, 0.2);
@@ -2530,7 +2530,7 @@ SynthDef(\ultraHiSummer, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\ambiantPic, { arg out = 0, amp = 1, lfnFreq = 22, attack = 0.01, release = 10, delTime1 = 0.13, delTime2 = 0.1, decTime = 0.2, t_trig = 1, doneAction = 2;
+SynthDef(\ambiantPic, { arg out = 0, amp = 0.3, lfnFreq = 22, attack = 0.01, release = 10, delTime1 = 0.13, delTime2 = 0.1, decTime = 0.2, t_trig = 1, doneAction = 2;
 	var sig, env;
 	//env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
 	env = Linen.kr(t_trig, attack, 1, release, doneAction);
@@ -2568,20 +2568,20 @@ SynthDef(\ambiantPic, { arg out = 0, amp = 1, lfnFreq = 22, attack = 0.01, relea
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-SynthDef(\attWind, { arg out = 0, amp = 1, t_trig = 1, attack = 0.01, release = 2, doneAction = 2;
+~attWindSynthDef = SynthDef(\attWind, { arg out = 0, amp = 1, attack = 0.01, release = 2, seq1 = 1, seq2 = 1, seq3 = 4, seq4 = 2, seq5 = 2, seqDiv = 8, freq1 = 250, freq2 = 8000, bwrLo = 0.01, bwrHi = 0.5, t_trig = 1, doneAction = 2;
 	var sig, env;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
-	sig = TDuty.kr(Dseq([1,1,4,2,2]/8,inf));
+	sig = TDuty.kr(Dseq([seq1, seq2, seq3, seq4, seq5] / seqDiv, inf));
 	sig = Resonz.ar(
 		WhiteNoise.ar!2,
-		Demand.kr(sig,0,Dseq([250,8e3],inf)),
-		Demand.kr(sig,0,Dwhite(0.01,0.5,inf))
+		Demand.kr(sig, 0, Dseq([freq1, freq2], inf)),
+		Demand.kr(sig, 0, Dwhite(bwrLo, bwrHi, inf))
 	);
 	sig = sig * env;
 	OffsetOut.ar(out, sig * amp);
 }).add;
 
-~dStowellSynthDef = SynthDef(\dStowell, { arg out = 0, amp = 1, pan = 0, t_trig = 1, attack = 0.01, release = 2, freq = 6/3, width = 1/5, lpf = 20000, doneAction = 2;
+~dStowellSynthDef = SynthDef(\dStowell, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release = 2, freq = 6/3, width = 1/5, lpf = 20000, t_trig = 1, doneAction = 2;
 	var sig, env, spec, input;
 	spec = `[{exprand(100,1000)}.dup(50)];
 	input = Saw.ar(
@@ -2595,7 +2595,7 @@ SynthDef(\attWind, { arg out = 0, amp = 1, t_trig = 1, attack = 0.01, release = 
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\henon, { arg out = 0, amp = 0.3, pan = 0, freq = 440, a = 1.3, b = 0.3, x0 = 0.30501993062401, x1 = 0.20938865431933, atk = 0.01, sus = 1, rel = 1, ts = 1, t_trig = 1, doneAction = 2;
+SynthDef(\henon, { arg out = 0, amp = 0.1, pan = 0, freq = 440, a = 1.3, b = 0.3, x0 = 0.30501993062401, x1 = 0.20938865431933, atk = 0.01, sus = 1, rel = 1, ts = 1, t_trig = 1, doneAction = 2;
 	var sig,env;
 	sig = HenonN.ar(freq,a,b,x0,x1,amp);
 	env = EnvGen.ar(Env.linen(atk,sus,rel),t_trig,1,0,ts,doneAction);
@@ -2793,7 +2793,7 @@ SynthDef(\lmcd, { arg out = 0, amp = 1, att = 0.01, rel = 5, trigDur = 0.1, lfCu
 	OffsetOut.ar(out, t * env);
 }).add;
 
-~feedbackOscSynthDef = SynthDef(\feedbackOsc, {|out=0, amp = 0.2, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, attack=0.01, sustain=1, release=1, gate = 1, doneAction = 2|
+~feedbackOscSynthDef = SynthDef(\feedbackOsc, {|out=0, amp = 0.2, attack=0.01, release=1, mFrq= 313, mFB= 1, freq= 100, fB= 1, width= 0, mul= 500, ffreq=1000, rq=1, gate = 1, doneAction = 2|
 	var w= [0, width*2pi];
 	var buf= LocalBuf(1).clear;
 	var buf2= LocalBuf(1, 2).clear;
@@ -2803,8 +2803,8 @@ SynthDef(\lmcd, { arg out = 0, amp = 1, att = 0.01, rel = 5, trigDur = 0.1, lfCu
 	var snd2= Duty.ar(SampleDur.ir, 0, Dbufwr(osc2, buf2));
 	//var filter= RLPF.ar(snd2, ffreq, rq);
 	var filter = DFM1.ar(snd2, ffreq, rq);
-	//var env = EnvGen.ar(Env.asr(attack,sustain,release),gate,doneAction:2);
-	OffsetOut.ar(out,filter * amp * EnvGate(gate: gate, doneAction: doneAction));
+	var env = EnvGen.ar(Env.asr(attack, 1, release),gate,doneAction: doneAction);
+	OffsetOut.ar(out,filter * amp * env/*EnvGate(gate: gate, doneAction: doneAction)*/);
 }).add;
 
 SynthDef(\salledutemps, { arg out = 0, amp = 1, attack = 1, release = 4, tu = 1, dur = 9, gate = 1, doneAction = 2;
