@@ -2414,14 +2414,15 @@ SynthDef(\plastickystrings, { | out= 0 freq = 440 amp = 0.1 gate=1 lforate = 590
 	OffsetOut.ar(out,Pan2.ar(filter*env, pan, amp));
 }).add;
 
-SynthDef(\res, { | out=0 pan=0 freq=40 fltBus t_gate=1 doneAction=2|
-	var aEnv, osc, flt;
-	aEnv = EnvGen.kr(Env.perc(0, 0.7), t_gate, doneAction: doneAction);
-	osc = Mix([Saw.ar(freq), Pulse.ar(freq / 2, 0.5)]);
-	flt = RLPF.ar(osc, In.kr(fltBus, 1), 0.1, aEnv);
-	ReplaceOut.kr(fltBus, LFNoise1.kr(0.3, 1000, 1500));
+~resSynthDef = SynthDef(\res, { | out = 0, amp = 1, pan = 0, att = 0, rel = 0.7, freqSaw = 40, freqPls = 62, wPls = 0.5, rlpfRq = 0.1, lfnFreq = 0.3, lfnMul = 1000, lfnAdd = 1500, t_gate = 1, doneAction = 2|
+	var aEnv, osc, flt, fltBus;
+	aEnv = EnvGen.kr(Env.perc(att, rel), t_gate, doneAction: doneAction);
+	fltBus = Bus.control(s, 1);
+	osc = Mix([Saw.ar(freqSaw), Pulse.ar(freqPls, wPls)]);
+	flt = RLPF.ar(osc, In.kr(fltBus, 1), rlpfRq, aEnv);
+	ReplaceOut.kr(fltBus, LFNoise1.kr(lfnFreq, lfnMul, lfnAdd));
 
-	OffsetOut.ar(out, Pan2.ar(flt, pan));
+	OffsetOut.ar(out, Pan2.ar(flt, pan, amp));
 }).add;
 
 ~mutantFricSynthDef = SynthDef(\mutantFric, { arg out = 0, amp = 1, attack = 0.01, release = 1, spec1 = 0.00001, spec2 = 0.03, noiseFreq = 3, sigFreq = 50, spring = 0.414, damp = 0.313, beltmass = 1, source = 0, hpfFreq = 50, gate = 1, doneAction = 2;
@@ -2479,11 +2480,11 @@ SynthDef(\res, { | out=0 pan=0 freq=40 fltBus t_gate=1 doneAction=2|
 }).add;
 
 SynthDef(\tweetErosion, { arg out = 0, amp = 0.3, attack = 0.01, release = 10, feedBack = 1, t_trig = 1, doneAction = 2;
-	var sig, env, input, div;
+	var sig, env, input, div, envIndex, xyc;
 	input = LocalIn.ar(2).range(0,0.9)+0.1;
 	div = LagUD.ar(input, 0, 0.2);
 	sig = PinkNoise.ar(1!2);
-	sig = tanh(500*(sig**(8/div)));
+	sig = tanh(500 * (sig**(8/div)));
 	//env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
 	env = Linen.kr(t_trig, attack, 1, release, doneAction);
 	LocalOut.ar(sig * feedBack);
@@ -2530,18 +2531,18 @@ SynthDef(\ultraHiSummer, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\ambiantPic, { arg out = 0, amp = 0.3, lfnFreq = 22, attack = 0.01, release = 10, delTime1 = 0.13, delTime2 = 0.1, decTime = 0.2, t_trig = 1, doneAction = 2;
+SynthDef(\ambiantPic, { arg out = 0, amp = 0.3, attack = 0.01, release = 10, lfnFreq = 22, lfnAmp = 5, lfnOffset = 9, ampDst1 = 4, ampDst2 = 2, durDst1 = 0.5, durDst2 = 1, adPar1 = 1/9, adPar2 = 1/4, ddPar1 = 1/2, ddPar2 = 1/8, delTime1 = 0.13, delTime2 = 0.1, decTime = 0.2, t_trig = 1, doneAction = 2;
 	var sig, env;
 	//env = EnvGen.kr(Env.asr(attack, releaseTime: release), t_trig, doneAction: doneAction);
 	env = Linen.kr(t_trig, attack, 1, release, doneAction);
-	sig = LFNoise2.kr(lfnFreq, 5, 9);
+	sig = LFNoise2.kr(lfnFreq, lfnAmp, lfnOffset);
 	sig = CombC.ar(
 		Splay.ar(
 			Gendy3.ar(
-				[4,2],
-				[0.5,1] * decTime,
-				[1/9,1/4]*sig,
-				[1/2,1/8]*sig,
+				[ampDst1, ampDst2],
+				[durDst1, durDst2] * decTime,
+				[adPar1, adPar2]*sig,
+				[ddPar1, ddPar2]*sig,
 				(9,49..199)
 			)
 		),
@@ -2698,7 +2699,7 @@ SynthDef(\lmcd, { arg out = 0, amp = 1, att = 0.01, rel = 5, trigDur = 0.1, lfCu
     OffsetOut.ar(out, outlet * env * amp);
 }, [\kr ! 11, \ar ! 14, \kr, \tr, \ir].flat).add;
 
-~benjolisSynthDef = SynthDef(\benjolis,{ |out = 0, amp = 1, fadeTime = 0.01, freq1= 40, freq2=4, scaler=1, rungler1=0.16, rungler2=0.0, runglerFilt=9, loop=0, filtFreq=40, rq=0.82, gain=1, filterType=0, outSignal=6, doneAction = 2|
+~benjolisSynthDef = SynthDef(\benjolis,{ |out = 0, amp = 0.1, fadeTime = 0.01, freq1= 40, freq2=4, scaler=1, rungler1=0.16, rungler2=0.0, runglerFilt=9, loop=0, filtFreq=40, rq=0.82, gain=1, filterType=0, outSignal=6, doneAction = 2|
 	var osc1, osc2, tri1, tri2, sh0, sh1, sh2, sh3, sh4, sh5, sh6, sh7, sh8=1, rungler, pwm, filt, output;
 	var sr;
 	var osc2freq, buf, bufR;
@@ -2761,7 +2762,7 @@ SynthDef(\lmcd, { arg out = 0, amp = 1, att = 0.01, rel = 5, trigDur = 0.1, lfCu
 	OffsetOut.ar(out, output * EnvGate(fadeTime: fadeTime, doneAction: doneAction));
 }).add;
 
-~bytebeatsSynthDef = SynthDef(\bytebeats, { arg out = 0, amp = 1, envL1 = 0, envL2 = 1, envL3 = 0.2, envL4 = 3.2, envL5 = 0, envT1 = 0.12, envT2 = 0.02, envT3 = 0, envT4 = 0.2, curve1 = (-4), curve2 = (-4), curve3 = (-4), curve4 = (-4), counterFreq = 1, counterMul = 3.5, counterAdd = 3.5, srDiv = 6, freq = 232, doneAction = 2;
+~bytebeatsSynthDef = SynthDef(\bytebeats, { arg out = 0, amp = 0.2, envL1 = 0, envL2 = 1, envL3 = 0.2, envL4 = 3.2, envL5 = 0, envT1 = 0.12, envT2 = 0.02, envT3 = 0, envT4 = 0.2, curve1 = (-4), curve2 = (-4), curve3 = (-4), curve4 = (-4), counterFreq = 1, counterMul = 3.5, counterAdd = 3.5, srDiv = 6, freq = 232, doneAction = 2;
 	//var sr = SampleRate.ir/6; //fix sample rate
 	var counter, env;
 	var sr = SampleRate.ir/srDiv; //variable sample rate

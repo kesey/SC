@@ -5405,6 +5405,55 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
+~song10Pattern9 = Pbind(
+    \instrument, \res,
+	\dur, Pseq([Rest(3), 0.5/**/, Rest(2.75), 0.75], inf),
+    \amp, 0.1 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+    \pan, 0,
+    \att, 0,
+    \rel, 4.21,
+    \freqSaw, 0.4,
+    \freqPls, 7422.7,
+    \wPls, 0.4,
+    \rlpfRq, 0.01,
+    \lfnFreq, 2,
+    \lfnMul, 577.3,
+    \lfnAdd, 2492,
+    \out, ~channelBus[0],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+~autoGui.value(v, ~resSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"out", ["none"],
+					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
+					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"freqSaw", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\freqSaw)), true],
+					"freqPls", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\freqPls)), true],
+					"wPls", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\wPls)), true],
+					"rlpfRq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\rlpfRq)), true],
+					"lfnFreq", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\lfnFreq)), true],
+					"lfnMul", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\lfnMul)), true],
+					"lfnAdd", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\lfnAdd)), true],
+					"t_gate", ["none"],
+					"doneAction", ["none"],
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
 ~song10Pattern3 = Pbind(
     \instrument, \ploux,
 	\dur, Pdefn(\patt3_6_dur),
@@ -5414,10 +5463,10 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
     \dec, 0,
     \sus, 1.32,
     \rel, 0.25,
-	\feedBack, Pwhite(7.48, 8),
+	\feedBack, Pwhite(7.48, 8)-2,
     \fbPost, 1,
     \dustfreq, 24.6,
-	\dustdecay, Pseq([0.79, 1.2, 2.3, 0.02, 0.79, 3.2], inf),
+	\dustdecay, Pseq([0.79, 1.2, 2.3, 0.02, 0.79, 2], inf),
     \freq, 574.4,
 	\fmfreq, 64.25, // Pwhite(54.25, 74.25),
 	\folAtt, Pwhite(0.1, 0.53),
