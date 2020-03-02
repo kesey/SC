@@ -3073,6 +3073,32 @@
 		14.0.wait;
 	};
 
+	~song10Part3 = {
+		"song10 part3".postln;
+		~song10InitPart.value;
+		Pdefn(\patt1_5, Pseq([Rest(0.75), 1, Rest(0.75), 0.5, 0.21875, 0.28125/**/, Rest(1), 0.75, Rest(0.75), 0.5, 0.21875, Rest(0.28125)], inf)).quant_(~globalQuant);
+		Pbindef(\unit7,
+			\dur, Pseq([0.125, Rest(0.0625), 0.25, 0.0625, 0.0625, 0.125, 0.0625, Pn(0.25, 3), 0.0625, 0.125, 0.0625]*2, inf),
+		).quant_(~globalQuant);
+		14.0.wait;
+	};
+
+	~song10Part4 = {
+		"song10 part4".postln;
+		~song10InitPart.value;
+		//Pdefn(\patt1_5, Pseq([Rest(1), 0.75, Rest(0.75), 0.5, 0.21875, 0.28125/**/, Rest(0.75), 1, Rest(0.75), 0.5, 0.21875, Rest(0.28125)], inf)).quant_(~globalQuant);
+		Pbindef(\unit2,
+			\dur, Pseq([Rest(0.5), 1.25/**/, Rest(0.75), 1], inf),
+			\release, Pwrand([0.8, 0.7, 0.5], [0.6, 0.3, 0.1].normalizeSum, inf),
+		).quant_(~globalQuant);
+		~resetControlBus.value("unit2release");
+		Pdefn(\patt3_6_dur, Pseq([0.5, 0.375, 0.375, 0.25, 0.5, Prand([0.25, Rest(0.25)]), 0.375, Prand([0.25, Rest(0.25)]), 0.5, 0.125], inf)).quant_(~globalQuant);
+		Pbindef(\unit7,
+			\dur, Pseq([0.125, Rest(0.0625), 0.25, 0.0625, 0.0625, Rest(0.125), 0.0625, Pn(0.25, 3), 0.0625, Rest(0.125), 0.0625], inf),
+		).quant_(~globalQuant);
+		14.0.wait;
+	};
+
 	// Synth + Fx Preset
 
 	{
@@ -3188,9 +3214,9 @@
 	loop {
 		~song10Part1.value;
 		~song10Part2.value;
-		/*~song10Part3.value;
+		~song10Part3.value;
 		~song10Part4.value;
-		~song10Part5.value;
+		/*~song10Part5.value;
 		~song10Part6.value;
 		~song10Part7.value;
 		~song10Part8.value;*/

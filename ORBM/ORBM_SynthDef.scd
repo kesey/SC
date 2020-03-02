@@ -963,6 +963,7 @@ SynthDef(\mcld, { arg out = 0, amp = 1, att = 0.01, rel = 2, impFreq = 10, hpfFr
 	sig = Splay.ar(sig, levelComp: false);
 	sig = LeakDC.ar(sig).tanh;
 	sig = HPF.ar(sig, 28);
+	//sig = (sig[0] + sig[1])!2; // mono
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 

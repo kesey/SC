@@ -47,7 +47,7 @@
 };
 
 ~cleanDict = { arg dict, synthWindowKey;
-	dict.keysDo({ arg key; // remove control no longer in use
+	dict.keysDo({ arg key;
 		if(key.contains(synthWindowKey), {
 			dict.removeAt(key);
 		});

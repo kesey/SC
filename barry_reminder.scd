@@ -788,3 +788,28 @@ d.allControlNames;
 
 // Print:
 // [ ControlName  P 0 out control 0, ControlName  P 1 freq control 0 ]
+
+/******************************************************************Proto*****************************************************************/
+
+(
+~operator = Proto {
+	~a = 2;
+	~b = 3;
+	~op = '+';
+	~prep = { |a, b, op|
+		if(a.notNil) { ~a = a };
+		if(b.notNil) { ~b = b };
+		if(op.notNil) { ~op = op };
+		currentEnvironment  // i.e. 'self' -- must return this!
+	};
+	~calc = { ~a.perform(~op, ~b) };
+};
+
+// inheritance
+~mul = ~operator.clone {
+	~op = '*';
+};
+)
+
+~mul.copy.prep(5, 7).calc
+// -> 35

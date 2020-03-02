@@ -5722,7 +5722,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song10Pattern6 = Pbind(
     \instrument, \batuhan,
 	\dur, Pdefn(\patt3_6_dur), // Pseq([0.5, 0.375, 0.25, 0.375, 0.25/**/, 0.5, 0.375, 0.25, 0.5, 0.125], inf), // Pseq([0.2, Rest(0.4375), 0.4375, 0.2375, 0.4375, Rest(0.4375), 0.2, Rest(0.875), 0.2375], inf),
-    \amp, 0.32 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+    \amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
     \att, 0.02,
     \rel, 2.89,
     \eSawDec, 0.02,
@@ -5794,7 +5794,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song10Pattern7 = Pbind(
     \instrument, \newNoise48,
 	\dur, Pseq([0.125, Rest(0.0625), 0.0625, 0.25, 0.0625, 0.125, 0.0625, Pn(0.25, 3), 0.0625, 0.125, 0.0625], inf),
-    \amp, 0.38 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+    \amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, Pwhite(-1.0, 1.0),
     \env0L1, 0.35,
     \env0L2, 0,
@@ -5861,7 +5861,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 ~song10Pattern8 = Pbind(
     \instrument, \haty48,
 	\dur, Pseq([Rest(0.01), 0.0625, 0.125, 0.0625, 0.25, 0.0625, 0.24, 0.0625/**/, Rest(0.01), 0.0625, 0.25, 0.0625, 0.24, 0.0625, 0.125, 0.0625], inf),
-    \amp, 0.7 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+    \amp, 0.45 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\pan, Pwhite(-0.65, 0.65),
     \att, 0,
     \rel, 0.12,
