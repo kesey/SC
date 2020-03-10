@@ -310,6 +310,8 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 	~ccStart = ~ccStart + 1;
 };
 
+////////////////////  Master
+
 channelMaster = CompositeView(w, 118@350);
 channelMaster.background_(Color.grey);
 channelMaster.decorator_(FlowLayout(channelMaster.bounds, 3@3, 3@3));

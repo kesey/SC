@@ -5343,7 +5343,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"rq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\rq)), true],
 					"gate", ["none"],
 					"doneAction", ["none"],
-					"fadeTime", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\fadeTime)), true],
+					"fadeTime", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\fadeTime)), true]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -5396,7 +5396,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"bwrLo", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\bwrLo)), true],
 					"bwrHi", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\bwrHi)), true],
 					"t_trig", ["none"],
-					"doneAction", ["none"],
+					"doneAction", ["none"]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -5407,19 +5407,27 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song10Pattern9 = Pbind(
     \instrument, \res,
-	\dur, Pseq([Rest(3), 0.5/**/, Rest(2.75), 0.75], inf),
-    \amp, 0.1 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\dur, Pseq([Rest(3), 0.5/**/, Rest(2.75), 0.75]/2, inf),
+    \amp, 0.94 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
     \pan, 0,
     \att, 0,
-    \rel, 4.21,
-    \freqSaw, 0.4,
-    \freqPls, 7422.7,
-    \wPls, 0.4,
-    \rlpfRq, 0.01,
-    \lfnFreq, 2,
-    \lfnMul, 577.3,
-    \lfnAdd, 2492,
-    \out, ~channelBus[0],
+    \rel, 3.68,
+    \freqSin, 56,
+    \ampSin, 0.62,
+    \freqSaw, 8241,
+    \ampSaw, 0,
+    \oscMix, 0.82,
+    \freqClc, 13007,
+    \harmClc, 0,
+    \ampClc, 0.07,
+    \maxL, 12,
+    \t1Clc, 0,
+    \t2Clc, 0.01,
+    \t3Clc, 0.01,
+    \gFreq, 0.2,
+    \damp, 0,
+    \fric, 1,
+    \out, ~channelBus[1],
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
@@ -5437,14 +5445,21 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
 					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
 					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
-					"freqSaw", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\freqSaw)), true],
-					"freqPls", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\freqPls)), true],
-					"wPls", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\wPls)), true],
-					"rlpfRq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\rlpfRq)), true],
-					"lfnFreq", ["knob", ControlSpec(0, 20000, step: 1, default: event.at(\lfnFreq)), true],
-					"lfnMul", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\lfnMul)), true],
-					"lfnAdd", ["knob", ControlSpec(0, 20000, step: 0.1, default: event.at(\lfnAdd)), true],
-					"t_gate", ["none"],
+					"freqSin", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\freqSin)), true],
+					"ampSin", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampSin)), true],
+					"freqSaw", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqSaw)), true],
+					"ampSaw", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampSaw)), true],
+					"oscMix", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\oscMix)), true],
+					"freqClc", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqClc)), true],
+					"harmClc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\harmClc)), true],
+					"ampClc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampClc)), true],
+					"maxL", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\maxL)), true],
+					"t1Clc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\t1Clc)), true],
+					"t2Clc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\t2Clc)), true],
+					"t3Clc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\t3Clc)), true],
+					"gFreq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\gFreq)), true],
+					"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\damp)), true],
+					"fric", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\fric)), true],
 					"doneAction", ["none"],
 				]));
 			}.defer;
@@ -5514,7 +5529,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"xi", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\xi)), true],
 					"yi", ["knob", ControlSpec(0, 4, step: 0.01, default: event.at(\yi)), true],
 					"t_trig", ["none"],
-					"doneAction", ["none"],
+					"doneAction", ["none"]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -5721,8 +5736,8 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song10Pattern6 = Pbind(
     \instrument, \batuhan,
-	\dur, Pdefn(\patt3_6_dur), // Pseq([0.5, 0.375, 0.25, 0.375, 0.25/**/, 0.5, 0.375, 0.25, 0.5, 0.125], inf), // Pseq([0.2, Rest(0.4375), 0.4375, 0.2375, 0.4375, Rest(0.4375), 0.2, Rest(0.875), 0.2375], inf),
-    \amp, 0.4 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+	\dur, Pdefn(\patt3_6_dur),
+	\amp, Pseq([0.4, 0.38, 0.37, 0.39, 0.4, 0.37, 0.38, 0.39, 0.4, 0.37], inf)/*0.4*/ * Pfunc({ 1 - ~muteState.at(~pdefName); }),
     \att, 0.02,
     \rel, 2.89,
     \eSawDec, 0.02,
@@ -5782,7 +5797,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"brfFreq1", ["knob", ControlSpec(20, 20000, step: 0.1, default: event.at(\brfFreq1)), true],
 					"brfFreq2", ["knob", ControlSpec(20, 20000, step: 0.1, default: event.at(\brfFreq2)), true],
 					"brfRq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\brfRq)), true],
-					"doneAction", ["none"],
+					"doneAction", ["none"]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -5849,7 +5864,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"xi", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\xi)), true],
 					"yi", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\yi)), true],
 					"hpf", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\hpf)), true],
-					"doneAction", ["none"],
+					"doneAction", ["none"]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
@@ -5943,7 +5958,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"rf2Freq", ["knob", ControlSpec(20, 20000, step: 0.1, default: event.at(\rf2Freq)), true],
 					"rf2Rq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\rf2Rq)), true],
 					"hpfFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\hpfFreq)), true],
-					"doneAction", ["none"],
+					"doneAction", ["none"]
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;

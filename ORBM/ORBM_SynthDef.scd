@@ -2415,7 +2415,17 @@ SynthDef(\plastickystrings, { | out= 0 freq = 440 amp = 0.1 gate=1 lforate = 590
 	OffsetOut.ar(out,Pan2.ar(filter*env, pan, amp));
 }).add;
 
-~resSynthDef = SynthDef(\res, { | out = 0, amp = 1, pan = 0, att = 0, rel = 0.7, freqSaw = 40, freqPls = 62, wPls = 0.5, rlpfRq = 0.1, lfnFreq = 0.3, lfnMul = 1000, lfnAdd = 1500, t_gate = 1, doneAction = 2|
+~resSynthDef = SynthDef(\res, { | out = 0, amp = 1, pan = 0, att = 0, rel = 0.7, freqSin = 52, ampSin = 1, freqSaw = 22, ampSaw = 1, oscMix = 0.5, freqClc = 7302, harmClc = 200, ampClc = 0.5, maxL = 1, t1Clc = 0.001, t2Clc = 0.03, t3Clc = 0.01, gFreq = 12, damp = 0, fric = 0.001, doneAction = 2|
+	var aEnv, osc, sig, flt, clic;
+	aEnv = EnvGen.kr(Env.perc(att, rel), doneAction: doneAction);
+	osc = Mix([SinOsc.ar(freqSin, 0, ampSin), Saw.ar(freqSaw, ampSaw)]) * aEnv;
+	clic = Blip.ar(freqClc, harmClc, ampClc) * EnvGen.kr(Env.step([0, maxL, 0], [t1Clc, t2Clc, t3Clc]));
+	sig = (osc * oscMix) + (clic * (1 - oscMix));
+	sig = sig + Ball.ar(sig, LFNoise1.kr(gFreq, 0.5, 0.5), damp, fric) * aEnv;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+/*~resSynthDef = SynthDef(\res, { | out = 0, amp = 1, pan = 0, att = 0, rel = 0.7, freqSaw = 40, freqPls = 62, wPls = 0.5, rlpfRq = 0.1, lfnFreq = 0.3, lfnMul = 1000, lfnAdd = 1500, t_gate = 1, doneAction = 2|
 	var aEnv, osc, flt, fltBus;
 	aEnv = EnvGen.kr(Env.perc(att, rel), t_gate, doneAction: doneAction);
 	fltBus = Bus.control(s, 1);
@@ -2424,7 +2434,7 @@ SynthDef(\plastickystrings, { | out= 0 freq = 440 amp = 0.1 gate=1 lforate = 590
 	ReplaceOut.kr(fltBus, LFNoise1.kr(lfnFreq, lfnMul, lfnAdd));
 
 	OffsetOut.ar(out, Pan2.ar(flt, pan, amp));
-}).add;
+}).add;*/
 
 ~mutantFricSynthDef = SynthDef(\mutantFric, { arg out = 0, amp = 1, attack = 0.01, release = 1, spec1 = 0.00001, spec2 = 0.03, noiseFreq = 3, sigFreq = 50, spring = 0.414, damp = 0.313, beltmass = 1, source = 0, hpfFreq = 50, gate = 1, doneAction = 2;
 	var friction, sig;
