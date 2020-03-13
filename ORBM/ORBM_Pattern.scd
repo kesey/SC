@@ -5405,70 +5405,6 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	})
 );
 
-~song10Pattern9 = Pbind(
-    \instrument, \res,
-	\dur, Pseq([Rest(3), 0.5/**/, Rest(2.75), 0.75]/2, inf),
-    \amp, 0.94 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-    \pan, 0,
-    \att, 0,
-    \rel, 3.68,
-    \freqSin, 56,
-    \ampSin, 0.62,
-    \freqSaw, 8241,
-    \ampSaw, 0,
-    \oscMix, 0.82,
-    \freqClc, 13007,
-    \harmClc, 0,
-    \ampClc, 0.07,
-    \maxL, 12,
-    \t1Clc, 0,
-    \t2Clc, 0.01,
-    \t3Clc, 0.01,
-    \gFreq, 0.2,
-    \damp, 0,
-    \fric, 1,
-    \out, ~channelBus[1],
-	\function, Pfunc({ arg event;
-		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
-		currentInstr = event.at(\instrument);
-
-		if (currentInstr != ~pdefPrevInstr, {
-			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
-			instance = ~pdefName.asSymbol;
-			ccStart = ~pdefCcStart.asInt;
-			midiChan = ~pdefMidiChan.asInt;
-			{
-				~removePrev.value(synthWindowKey);
-~autoGui.value(v, ~resSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
-					"out", ["none"],
-					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
-					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
-					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
-					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
-					"freqSin", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\freqSin)), true],
-					"ampSin", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampSin)), true],
-					"freqSaw", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqSaw)), true],
-					"ampSaw", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampSaw)), true],
-					"oscMix", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\oscMix)), true],
-					"freqClc", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqClc)), true],
-					"harmClc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\harmClc)), true],
-					"ampClc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampClc)), true],
-					"maxL", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\maxL)), true],
-					"t1Clc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\t1Clc)), true],
-					"t2Clc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\t2Clc)), true],
-					"t3Clc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\t3Clc)), true],
-					"gFreq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\gFreq)), true],
-					"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\damp)), true],
-					"fric", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\fric)), true],
-					"doneAction", ["none"],
-				]));
-			}.defer;
-			~pdefPrevInstr = currentInstr;
-		});
-		0;
-	})
-);
-
 ~song10Pattern3 = Pbind(
     \instrument, \ploux,
 	\dur, Pdefn(\patt3_6_dur),
@@ -5655,7 +5591,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 
 ~song10Pattern5 = Pbind(
     \instrument, \ringkick,
-	\dur, Pdefn(\patt1_5),// Pseq([Rest(0.21875), 0.875, Rest(0.546875), 0.109375/**/, Rest(0.21875), 0.875, 0.109375, Rest(0.546875)], inf),
+	\dur, Pdefn(\patt1_5), // Pseq([Rest(0.21875), 0.875, Rest(0.546875), 0.109375/**/, Rest(0.21875), 0.875, 0.109375, Rest(0.546875)], inf),
     \amp, 1 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
     \attack, 0.01,
     \decay, 2.63,
@@ -5959,6 +5895,70 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"rf2Rq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\rf2Rq)), true],
 					"hpfFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\hpfFreq)), true],
 					"doneAction", ["none"]
+				]));
+			}.defer;
+			~pdefPrevInstr = currentInstr;
+		});
+		0;
+	})
+);
+
+~song10Pattern9 = Pbind(
+    \instrument, \res,
+	\dur, Pseq([Rest(3), 0.5/**/, Rest(2.75), 0.75]/2, inf),
+    \amp, 0.94 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
+    \pan, 0,
+    \att, 0,
+    \rel, 3.68,
+    \freqSin, 56,
+    \ampSin, 0.62,
+    \freqSaw, 8241,
+    \ampSaw, 0,
+    \oscMix, 0.82,
+    \freqClc, 13007,
+    \harmClc, 0,
+    \ampClc, 0.07,
+    \maxL, 12,
+    \t1Clc, 0,
+    \t2Clc, 0.01,
+    \t3Clc, 0.01,
+    \gFreq, 0.06,
+    \damp, 0,
+    \fric, 1,
+    \out, ~channelBus[1],
+	\function, Pfunc({ arg event;
+		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
+		currentInstr = event.at(\instrument);
+
+		if (currentInstr != ~pdefPrevInstr, {
+			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
+			instance = ~pdefName.asSymbol;
+			ccStart = ~pdefCcStart.asInt;
+			midiChan = ~pdefMidiChan.asInt;
+			{
+				~removePrev.value(synthWindowKey);
+~autoGui.value(v, ~resSynthDef, instance, ccStart, midiChan, Color.white, Dictionary.newFrom(List[
+					"out", ["none"],
+					"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\amp)), true],
+					"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: event.at(\pan)), true],
+					"att", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\att)), true],
+					"rel", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\rel)), true],
+					"freqSin", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqSin)), true],
+					"ampSin", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampSin)), true],
+					"freqSaw", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqSaw)), true],
+					"ampSaw", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampSaw)), true],
+					"oscMix", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\oscMix)), true],
+					"freqClc", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\freqClc)), true],
+					"harmClc", ["knob", ControlSpec(0, 1000, step: 1, default: event.at(\harmClc)), true],
+					"ampClc", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\ampClc)), true],
+					"maxL", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\maxL)), true],
+					"t1Clc", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\t1Clc)), true],
+					"t2Clc", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\t2Clc)), true],
+					"t3Clc", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\t3Clc)), true],
+					"gFreq", ["knob", ControlSpec(0.01, 1000, step: 0.01, default: event.at(\gFreq)), true],
+					"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\damp)), true],
+					"fric", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\fric)), true],
+					"doneAction", ["none"],
 				]));
 			}.defer;
 			~pdefPrevInstr = currentInstr;
