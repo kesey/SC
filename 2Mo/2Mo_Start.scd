@@ -24,6 +24,8 @@ s.options.numOutputBusChannels_(4);
 
 // o.memSize_(2.pow(20)); // real time memory size (used by delay like CombN)
 s.options.memSize_(2.pow(20));
+s.options.numBuffers = 1024 * 256;
+s.options.maxNodes = 1024 * 32;
 
 // rec options
 s.options.recChannels = 2;
@@ -87,7 +89,7 @@ t.tempo = 60 / 60; // TempoClock by default in beat per seconds
 
 ////////////////////////////////// 6. define specific functions
 
-this.executeFile(~path ++ "ORBM_Function.scd");
+this.executeFile(~path ++ "2Mo_Function.scd");
 
 ////////////////////////////////// 7. register functions with ServerBoot/Quit/Tree
 
@@ -107,15 +109,25 @@ s.waitForBoot({
 		// s.plotTree; // node tree
 		~makeBuffers.value; // create and fill buffers with samples
 		s.sync; // wait for previous action to be finish
-		this.executeFile(~path ++ "ORBM_SynthDef.scd");
+		this.executeFile(~path ++ "2Mo_SynthDef.scd");
 		s.sync;
-		this.executeFile(~path ++ "ORBM_Routing.scd");
+
+		~dirt = SuperDirt(2, s);
+		~dirt.loadSoundFiles;
+		// ~dirt.postSampleInfo;
+		s.sync;
+		~dirt.start(57120, 0 ! 12);   // start listening on port 57120, create twelve stereo busses each sending audio to channel 0 & 1
+
+		// Sync sclang to SuperDirt
+		~syncSCtoSD.value(t, true);
+
+		this.executeFile(~path ++ "2Mo_Routing.scd");
 		s.sync;
 
 		~pdefNumber = 8; // number of pdef or units
 		~pdefNumber = ~pdefNumber.max(1).min(12); // limit number of pdef
 
-		this.executeFile(~path ++ "ORBM_Gui.scd"); // ~pdefNumber need to exist before executing ORBM_Gui.scd
+		this.executeFile(~path ++ "2Mo_Gui.scd"); // ~pdefNumber need to exist before executing ORBM_Gui.scd
 		s.sync;
 
 		~sequencer = Array.new(~pdefNumber);
@@ -134,10 +146,11 @@ s.waitForBoot({
 
 		p = Ppar(~sequencer, inf); // all units in parallel
 
-		this.executeFile(~path ++ "ORBM_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
+		this.executeFile(~path ++ "2Mo_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
 		s.sync;
-		this.executeFile(~path ++ "ORBM_Song.scd"); // Gui need to exist before executing ORBM_Song.scd
+		this.executeFile(~path ++ "2Mo_Song.scd"); // Gui need to exist before executing ORBM_Song.scd
 		s.sync;
+
 		~init = true;
 		"init complete".postln;
 	});

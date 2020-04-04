@@ -1,10 +1,11 @@
-this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath ++ "ORBM_Start.scd"); // Execute Me First
+this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath ++ "2Mo_Start.scd"); // Execute Me First
 
 ///////////////////////////////////////  Live
 
 ///////////////////// Transport
 
 /////////// Sequencer + Song transport
+~song1_2Mo.value; // recall Fx + Synth values
 
 ( // Play Both
 /*~globalQuant = 1; // !!! change globalQuant before song !!!
@@ -87,6 +88,6 @@ Pbindef(\unit4, \dur, Pseq([1, 1.25, Rest(1), 1.5, Rest(2)], inf)).quant_(~globa
 
 (
 
-
+~routingControl.at(\orbit8).valueAction_(1);
 
 )

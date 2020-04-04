@@ -11,12 +11,15 @@
 // call on server quit
 ~cleanup = { arg server;
 	Window.closeAll;
-	Buffer.freeAll;
 	MIDIdef.freeAll;
 	currentEnvironment.removeAll;
 	Pdef.removeAll;
 	Tdef.removeAll;
 	server.freeAll;
+	{
+		Buffer.freeAll;
+		server.sync;
+	}.fork;
 };
 
 ~makeBuffers = { // create a dictionary with folders names under the Audio folder in the first key and sample number in the next
@@ -36,6 +39,29 @@
 };
 // b[\sampler_stereo][0].play;
 // use it in a SynthDef like this: s.bind { Synth(\samplerStereo, [\out, 0, \buffer, b[\sampler_stereo][0].bufnum]) };
+
+~syncSCtoSD = { arg tempo = TempoClock.default, bool = true;
+	if (bool, {
+		~dirt.receiveAction = { |e|
+			var cycle = e[\cycle];
+			var cps = e[\cps];
+			var latency = e[\latency];
+			cycle !? {
+				if(cycle % ~globalQuant == 0) { // set clock only quant in cycle
+					tempo.beats = cycle;
+				};
+			};
+			cps !? {
+				tempo.tempo = cps;
+			};
+			latency !? {
+				Server.default.latency = latency;
+			}
+		}
+	}, {
+		~dirt.receiveAction = nil;
+	});
+};
 
 ~cleanDict = { arg dict, synthWindowKey;
 	dict.keysDo({ arg key;
@@ -552,7 +578,7 @@
 };
 
 // ~synthSetCodeGen.value(~quadDelaySynthDef);
-// ~synthSetCodeGen.value(~filterBusSynthDef); // generates code with actual view values
-// ~synthSetCodeGen.value(~sinBassSynthDef); // generates code with synthDef default values
+// ~synthSetCodeGen.value(~verbSynthDef); // generates code with actual view values
+// ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
 )

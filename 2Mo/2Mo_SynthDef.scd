@@ -12,8 +12,8 @@ SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0
 	sig = BPeakEQ.ar(sig, Lag2.kr(band2freq.max(20).min(20000), 0.5), band2rq, band2db); // Band 2
 	sig = BPeakEQ.ar(sig, Lag2.kr(band3freq.max(20).min(20000), 0.5), band3rq, band3db); // Band 3
 	sig = BLowPass4.ar(sig, Lag2.kr(lpfreq.max(20).min(20000), 0.5)); // LPF
-	Out.ar(outAux1, sig * auxsend1); // Aux 1 pre fader / pre mute / post eq
-	Out.ar(outAux2, sig * auxsend2); // Aux 2 pre fader / pre mute / post eq
+	Out.ar(outAux1, sig * auxsend1.curvelin(0, 1, 0, 1, log(10))); // Aux 1 pre fader / pre mute / post eq
+	Out.ar(outAux2, sig * auxsend2.curvelin(0, 1, 0, 1, log(10))); // Aux 2 pre fader / pre mute / post eq
 	sig = sig * Lag2.kr(mute, 0.1); // Mute
 	Out.ar(out, Balance2.ar(sig[0], sig[1], pan, level.curvelin(0, 1, 0, 1, log(10)))); // curvelin(blabla) to have a logarithmic scale
 }).add;
@@ -27,12 +27,6 @@ SynthDef(\MasterStrip, { arg in = 0, out = 0, hpfreq = 20, lpfreq = 20000, level
 	sig = Limiter.ar(sig);
 	Out.ar(out, sig);
 	Out.ar(out+2, sig); // use it to feed external gear with signal
-}).add;
-
-SynthDef(\Routing, { arg in = 0, out = 0;
-	var sig;
-	sig = In.ar(in, 2);
-	Out.ar(out, sig);
 }).add;
 
 ///////////////////////////////////////  Fx
