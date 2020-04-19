@@ -589,24 +589,36 @@
 // ~synthSetCodeGen.value(~verbSynthDef); // generates code with actual view values
 // ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
-~tidalScopeCodeGen = { arg synthDef = nil; // generates code for putting args into tidal scope
+~tidalScopeCodeGen = { arg synthDef = nil, fromDefault = false; // use generate code in tidal
 	if (synthDef.notNil, {
 		var arguments, name, code;
 		arguments = synthDef.allControlNames;
 		name = synthDef.name.asString;
-
-		arguments.debug("arguments");
-		code = "-- " ++ name ++ "\n" ++ "let ";
+		if (fromDefault, {
+			code = "";
+		}, {
+			code = "-- " ++ name ++ "\n" ++ "let ";
+		});
 
 		arguments.do{ arg control;
-			var controlName, controlNameLower;
+			var controlName, controlNameLower, controlValue;
 			controlName = control.name.asString;
 			controlNameLower = controlName.toLower;
 
-			if (["pan", "gain", "attack", "att", "release", "rel", "sustain", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
+			if (["pan", "gain", "attack", "att", "release", "rel", "sustain", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
 				code = code ++ "";
 			}, {
-				code = code ++ controlName ++ " = pF \"" ++ controlName ++ "\"\n    ";
+				if (fromDefault, {
+					if (control.defaultValue.isNegative, {
+						controlValue = "\"" ++ control.defaultValue.asFloat ++ "\"";
+					}, {
+						controlValue = control.defaultValue.asFloat;
+					});
+
+					code = code ++ "# " ++ controlName ++ " " ++ controlValue ++ "\n";
+				}, {
+					code = code ++ controlName ++ " = pF \"" ++ controlName ++ "\"\n    ";
+				});
 			});
 
 		};
@@ -618,5 +630,6 @@
 };
 
 // ~tidalScopeCodeGen.value(~synthSd); // copy, paste and execute code in tidal
+// ~tidalScopeCodeGen.value(~synthSd, true); // control pattern with synth default values in tidal
 
 )
