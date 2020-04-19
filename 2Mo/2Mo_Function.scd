@@ -585,11 +585,10 @@
 	});
 };
 
-// ~synthSetCodeGen.value(~quadDelaySynthDef);
 // ~synthSetCodeGen.value(~verbSynthDef); // generates code with actual view values
 // ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
-~tidalScopeCodeGen = { arg synthDef = nil, fromDefault = false; // use generate code in tidal
+~tidalScopeCodeGen = { arg synthDef = nil, fromDefault = false; // copy, paste and execute code in tidal
 	if (synthDef.notNil, {
 		var arguments, name, code;
 		arguments = synthDef.allControlNames;
@@ -629,7 +628,8 @@
 	});
 };
 
-// ~tidalScopeCodeGen.value(~synthSd); // copy, paste and execute code in tidal
-// ~tidalScopeCodeGen.value(~synthSd, true); // control pattern with synth default values in tidal
+
+// ~tidalScopeCodeGen.value(~synthSd); // declare synth arguments in tidal scope
+// ~tidalScopeCodeGen.value(~synthSd, true); // control pattern with synth default values, use it in tidal
 
 )
