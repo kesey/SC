@@ -40,23 +40,31 @@
 // b[\sampler_stereo][0].play;
 // use it in a SynthDef like this: s.bind { Synth(\samplerStereo, [\out, 0, \buffer, b[\sampler_stereo][0].bufnum]) };
 
-~syncSCtoSD = { arg tempo = TempoClock.default, bool = true;
-	if (bool, {
+~syncSCtoSD = { arg tempoDefault = TempoClock.default, sync = true;
+	if (sync, {
+		var prevCycle, prevCps, prevLatency;
+		prevCycle = nil;
+		prevCps = nil;
+		prevLatency = nil;
+
 		~dirt.receiveAction = { |e|
-			var cycle = e[\cycle];
-			var cps = e[\cps];
-			var latency = e[\latency];
-			cycle !? {
-				if(cycle % ~globalQuant == 0) { // set clock only quant in cycle
-					tempo.beats = cycle;
-				};
-			};
-			cps !? {
-				tempo.tempo = cps;
-			};
-			latency !? {
+			var cycle, cps, latency;
+			cycle = e[\cycle];
+			cps = e[\cps];
+			latency = e[\latency];
+
+			if ((cycle.notNil and: cycle % ~globalQuant == 0 and: cycle != prevCycle), {
+				tempoDefault.beats = cycle;
+				prevCycle = cycle;
+			});
+			if ((cps.notNil and: cps != prevCps), {
+				tempoDefault.tempo = cps;
+				prevCps = cps;
+			});
+			if ((latency.notNil and: latency != prevLatency), {
 				Server.default.latency = latency;
-			}
+				prevLatency = latency;
+			});
 		}
 	}, {
 		~dirt.receiveAction = nil;
@@ -444,8 +452,8 @@
 };
 
 ~patternCodeGen = { arg synthDef = nil, unit = nil; // generates pattern based on SynthDef. If arg unit is supply: get values from view, if not: get synthDef default values
-	var arguments, name, code, specList;
 	if (synthDef.notNil, {
+		var arguments, name, code, specList;
 		arguments = synthDef.allControlNames;
 		name = synthDef.name.asString;
 		unit = unit.asString;
@@ -540,8 +548,8 @@
 // ~patternCodeGen.value(~feedbackOscSynthDef, "unit1"); // generates pattern with actual view values
 
 ~synthSetCodeGen = { arg synthDef = nil, fromDefault = false;
-	var arguments, name, code;
 	if (synthDef.notNil, {
+		var arguments, name, code;
 		arguments = synthDef.allControlNames;
 		name = synthDef.name.asString;
 		code = "";
@@ -580,5 +588,35 @@
 // ~synthSetCodeGen.value(~quadDelaySynthDef);
 // ~synthSetCodeGen.value(~verbSynthDef); // generates code with actual view values
 // ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
+
+~tidalScopeCodeGen = { arg synthDef = nil; // generates code for putting args into tidal scope
+	if (synthDef.notNil, {
+		var arguments, name, code;
+		arguments = synthDef.allControlNames;
+		name = synthDef.name.asString;
+
+		arguments.debug("arguments");
+		code = "-- " ++ name ++ "\n" ++ "let ";
+
+		arguments.do{ arg control;
+			var controlName, controlNameLower;
+			controlName = control.name.asString;
+			controlNameLower = controlName.toLower;
+
+			if (["pan", "gain", "attack", "att", "release", "rel", "sustain", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
+				code = code ++ "";
+			}, {
+				code = code ++ controlName ++ " = pF \"" ++ controlName ++ "\"\n    ";
+			});
+
+		};
+
+		Post << code;
+	}, {
+		"tidalScopeCodeGen wrong argument".postln;
+	});
+};
+
+// ~tidalScopeCodeGen.value(~synthSd); // copy, paste and execute code in tidal
 
 )

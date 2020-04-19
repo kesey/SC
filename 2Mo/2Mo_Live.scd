@@ -5,6 +5,7 @@ this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath ++ "2Mo_Start
 ///////////////////// Transport
 
 /////////// Sequencer + Song transport
+
 ~song1_2Mo.value; // recall Fx + Synth values
 
 ( // Play Both

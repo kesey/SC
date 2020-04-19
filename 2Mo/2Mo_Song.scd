@@ -1180,8 +1180,8 @@
 };
 
 ~song5 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
-	t.tempo = 76 / 60; // 54 / 60
-	t.beatsPerBar = 7;
+	/*t.tempo = 76 / 60; // 54 / 60
+	t.beatsPerBar = 7;*/
 	Pdefn(\patt3_8_dur, Pseq([1, 2, 0.5, 2, 1, 0.5], inf)).quant_(~globalQuant);
 
 	// Part
@@ -1336,7 +1336,7 @@
 			\seqv5, 0,
 			\seqFreq, 0.41,
 			\freqMin, 219,
-	        \freqMax, 321,
+			\freqMax, 321,
 			\bwrMod, 0.3
 		).quant_(~globalQuant);
 		~resetControlBus.value("unit3");
@@ -2741,8 +2741,8 @@
 };
 
 ~song9 = {// ~globalQuant = 5; // !!! change globalQuant before song !!!
-	t.tempo = 44 / 60;
-	t.beatsPerBar = 5;
+	/*t.tempo = 44 / 60;
+	t.beatsPerBar = 5;*/
 
 	// Part /4
 
