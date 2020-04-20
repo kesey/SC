@@ -12,8 +12,8 @@ this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath ++ "2Mo_Start
 /*~globalQuant = 1; // !!! change globalQuant before song !!!
 Tdef(\song, ~defaultSong).play(t, true, ~globalQuant);*/
 
-~globalQuant = 4; // !!! change globalQuant before song !!!
-Tdef(\song, ~song2).play(t, true, ~globalQuant);
+/*~globalQuant = 4; // !!! change globalQuant before song !!!
+Tdef(\song, ~song2).play(t, true, ~globalQuant);*/
 
 /*~globalQuant = 7; // !!! change globalQuant before song !!!
 Tdef(\song, ~song3).play(t, true, ~globalQuant);*/
@@ -24,8 +24,8 @@ Tdef(\song, ~song4).play(t, true, ~globalQuant);*/
 /*~globalQuant = 7; // !!! change globalQuant before song !!!
 Tdef(\song, ~song5).play(t, true, ~globalQuant);*/
 
-/*~globalQuant = 5; // !!! change globalQuant before song !!!
-Tdef(\song, ~song6).play(t, true, ~globalQuant);*/
+~globalQuant = 5; // !!! change globalQuant before song !!!
+Tdef(\song, ~song6).play(t, true, ~globalQuant);
 
 /*~globalQuant = 7; // !!! change globalQuant before song !!!
 Tdef(\song, ~song7).play(t, true, ~globalQuant);*/

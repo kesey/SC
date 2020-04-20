@@ -1465,8 +1465,8 @@
 };
 
 ~song6 = {// ~globalQuant = 5; // !!! change globalQuant before song !!!
-	t.tempo = 68 / 60;
-	t.beatsPerBar = 5;
+	// t.tempo = 68 / 60;
+	// t.beatsPerBar = 5;
 
 	// Part
 
