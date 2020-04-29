@@ -1,4 +1,4 @@
-this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath ++ "2Mo_Start.scd"); // Execute Me First
+this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath +/+ "2Mo_Start.scd"); // Execute Me First
 
 ///////////////////////////////////////  Live
 

@@ -951,4 +951,87 @@ SynthDef(\pitcherIxi,{ arg out = 0, in = 0, threshold = 0.5, lpf = 2000;
 	OffsetOut.ar(out, sig);
 }).add;
 
+SynthDef(\sin_pulsar, { arg out = 0, doneAction = 2;
+    var a, b, c, d, e, f, f_, fund, t, lev, formantA, formantB, overlapA, overlapB;
+    lev = \lev.kr(0.3);
+    f = \freq.kr(440);
+    f_ = f.clip(50, 1500);
+    formantA = \formantA.kr(2);
+    formantB = \formantB.kr(6);
+    overlapA = \overlapA.kr(2);
+    overlapB = \overlapB.kr(2);
+
+    e = EnvGen.kr(
+        Env.perc(
+            attackTime: f_.linlin(50, 1500, 0.1, 0.02),
+            releaseTime: Rand(1, 7)
+        ),
+        gate: \gate.kr(1)
+    );
+
+    e = e * PinkNoise.ar(1!2).range(0.1, 1).lag(0.02);
+
+    fund = GrainSin.ar(
+        numChannels: 1,
+        trigger: Impulse.ar(f),
+        dur: Rand(0.5, 2) * (1.05 - e.pow(1.1))
+        // Rand(0.5, 2) * (0.05 + e.pow(1.1))
+        * SinOsc.ar(e * 3, {Rand(0, 6.28)}.dup).range(0.87, 1.15)
+        / f,
+        freq: f
+        * SinOsc.ar(e * 3, {Rand(0, 6.28)}.dup).range(0.9, Rand(1, 1.5))
+        ,
+        pan: PinkNoise.ar(0.5!2)
+    );
+
+    a = GrainSin.ar(
+        numChannels: 1,
+        trigger: Impulse.ar(f + Rand(-3, 3)),
+        dur: overlapA * (1.05 + e.pow(1.5))
+        // overlapA * (0.05 + e.pow(1.1))
+        * SinOsc.ar(e * 4, {Rand(0, 6.28)}.dup).range(0.87, 1.15)
+        / f,
+        freq: f
+        * (formantA * SinOsc.ar(e * 4, {Rand(0, 6.28)}.dup).range(0.9, 1.1))
+        ,
+        pan: PinkNoise.ar(0.5!2)
+    );
+
+    b = GrainSin.ar(
+        numChannels: 1,
+        trigger: Impulse.ar(f + Rand(-3, 3)),
+        dur: overlapB * (1.05 + e.pow(2.5))
+        // overlapB * (0.05 + e.pow(1.1))
+        * SinOsc.ar(e * 6, {Rand(0, 6.28)}.dup).range(0.87, 1.15)
+        / f,
+        freq: f
+        * (formantB * SinOsc.ar(e * 5, {Rand(0, 6.28)}.dup).range(0.9, Rand(1, 1.5)))
+        ,
+        pan: PinkNoise.ar(0.5!2)
+    );
+
+    c = Mix([
+        fund * (lev * e).pow(0.7),
+        a * (lev * e).pow(f_.linlin(50, 1500, 1.1, 1.5)),
+        b * (lev * e).pow(f_.linlin(50, 1500, 1.5, 2.5))
+    ]);
+
+    c =LeakDC.ar(c);
+
+    d = c;
+
+    4.do{ arg i;
+        d = AllpassC.ar(
+            d,
+            delaytime: LFNoise1.kr(0.2!2).range(0.01, 0.02)
+        )
+    } *0.5;
+
+    d = c * Rand(0.1, 0.9) + d;
+
+    DetectSilence.ar(d, doneAction: doneAction);
+    Out.ar(out, d);
+
+}).add;
+
 )
