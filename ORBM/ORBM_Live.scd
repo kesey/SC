@@ -1,4 +1,4 @@
-this.executeFile(PathName(thisProcess.nowExecutingPath).parentPath ++ "ORBM_Start.scd"); // Execute Me First
+"ORBM_Start.scd".loadRelative; // Execute Me First
 
 ///////////////////////////////////////  Live
 

@@ -87,7 +87,7 @@ t.tempo = 60 / 60; // TempoClock by default in beat per seconds
 
 ////////////////////////////////// 6. define specific functions
 
-this.executeFile(~path ++ "ORBM_Function.scd");
+"ORBM_Function.scd".loadRelative;
 
 ////////////////////////////////// 7. register functions with ServerBoot/Quit/Tree
 
@@ -106,16 +106,15 @@ s.waitForBoot({
 		"server boot complete".postln;
 		// s.plotTree; // node tree
 		~makeBuffers.value; // create and fill buffers with samples
-		s.sync; // wait for previous action to be finish
-		this.executeFile(~path ++ "ORBM_SynthDef.scd");
+		"ORBM_SynthDef.scd".loadRelative;
 		s.sync;
-		this.executeFile(~path ++ "ORBM_Routing.scd");
+		"ORBM_Routing.scd".loadRelative;
 		s.sync;
 
 		~pdefNumber = 8; // number of pdef or units
 		~pdefNumber = ~pdefNumber.max(1).min(12); // limit number of pdef
 
-		this.executeFile(~path ++ "ORBM_Gui.scd"); // ~pdefNumber need to exist before executing ORBM_Gui.scd
+		"ORBM_Gui.scd".loadRelative; // ~pdefNumber need to exist before executing ORBM_Gui.scd
 		s.sync;
 
 		~sequencer = Array.new(~pdefNumber);
@@ -134,9 +133,9 @@ s.waitForBoot({
 
 		p = Ppar(~sequencer, inf); // all units in parallel
 
-		this.executeFile(~path ++ "ORBM_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
+		"ORBM_Pattern.scd".loadRelative; // Gui need to exist before executing ORBM_Pattern.scd
 		s.sync;
-		this.executeFile(~path ++ "ORBM_Song.scd"); // Gui need to exist before executing ORBM_Song.scd
+		"ORBM_Song.scd".loadRelative; // Gui need to exist before executing ORBM_Song.scd
 		s.sync;
 		~init = true;
 		"init complete".postln;

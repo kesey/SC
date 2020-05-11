@@ -89,7 +89,7 @@ t.tempo = 60 / 60; // TempoClock by default in beat per seconds
 
 ////////////////////////////////// 6. define specific functions
 
-this.executeFile(~path ++ "2Mo_Function.scd");
+"2Mo_Function.scd".loadRelative;
 
 ////////////////////////////////// 7. register functions with ServerBoot/Quit/Tree
 
@@ -107,9 +107,11 @@ s.waitForBoot({
 	if (~init.isNil, {
 		"server boot complete".postln;
 		// s.plotTree; // node tree
+
 		~makeBuffers.value; // create and fill buffers with samples
 		s.sync; // wait for previous action to be finish
-		this.executeFile(~path ++ "2Mo_SynthDef.scd");
+
+		"2Mo_SynthDef.scd".loadRelative;
 		s.sync;
 
 		~dirt = SuperDirt(2, s);
@@ -121,13 +123,13 @@ s.waitForBoot({
 		// Sync sclang to SuperDirt
 		~syncSCtoSD.value(t, true);
 
-		this.executeFile(~path ++ "2Mo_Routing.scd");
+		"2Mo_Routing.scd".loadRelative;
 		s.sync;
 
 		~pdefNumber = 8; // number of pdef or units
 		~pdefNumber = ~pdefNumber.max(1).min(12); // limit number of pdef
 
-		this.executeFile(~path ++ "2Mo_Gui.scd"); // ~pdefNumber need to exist before executing ORBM_Gui.scd
+		"2Mo_Gui.scd".loadRelative; // ~pdefNumber need to exist before executing ORBM_Gui.scd
 		s.sync;
 
 		~sequencer = Array.new(~pdefNumber);
@@ -146,9 +148,10 @@ s.waitForBoot({
 
 		p = Ppar(~sequencer, inf); // all units in parallel
 
-		this.executeFile(~path ++ "2Mo_Pattern.scd"); // Gui need to exist before executing ORBM_Pattern.scd
+		"2Mo_Pattern.scd".loadRelative; // Gui need to exist before executing ORBM_Pattern.scd
 		s.sync;
-		this.executeFile(~path ++ "2Mo_Song.scd"); // Gui need to exist before executing ORBM_Song.scd
+
+		"2Mo_Song.scd".loadRelative; // Gui need to exist before executing ORBM_Song.scd
 		s.sync;
 
 		~init = true;

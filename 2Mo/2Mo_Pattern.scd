@@ -1529,7 +1529,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\function, Pfunc({ arg event;
 		var currentInstr, synthWindowKey, instance, ccStart, midiChan;
 		currentInstr = event.at(\instrument);
-
+∑
 		if (currentInstr != ~pdefPrevInstr, {
 			synthWindowKey = (~pdefPrevInstr ++ ~pdefName).asString;
 			instance = ~pdefName.asSymbol;
@@ -1651,7 +1651,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\dur, Pseq([0.5, 0.75, 0.5, Rest(0.25), 0.5], inf),
 	\amp, 0.2 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
 	\attack, 1.05,
-	\release,0.16,
+	\release, 0.16,
 	\curve, -39.7,
 	\attSinFreq, 0.01,
 	\relSinFreq, 1.12,

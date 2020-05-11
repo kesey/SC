@@ -542,4 +542,20 @@ SynthDef(\werkit2, { arg out = 0, amp = 0.1, att = 0.01, dec = 0, sus = 1, rel =
 	OffsetOut.ar(out, snd);
 }).add;
 
+SynthDef(\dobsonFfitch, { |out, freq = 50, freqFactor = 1.01, a = -0.4, b = 0.6, c = 0.2,
+    d = 0.75, l = 32, limitType = 1, amp = 0.2|
+    var src, sig;
+    src = Saw.ar([1, freqFactor] * freq);
+    sig = Fb1.ar({ |in, out|
+        var x = (a * out[1]) + (b * out[2]) + (d * Select.kr(l, out).squared) + in[0] - c;
+        Select.kr(limitType, [x.tanh, x.softclip, x.distort])
+        },
+        in: src, outSize: 2, outDepth: 50,
+        blockSize: s.options.blockSize,
+        blockFactor: 64 / s.options.blockSize
+    ) * amp;
+    // cut off some high frequencies
+    Out.ar(0, LPF.ar(sig, 15000))
+}).add;
+
 )

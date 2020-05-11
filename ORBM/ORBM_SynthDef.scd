@@ -3938,6 +3938,218 @@ SynthDef(\pitcherIxi,{ arg out = 0, in = 0, threshold = 0.5, lpf = 2000;
 	OffsetOut.ar(out, sig);
 }).add;
 
+SynthDef(\sin_pulsar, { arg out = 0, doneAction = 2;
+    var a, b, c, d, e, f, f_, fund, t, lev, formantA, formantB, overlapA, overlapB;
+    lev = \lev.kr(0.3);
+    f = \freq.kr(440);
+    f_ = f.clip(50, 1500);
+    formantA = \formantA.kr(2);
+    formantB = \formantB.kr(6);
+    overlapA = \overlapA.kr(2);
+    overlapB = \overlapB.kr(2);
+
+    e = EnvGen.kr(
+        Env.perc(
+            attackTime: f_.linlin(50, 1500, 0.1, 0.02),
+            releaseTime: Rand(1, 7)
+        ),
+        gate: \gate.kr(1)
+    );
+
+    e = e * PinkNoise.ar(1!2).range(0.1, 1).lag(0.02);
+
+    fund = GrainSin.ar(
+        numChannels: 1,
+        trigger: Impulse.ar(f),
+        dur: Rand(0.5, 2) * (1.05 - e.pow(1.1))
+        // Rand(0.5, 2) * (0.05 + e.pow(1.1))
+        * SinOsc.ar(e * 3, {Rand(0, 6.28)}.dup).range(0.87, 1.15)
+        / f,
+        freq: f
+        * SinOsc.ar(e * 3, {Rand(0, 6.28)}.dup).range(0.9, Rand(1, 1.5))
+        ,
+        pan: PinkNoise.ar(0.5!2)
+    );
+
+    a = GrainSin.ar(
+        numChannels: 1,
+        trigger: Impulse.ar(f + Rand(-3, 3)),
+        dur: overlapA * (1.05 + e.pow(1.5))
+        // overlapA * (0.05 + e.pow(1.1))
+        * SinOsc.ar(e * 4, {Rand(0, 6.28)}.dup).range(0.87, 1.15)
+        / f,
+        freq: f
+        * (formantA * SinOsc.ar(e * 4, {Rand(0, 6.28)}.dup).range(0.9, 1.1))
+        ,
+        pan: PinkNoise.ar(0.5!2)
+    );
+
+    b = GrainSin.ar(
+        numChannels: 1,
+        trigger: Impulse.ar(f + Rand(-3, 3)),
+        dur: overlapB * (1.05 + e.pow(2.5))
+        // overlapB * (0.05 + e.pow(1.1))
+        * SinOsc.ar(e * 6, {Rand(0, 6.28)}.dup).range(0.87, 1.15)
+        / f,
+        freq: f
+        * (formantB * SinOsc.ar(e * 5, {Rand(0, 6.28)}.dup).range(0.9, Rand(1, 1.5)))
+        ,
+        pan: PinkNoise.ar(0.5!2)
+    );
+
+    c = Mix([
+        fund * (lev * e).pow(0.7),
+        a * (lev * e).pow(f_.linlin(50, 1500, 1.1, 1.5)),
+        b * (lev * e).pow(f_.linlin(50, 1500, 1.5, 2.5))
+    ]);
+
+    c =LeakDC.ar(c);
+
+    d = c;
+
+    4.do{ arg i;
+        d = AllpassC.ar(
+            d,
+            delaytime: LFNoise1.kr(0.2!2).range(0.01, 0.02)
+        )
+    } *0.5;
+
+    d = c * Rand(0.1, 0.9) + d;
+
+    DetectSilence.ar(d, doneAction: doneAction);
+    OffsetOut.ar(out, d);
+
+}).add;
+
+SynthDef(\fm_pulsar, { arg out = 0, doneAction = 2;
+    var a, e, f;
+    var t, overlap, carfreq, modfreq, mInd, vel, vel_;
+
+    f = \freq.kr(100);
+    f = f + SinOsc.ar(LFNoise1.kr(0.3!2).range(1, 4));
+
+    vel = \vel.kr(0.5);
+    vel_ = vel.clip(0, 1.0).linlin(0, 1, 2, 0.7);
+
+    e = EnvGen.kr(
+        Env.adsr(
+            \att.kr(0.025) * vel_,
+            \dec.kr(0.02) * vel_,
+            \sus.kr(0.7),
+            \rel.kr(4),
+            curve: \curve.kr(-4)
+        ),
+        gate: \gate.kr(1),
+        doneAction: doneAction
+    ) * vel;
+
+    e = e * PinkNoise.ar(1!2).range(0.1, 1).lag(0.02);
+
+    carfreq = f * \cf.kr(2) + LFNoise1.kr(3).range(0, 50);
+    modfreq = carfreq * \mf.kr(2) + LFNoise1.kr(3).range(0, 100);
+
+    t = Impulse.ar(f);
+    mInd = e.pow(3.3) * LFNoise2.kr(5!2).range(\mIndMin.kr(0.1), \mIndMax.kr(2.3));
+    overlap = 1.1 - e.pow(0.5) * LFNoise1.kr(0.3!2).range(\olapMin.kr(1), \olapMax.kr(8));
+    d = overlap/f;
+
+    a = Mix([
+        SinOsc.ar(f),
+        GrainFM.ar(1, t, d, carfreq, modfreq, mInd)
+    ]);
+
+    a = LeakDC.ar(a * e);
+    OffsetOut.ar(out, a * \gain.kr(0.1));
+
+}).add;
+
+SynthDef(\pm4, {
+
+    var numops = 4;
+    var fb = LocalIn.ar(numops);
+
+    var gate = \gate.kr(1);
+    var in_freq = \freq.ar(261).lag(\glis.kr(0));
+    var bend = \bend.ar(0).midiratio;
+    var freqbend = in_freq * bend;
+    var freq = Vibrato.ar(freqbend, \vrate.kr(6), \vdepth.kr(0.000));
+    var detunehz = \detunehz.kr(0);
+    var vel = \vel.kr(1);
+
+    var car = numops.collect({arg i;
+        var num = i+1;
+        var ratio = ('op' ++ num ++ 'ratio').asSymbol;
+        var curve = ('op' ++ num ++ 'curve').asSymbol.kr(0);
+        var atk = ('op' ++ num ++ 'atk').asSymbol.kr(0.01);
+        var dec = ('op' ++ num ++ 'dec').asSymbol.kr(0.01);
+        var suslevel = ('op' ++ num ++ 'suslevel').asSymbol.kr(1);
+        var rel = ('op' ++ num ++ 'rel').asSymbol.kr(1);
+        var env = Env.adsr(
+            attackTime:atk,
+            decayTime:dec,
+            sustainLevel:suslevel,
+            releaseTime:rel,
+            curve:curve
+        ).kr(gate:gate);
+
+        [freq * ratio.kr(1) + Rand(detunehz.neg, detunehz), env]
+    });
+
+    var mods = numops.collect({arg i;
+        var y = i + 1;
+        numops.collect({arg j;
+            var x = j + 1;
+            var key = ('m' ++ y ++ '_' ++ x).asSymbol;
+            key.kr(0);
+        });
+    });
+
+    var sig = numops.collect({arg i;
+        var num = i+1;
+        var freq = car[i][0].clip(20, 20000);
+        var index = mods[i];
+        var mod = (fb * index).sum;
+        var sig = SinOsc.ar(freq, mod.mod(2pi)) * car[i][1];
+        var coef = ('op' ++ num ++ 'coef').asSymbol.kr(0.5).clip(-1, 1);
+        sig = OnePole.ar(sig, coef);
+        sig;
+    });
+
+    sig = LeakDC.ar(sig);
+
+    LocalOut.ar(sig);
+
+    // set output level
+    sig = sig * numops.collect({arg i;
+        var num = i + 1;
+        var key = ('op' ++ num).asSymbol;
+        key.kr(1);
+    }).normalizeSum;
+
+    // set panning
+    sig = numops.collect({arg i;
+        var num = i + 1;
+        var key = ('op' ++ num ++ 'pan').asSymbol;
+        Pan2.ar(sig[i],    key.kr(0),    1)
+    }).sum;
+
+    sig = BLowPass.ar(
+        BHiPass.ar(sig,
+            \hpf.kr(20).clip(20, 18000),
+            \hpfres.kr(0).linlin(0, 1, 1, 0.001)
+        ),
+        \lpf.kr(20000).clip(20, 20000),
+        \lpfres.kr(0).linlin(0, 1, 1, 0.001)
+    );
+
+    sig = sig * AmpCompA.kr(freq) * \amp.kr(0.1) * vel;
+    sig = sig.softclip;
+    DetectSilence.ar(sig, doneAction: \doneAction.ir(2));
+
+    Out.ar(\out.kr(0), sig);
+
+}).add;
+
 ///////////////////////////////////////  Sequence
 
 SynthDef(\virgo, { arg out = 0, amp = 0.2, attack = 0.01, release = 1, feedback = 7.5, freq1 = 32, freq2 = 33, delaytime = 2, decaytime = 40, t_gate = 1, doneAction = 2;

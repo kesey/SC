@@ -451,6 +451,8 @@
 	});
 };
 
+///////////////////////////////////////  Code Generator
+
 ~patternCodeGen = { arg synthDef = nil, unit = nil; // generates pattern based on SynthDef. If arg unit is supply: get values from view, if not: get synthDef default values
 	if (synthDef.notNil, {
 		var arguments, name, code, specList;
@@ -588,7 +590,7 @@
 // ~synthSetCodeGen.value(~verbSynthDef); // generates code with actual view values
 // ~synthSetCodeGen.value(~sinBassSynthDef, true); // generates code with synthDef default values
 
-~tidalScopeCodeGen = { arg synthDef = nil, fromDefault = false; // copy, paste and execute code in tidal
+~tidalScopeCodeGen = { arg synthDef = nil, fromDefault = false; // copy, paste and execute code in tidal to declare args
 	if (synthDef.notNil, {
 		var arguments, name, code;
 		arguments = synthDef.allControlNames;
@@ -604,7 +606,7 @@
 			controlName = control.name.asString;
 			controlNameLower = controlName.toLower;
 
-			if (["pan", "gain", "attack", "att", "release", "rel", "sustain", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
+			if (["legato", "loop", "offset", "nudge", "lfo", "rate", "room", "dry", "cutoff", "resonance", "freq", "note", "degree", "harmonic", "pan", "gain", "lpf", "hpf", "attack", "att", "decay", "dec", "sustain", "sus", "release", "rel", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
 				code = code ++ "";
 			}, {
 				if (fromDefault, {
@@ -628,8 +630,65 @@
 	});
 };
 
-
 // ~tidalScopeCodeGen.value(~synthSd); // declare synth arguments in tidal scope
 // ~tidalScopeCodeGen.value(~synthSd, true); // control pattern with synth default values, use it in tidal
+
+~tidalScopeTotalCodeGen = { arg key = "Sd", targetSearch = 2; // look for SynthDef names which contain key at position define by targetSearch and generate the code to declare args in tidal
+	var code, presentCtrl;
+	code = "let ";
+	presentCtrl = List.new;
+	key = key.asString;
+
+	SynthDescLib.global.synthDescs.do({ arg item;
+		var name, nameSize, keySize, start, end;
+
+		name = item.name.asString;
+		nameSize = item.name.size;
+		keySize = key.size;
+
+		switch(targetSearch,
+			0, { // search at the begining
+				start = 0;
+				end = keySize;
+			},
+			1, { // search everywhere
+				start = 0;
+				end = nameSize;
+			},
+			2, { // search at the end
+				start = nameSize - keySize;
+				end = nameSize;
+			},
+			{ // default function search at the end
+				start = nameSize - keySize;
+				end = nameSize;
+			}
+		);
+
+		if(key.matchRegexp(name, start, end), {
+			// code = code ++ "-- " ++ name ++ "\n";
+
+			item.controls.do{ arg control;
+				var controlName, controlNameLower;
+				controlName = control.name.asString;
+				controlNameLower = controlName.toLower;
+
+				if ((#["?", "legato", "loop", "offset", "nudge", "lfo", "rate", "room", "dry", "cutoff", "resonance", "freq", "note", "degree", "harmonic", "pan", "gain", "lpf", "hpf", "attack", "att", "decay", "dec", "sustain", "sus", "release", "rel", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower) or: presentCtrl.includesEqual(controlName)), {
+					code = code ++ "";
+				}, {
+					code = code ++ controlName ++ " = pF \"" ++ controlName ++ "\"\n    ";
+					presentCtrl.add(controlName);
+				});
+
+			};
+
+		});
+
+	});
+
+	Post << code;
+};
+
+// ~tidalScopeTotalCodeGen.value;
 
 )
