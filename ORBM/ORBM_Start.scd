@@ -105,9 +105,15 @@ s.waitForBoot({
 	if (~init.isNil, {
 		"server boot complete".postln;
 		// s.plotTree; // node tree
+
 		~makeBuffers.value; // create and fill buffers with samples
-		"ORBM_SynthDef.scd".loadRelative;
+		s.sync; // wait for previous action to be finish
+
+		"ORBM_SynthDef_1.scd".loadRelative;
 		s.sync;
+		"ORBM_SynthDef_2.scd".loadRelative;
+		s.sync;
+
 		"ORBM_Routing.scd".loadRelative;
 		s.sync;
 

@@ -416,4 +416,147 @@ SynthDef(\combs, { arg out = 0, amp = 0.1, pan = 0, att = 0.01, dec = 0.1, sus =
 	OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
+SynthDef(\padovan, { arg out = 0, amp = 1, tridDur = 1, freq = 165, roomSize = 9, gate = 1, doneAction = 2;
+	var sig, env, input, mod, grainTr, sinMod;
+	env = Linen.kr(gate, 0.1, 1, 5, doneAction);
+	sig = SinOsc;
+	mod = Trig.ar(
+		Saw.ar(freq),
+		tridDur
+	);
+	grainTr = sig.ar(mod * freq);
+	sinMod = sig.ar(mod);
+	sig = GrainIn.ar(2, grainTr, grainTr / 2, sinMod, mod * sinMod, -1, mul: env);
+	sig = GVerb.ar(sig, roomSize, mul: amp);
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\LiljedDrumSeq, { arg out = 0, amp = 1, attack = 0.0001, release = 4, sawFrq = 4, plcTrigRate = 1, plcDelay = 1, plcDecay = 0.85714285714286, pCntTrigRate = 12, pCntResetRate = 5, krpsLpfFrq = 2500, krpsHpfFrq = 750, kickLpfFrq = 3000, kickHpfFrq = 40, ringFrq = 60, ringDec = 0.8, gate = 1, doneAction = 2;
+	var sig, env, imp, krps, kick;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+	imp = Impulse.ar(_); // * gate;
+
+	krps = Pluck.ar(
+		Saw.ar(sawFrq),
+		imp.(plcTrigRate),
+		1,
+		plcDelay,
+		plcDecay,
+		SinOsc.ar(
+			PulseCount.ar(
+				imp.(pCntTrigRate),
+				imp.(pCntResetRate)
+			).cos%[3,4]*20
+		),
+		2.5
+	).sin;
+
+	krps = krps + LPF.ar(
+		HPF.ar(
+			FreeVerb.ar(
+				krps.mean,
+				1,
+				0.999,
+				0.2
+			)*0.3,
+			krpsHpfFrq
+		) * Line.kr(0,1,16),
+		krpsLpfFrq
+	);
+
+	kick = HPF.ar(
+		Ringz.ar(
+			LPF.ar(
+				Impulse.ar(
+					[0.5,1]!2,
+					[1/6,0]
+				).sum,
+				kickLpfFrq
+			),
+			ringFrq,
+			ringDec,
+			3
+		).sin * 3,
+		kickHpfFrq
+	).tanh.madd(0.6);
+
+	sig = krps + kick;
+	sig = sig * env * amp;
+
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\LiljedKickSeq, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release = 2, trgChance1 = 0.5, trgChance2 = 0.3, trgChance3 = 0.9, trgRate1 = 4, trgRate2 = 12, trgRate3 = 6, rFreq1 = 45, rFreq2 = 50, rDec1 = 0.6, rDec2 = 0.1, rDec3 = 1, rDec4 = 0.3, rAmp1 = 9, rAmp2 = 2, rAmp3 = 3, rAmp4 = 1, gate = 1, doneAction = 2;
+	var sig, env;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+	sig = Ringz.ar(
+		CoinGate.ar(
+			[trgChance1, trgChance2, trgChance3],
+			Impulse.ar([trgRate1, trgRate2, trgRate3])
+		),
+		[rFreq1, rFreq2],
+		[rDec1, rDec2, rDec3, rDec4],
+		[rAmp1, rAmp2, rAmp3, rAmp4]
+	).sin.sum.tanh;
+	sig = sig * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+SynthDef(\LiljedMetalic, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, release = 2, rTrgRate = 1, rFreq1 = 40, rFreq2 = 200, rFreq3 = 234, rFreq4 = 889, rDec = 0.7, revSize = 5, revTime = 2, revDamp = 0.7, gate = 1, doneAction = 2;
+	var sig, env;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+
+	sig = Ringz.ar(
+		Impulse.ar(rTrgRate),
+		[rFreq1, rFreq2, rFreq3, rFreq4],
+		rDec
+	).sum*2;
+
+	sig = GVerb.ar(
+		sin(sig),
+		revSize,
+		revTime,
+		revDamp
+	);
+
+	sig = Mix.ar(sig) * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+SynthDef(\LiljedMetalic1, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, release = 2, rTrgRate = 1, rFreq1 = 40, rFreq2 = 200, rFreq3 = 234, rFreq4 = 889, rFreq5 = 1320, rFreq6 = 150, rDec = 0.7, revSize = 5, revTime = 2, revDamp = 0.7, gate = 1, doneAction = 2;
+	var sig, env;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+
+	sig = Ringz.ar(
+		Impulse.ar(rTrgRate),
+		[rFreq1, rFreq2, rFreq3, rFreq4, rFreq5, rFreq6],
+		rDec
+	).sum;
+
+	sig = GVerb.ar(
+		sin(sig),
+		revSize,
+		revTime,
+		revDamp
+	)/2;
+
+	sig = Mix.ar(sig) * env;
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
+SynthDef(\LiljedSoftRytm, { arg out = 0, amp = 0.6, pan = 0, attack = 0.01, release = 2, impSigRate = 8, sawFreq = 3, impRevRate = 4, impRevPh = 0.5, blipFreq = 4.9, blipHarm = 7, blipAmp = 0.4, revSize = 1, revTime = 1, gate = 1, doneAction = 2;
+	var sig, env, imp, rev;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+	imp = Impulse;
+	sig = imp.kr(impSigRate).lag * Crackle.ar(LFSaw.kr(sawFreq).abs.lag * 1.8);
+	rev = GVerb.ar(
+		imp.kr(impRevRate, impRevPh).lag * Blip.ar(blipFreq, blipHarm, blipAmp),
+		revSize,
+		revTime
+	) * 5;
+	sig = sig + rev;
+	sig = Mix.ar(sig * env);
+	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+}).add;
+
 )

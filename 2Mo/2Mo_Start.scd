@@ -111,7 +111,9 @@ s.waitForBoot({
 		~makeBuffers.value; // create and fill buffers with samples
 		s.sync; // wait for previous action to be finish
 
-		"2Mo_SynthDef.scd".loadRelative;
+		"2Mo_SynthDef_1.scd".loadRelative;
+		s.sync;
+		"2Mo_SynthDef_2.scd".loadRelative;
 		s.sync;
 
 		~dirt = SuperDirt(2, s);

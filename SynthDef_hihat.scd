@@ -293,4 +293,14 @@ SynthDef(\sosHats, { arg out = 0, amp = 0.8, pan = 0, freq = 6000, curve = -4, r
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
+SynthDef(\tick2, {
+    var sig, env, rq = \rq.kr(0.1);
+    env = Env.perc(\atk.kr(0), \rel.kr(0.05)).ar(2);
+    sig = Impulse.ar(0);
+    sig = sig * 0.5;
+    sig = RHPF.ar(sig, \freq.kr(1000), rq) * env;
+    sig = Pan2.ar(sig, \pan.kr(0)) * \amp.kr(1.0);
+    OffsetOut.ar(\out.kr(0), sig);
+}).add;
+
 )

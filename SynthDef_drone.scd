@@ -420,4 +420,58 @@ SynthDef(\lirgo, { arg out = 0, amp = 1, att = 0.01, rel = 5, gate = 1, doneActi
 	OffsetOut.ar(out, sig * env * amp * 0.1);
 }).add;
 
+SynthDef(\LiljedMyst, { arg out = 0, amp = 0.6, attack = 0.01, release = 4, pNoiseFreq = 5e-3, hpfFreq = 10, modDur = 9, lfnFreq = 0.05, ringFreq = 55, ringDec = 0.2, revSize = 70, revTime = 99, gate = 1, doneAction = 2;
+	var sig, env;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+	sig = HPF.ar(PinkNoise.ar(pNoiseFreq), hpfFreq) * Line.kr(0, 1, modDur);
+	sig = GVerb.ar(
+		({ |i|
+			Ringz.ar(
+				sig * LFNoise1.kr(lfnFreq + 0.1.rand),
+				ringFreq * i + 60,
+				ringDec
+			)
+		}!44).sum,
+		revSize,
+		revTime
+	).tanh;
+	sig = sig * env * amp;
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\LiljedRain, { arg out = 0, amp = 0.6, attack = 0.01, release = 2, nFrqR = 0.08, lfnFrqR1 = 0.3, lfnFrqR2 = 0.2, lpfR = 7000, hpfR = 400, revSizeR = 250, revTimeR = 100, revDampR = 0.25, dryLevR = 0.3, modDurR = 10, lfnFrqT1 = 3, lfnFrqT2 = 2, hpfT = 20, revSizeT = 270, revTimeT = 30, revDampT = 0.7, dryLevT = 0.5, modDurT = 30, gate = 1, doneAction = 2;
+	var sig, env, rain, thunder;
+	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
+
+	rain = PinkNoise.ar(nFrqR + LFNoise1.kr(lfnFrqR1, 0.02));
+	rain = rain + LPF.ar(Dust2.ar(LFNoise1.kr(lfnFrqR2).range(40, 50)), lpfR);
+	rain = tanh(
+		3 * GVerb.ar(
+			HPF.ar(
+				rain,
+				hpfR
+			),
+			revSizeR,
+			revTimeR,
+			revDampR,
+			drylevel: dryLevR
+		) * Line.kr(0, 1, modDurR)
+	);
+
+	thunder = 10 * HPF.ar(PinkNoise.ar(LFNoise1.kr(lfnFrqT1).clip(0, 1) * LFNoise1.kr(lfnFrqT2).clip(0, 1) ** 1.8), hpfT);
+	thunder = GVerb.ar(
+		LPF.ar(
+			thunder,
+			LFNoise1.kr(1).exprange(100, 2500)
+		).tanh,
+		revSizeT,
+		revTimeT,
+		revDampT,
+		drylevel: dryLevT
+	) * Line.kr(0, 0.7, modDurT);
+
+	sig = (rain + thunder) * env * amp;
+	OffsetOut.ar(out, sig);
+}).add;
+
 )
