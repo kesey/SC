@@ -1182,6 +1182,7 @@
 ~song5 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
 	/*t.tempo = 76 / 60; // 54 / 60
 	t.beatsPerBar = 7;*/
+
 	Pdefn(\patt3_8_dur, Pseq([1, 2, 0.5, 2, 1, 0.5], inf)).quant_(~globalQuant);
 
 	// Part

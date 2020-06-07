@@ -52,6 +52,8 @@ s.options.dump; // visualise server options
 ////////////////////////////////// 4. MIDI config
 
 MIDIClient.initialized.not.if {
+	var on, off, cc, osc, tidalMidiChan;
+
 	MIDIClient.init; // post a list of available devices
 
 	/*MIDIFunc.trace(true); // dumps all incoming MIDI messages
@@ -68,6 +70,34 @@ MIDIClient.initialized.not.if {
 		~midiOut = MIDIOut.new(2).latency_(s.latency); // 2 for MIDIClient.destinations[2]
 	});
 
+	// start controlling Tidal with Midi
+
+	osc = NetAddr.new("127.0.0.1", 6010);
+
+	tidalMidiChan = 13;
+
+	on = MIDIFunc.noteOn({ |val, num, chan, src|
+		osc.sendMsg("/ctrl", num.asString, val/127);
+	}, chan: tidalMidiChan);
+
+	off = MIDIFunc.noteOff({ |val, num, chan, src|
+		osc.sendMsg("/ctrl", num.asString, 0);
+	}, chan: tidalMidiChan);
+
+	cc = MIDIFunc.cc({ |val, num, chan, src|
+		osc.sendMsg("/ctrl", num.asString, val/127);
+	}, chan: tidalMidiChan);
+
+	// stop controlling Tidal with Midi
+
+	~stopMidiToOsc = {
+		on.free;
+		off.free;
+		cc.free;
+	};
+
+	// ~stopMidiToOsc.value;
+
 };
 
 ////////////////////////////////// 5. initialize global variables
@@ -80,6 +110,8 @@ MIDIClient.initialized.not.if {
 ~controlBus = Dictionary.new;
 ~active = Dictionary.new;
 ~firstTime = Dictionary.new;
+
+~tidalResArgs = #["?", "slide", "scale", "speed", "spread", "legato", "octave", "unit", "accelerate", "loop", "offset", "nudge", "lfo", "rate", "size", "room", "dry", "cut", "cutoff", "resonance", "n", "freq", "note", "degree", "harmonic", "delay", "pan", "gain", "overgain", "lpf", "hpf", "attack", "att", "decay", "sustain", "hold", "sus", "release", "rel", "span", "out", "i_out", "in", "i_in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"];
 
 ~aux1Color = Color.new255(205, 205, 193);
 ~aux2Color = Color.new255(238, 238, 209);
@@ -111,16 +143,20 @@ s.waitForBoot({
 		~makeBuffers.value; // create and fill buffers with samples
 		s.sync; // wait for previous action to be finish
 
-		"2Mo_SynthDef_1.scd".loadRelative;
+		~dirt = SuperDirt(2, s/*, senderAddr*/);
+
+		~dirt.soundLibrary.addMIDI(\midi, ~midiOut);
+
+		"2Mo_SynthDef_1.scd".loadRelative; // ~dirt need to exist before executing 2Mo_SynthDef_1.scd
 		s.sync;
 		"2Mo_SynthDef_2.scd".loadRelative;
 		s.sync;
 
-		~dirt = SuperDirt(2, s);
 		~dirt.loadSoundFiles;
 		// ~dirt.postSampleInfo;
 		s.sync;
-		~dirt.start(57120, 0 ! 12);   // start listening on port 57120, create twelve stereo busses each sending audio to channel 0 & 1
+
+		~dirt.start(57120, 0 ! 12/*, senderAddr*/);   // start listening on port 57120, create twelve stereo busses each sending audio to channel 0 & 1
 
 		// Sync sclang to SuperDirt
 		~syncSCtoSD.value(t, true);

@@ -10,6 +10,7 @@
 
 // call on server quit
 ~cleanup = { arg server;
+	~stopMidiToOsc.value;
 	Window.closeAll;
 	MIDIdef.freeAll;
 	currentEnvironment.removeAll;
@@ -53,7 +54,7 @@
 			cps = e[\cps];
 			latency = e[\latency];
 
-			if ((cycle.notNil and: cycle % ~globalQuant == 0 and: cycle != prevCycle), {
+			if ((cycle.notNil and: (cycle % ~globalQuant) == 0 and: cycle != prevCycle), {
 				tempoDefault.beats = cycle;
 				prevCycle = cycle;
 			});
@@ -62,7 +63,7 @@
 				prevCps = cps;
 			});
 			if ((latency.notNil and: latency != prevLatency), {
-				Server.default.latency = latency;
+				s.latency = latency;
 				prevLatency = latency;
 			});
 		}
@@ -573,9 +574,7 @@
 				controlValue = control.defaultValue.asFloat; // get SynthDef default value
 			});
 
-			if (["out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
-				code = code ++ "";
-			}, {
+			if (#["out", "in", "input", "output", "inbus", "outbus", "doneaction", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower).not, {
 				code = code ++ "~autoGuiControl.at(\"" ++ name ++ "\"" ++ " ++ ~nodeId.at(\"" ++ name ++ "\") ++ " ++ "\"" ++ controlName ++ "\").valueAction_(" ++ controlValue ++ ");\n";
 			});
 
@@ -606,9 +605,7 @@
 			controlName = control.name.asString;
 			controlNameLower = controlName.toLower;
 
-			if (["legato", "loop", "offset", "nudge", "lfo", "rate", "room", "dry", "cutoff", "resonance", "freq", "note", "degree", "harmonic", "pan", "gain", "lpf", "hpf", "attack", "att", "decay", "dec", "sustain", "sus", "release", "rel", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower), {
-				code = code ++ "";
-			}, {
+			if (~tidalResArgs.includesEqual(controlNameLower).not, {
 				if (fromDefault, {
 					if (control.defaultValue.isNegative, {
 						controlValue = "\"" ++ control.defaultValue.asFloat ++ "\"";
@@ -634,9 +631,10 @@
 // ~tidalScopeCodeGen.value(~synthSd, true); // control pattern with synth default values, use it in tidal
 
 ~tidalScopeTotalCodeGen = { arg key = "Sd", targetSearch = 2; // look for SynthDef names which contain key at position define by targetSearch and generate the code to declare args in tidal
-	var code, presentCtrl;
+	var code, presentCtrl/*, targetSynths*/;
 	code = "let ";
 	presentCtrl = List.new;
+	// targetSynths = List.new;
 	key = key.asString;
 
 	SynthDescLib.global.synthDescs.do({ arg item;
@@ -666,25 +664,26 @@
 		);
 
 		if(key.matchRegexp(name, start, end), {
-			// code = code ++ "-- " ++ name ++ "\n";
 
 			item.controls.do{ arg control;
 				var controlName, controlNameLower;
 				controlName = control.name.asString;
 				controlNameLower = controlName.toLower;
 
-				if ((#["?", "legato", "loop", "offset", "nudge", "lfo", "rate", "room", "dry", "cutoff", "resonance", "freq", "note", "degree", "harmonic", "pan", "gain", "lpf", "hpf", "attack", "att", "decay", "dec", "sustain", "sus", "release", "rel", "span", "out", "in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"].includesEqual(controlNameLower) or: presentCtrl.includesEqual(controlName)), {
-					code = code ++ "";
-				}, {
+				if ((~tidalResArgs.includesEqual(controlNameLower).not and: presentCtrl.includesEqual(controlName).not), {
 					code = code ++ controlName ++ " = pF \"" ++ controlName ++ "\"\n    ";
 					presentCtrl.add(controlName);
 				});
 
 			};
 
+			// targetSynths.add(name.asSymbol);
+
 		});
 
 	});
+
+	// SuperDirt.postTidalParameters(targetSynths);
 
 	Post << code;
 };

@@ -1520,10 +1520,10 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\instrument, \scratchi,
 	\dur, 1.25,
 	\amp, 20.2 * Pfunc({ 1 - ~muteState.at(~pdefName); }),
-	\spread, 0.99, // 0
+	\spread, 0.99,
 	\attack, 0.01,
 	\release, 2,
-	\freq, 2887.1, // 632, // 629 // 610 // 603 // 440
+	\freq, 2887.1,
 	\pan, 0,
 	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;

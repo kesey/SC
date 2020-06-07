@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////  Bass
 
-SynthDef(\bass1,{arg out = 0, amp = 1, pan = 0, att = 0, dec = 8, sus = 1, rel = 4, tu = 1, gate = 1, doneAction = 2;
+SynthDef(\bass1,{ arg out = 0, amp = 1, pan = 0, att = 0, dec = 8, sus = 1, rel = 4, tu = 1, gate = 1, doneAction = 2;
     var env = EnvGen.ar(Env.adsr(att, dec, sus, rel), gate, doneAction: doneAction);
     var freq = EnvGen.ar(\freqenv.kr(Env([50, 40],[0.1, 0.3, 0.3])));
     var sig = SyncSaw.ar(freq*tu,20);
@@ -14,7 +14,7 @@ SynthDef(\bass1,{arg out = 0, amp = 1, pan = 0, att = 0, dec = 8, sus = 1, rel =
     OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\bass3,{arg gate = 1, amp=1, out=0,rel=0.1,pan=0,tu=1.54;
+SynthDef(\bass3,{ arg gate = 1, amp=1, out=0,rel=0.1,pan=0,tu=1.54;
     var env = EnvGen.ar(Env.adsr(0,4,1,0.1),gate,doneAction:2);
     var freq = EnvGen.ar(Env([14000,50,30],[0.001,0.1,0.1]));
     var sig = LFPar.ar([tu,tu+1],SinOsc.kr([2,1]))+LFPar.ar(tu,SinOsc.kr([1,2]));
@@ -22,7 +22,7 @@ SynthDef(\bass3,{arg gate = 1, amp=1, out=0,rel=0.1,pan=0,tu=1.54;
     OffsetOut.ar(out,sig*amp*env);
 }).add;
 
-SynthDef(\bass,{arg out=0, gate = 1 ,dis = 0.5,freq=60,tu = 1,amp=1,atf = 80, rel =1;
+SynthDef(\bass,{ arg out=0, gate = 1 ,dis = 0.5,freq=60,tu = 1,amp=1,atf = 80, rel =1;
     var env = EnvGen.ar(Env.adsr(0.05,0,1,rel),gate,doneAction:2);
     var frequ = EnvGen.ar(Env([freq+1000,freq-100],[0.05,0.1]));
     var sig = LFSaw.ar(LFSaw.ar(frequ-100,0,frequ-200,frequ*tu),0,env);
