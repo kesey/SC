@@ -366,6 +366,27 @@ SynthDef(\syncDelay, { arg in = 0, out = 0, sync = 0/*false*/, feedBack = 0.2, d
 	ReplaceOut.ar(out, sig);
 }).add;
 
+SynthDef(\tapedly, { |in=0, out=0,fb=0.6, fc=5000, dlytime=0.125, wet=0.5, pan=0.0|
+	var local, sig, delayed, phi, phR, phP, freq;
+	var tdbh; // time delay between heads (seconds)
+	local = LocalBuf(SampleRate.ir * 3, 1);
+	local.clear; // clear the buffer
+
+	tdbh = 0.125;
+	phi = (2 * tdbh) / BufDur.ir(local);
+	freq = 1.0 / BufDur.ir(local); // frequency to playback the buffer at rate 1
+	freq = (freq * tdbh) / VarLag.kr(dlytime, 2, warp:\linear);
+	phR = LFSaw.ar( freq, phi, 0.5, 0.5)*BufFrames.kr( local );
+	phP = LFSaw.ar( freq, 0.0, 0.5, 0.5)*BufFrames.kr( local );
+
+	sig = Mix.ar(In.ar(in,2));
+	delayed = BufRd.ar(1, local, phP, loop:1);
+	delayed = delayed.tanh;
+	BufWr.ar( LPF.ar( (sig + delayed), fc, mul:fb), local, phR, loop:1);
+	pan = LFNoise1.ar(5);
+	Out.ar(out, Pan2.ar(delayed*wet, pan));
+}).add;
+
 ///////////////////////////////////////  Reverb
 
 SynthDef(\Reverb, {arg in = 0, out = 0, predelaytime = 0.048, decaytimec = 5, decaytimea = 1, drywet = 0.5, level = 0.2;
