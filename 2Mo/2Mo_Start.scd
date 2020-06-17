@@ -110,7 +110,6 @@ MIDIClient.initialized.not.if {
 ~controlBus = Dictionary.new;
 ~active = Dictionary.new;
 ~firstTime = Dictionary.new;
-
 ~tidalResArgs = #["?", "slide", "scale", "speed", "spread", "legato", "octave", "unit", "accelerate", "loop", "offset", "nudge", "lfo", "rate", "size", "room", "dry", "cut", "cutoff", "resonance", "n", "freq", "note", "degree", "harmonic", "delay", "pan", "gain", "overgain", "lpf", "hpf", "attack", "att", "decay", "sustain", "hold", "sus", "release", "rel", "span", "out", "i_out", "in", "i_in", "input", "output", "inbus", "outbus", "doneaction", "done", "gate", "t_gate", "trig", "t_trig"];
 
 ~aux1Color = Color.new255(205, 205, 193);
