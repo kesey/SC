@@ -54,6 +54,6 @@ s.bind { ~pitchShifter = Synth(\pitchShifter, [\in, ~aux2, \out, ~aux2], ~quadDe
 s.bind { ~flanging = Synth(\flanging, [\in, ~aux2, \out, ~aux2], ~pitchShifter, addAction: 'addAfter'); };
 s.bind { ~verb = Synth(\verb, [\in, ~aux2, \out, ~channelBus[3], \amp, 0.75], aux2Group, addAction: 'addToTail'); };
 
-// s.meter; // level meter
+// s.meter.window.alwaysOnTop_(true); // level meter
 
 )

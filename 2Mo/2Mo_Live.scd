@@ -2,9 +2,9 @@
 
 ///////////////////////////////////////  Live
 
-///////////////////// Transport
+/////////////////////  Transport
 
-/////////// Sequencer + Song transport
+///////////  Sequencer + Song transport
 
 ~song1_2Mo.value; // recall Fx + Synth values
 
@@ -56,7 +56,7 @@ Tdef(\song).reset;
 ~resetPdefView.value;
 )
 
-/////////// Song transport
+///////////  Song transport
 
 (
 ~globalQuant = 4; // !!! change globalQuant before song !!!
@@ -69,7 +69,7 @@ Tdef(\song).resume(t, ~globalQuant);
 Tdef(\song).stop;
 Tdef(\song).reset;
 
-/////////// Sequencer transport
+///////////  Sequencer transport
 
 if (~sequencerTransport.isPlaying.not, { ~sequencerTransport = p.play(t, quant: ~globalQuant); }); // Play Sequencer
 
