@@ -89,6 +89,6 @@ Pbindef(\unit4, \dur, Pseq([1, 1.25, Rest(1), 1.5, Rest(2)], inf)).quant_(~globa
 
 (
 
-~routingControl.at(\orbit8).valueAction_(1);
+
 
 )

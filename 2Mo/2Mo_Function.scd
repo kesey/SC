@@ -194,18 +194,21 @@
 };
 
 ~pdefUpdate = { arg controlId, instance, controlNameSymb, value;
-	var exceptions;
-	exceptions = [\amp, \amplitude, \vol, \volume, \level];
-	if (exceptions.includesEqual(controlNameSymb), {
-		Pbindef(instance, controlNameSymb, value * Pfunc({ 1 - ~muteState.at(instance); })).quant_(~globalQuant);
-	}, {
-		if (~firstTime.at(controlId), {
-			~controlBus.put(controlId, Bus.control(s, 1).set(value));
-			Pbindef(instance, controlNameSymb, ~controlBus.at(controlId).asMap).quant_(~globalQuant);
-			~firstTime.put(controlId, false);
+
+	if (~firstTime.at(controlId), {
+		var bus, exceptions = [\amp, \amplitude, \vol, \volume, \level];
+
+		~controlBus.put(controlId, Bus.control(s, 1).set(value));
+		bus = ~controlBus.at(controlId);
+
+		if (exceptions.includesEqual(controlNameSymb), {
+			Pbindef(instance, controlNameSymb, Pfunc({ if (bus.index.notNil, { bus.getSynchronous * (1 - ~muteState.at(instance)); }); })).quant_(~globalQuant);
 		}, {
-			~controlBus.at(controlId).set(value);
+			Pbindef(instance, controlNameSymb, bus.asMap).quant_(~globalQuant);
 		});
+		~firstTime.put(controlId, false);
+	}, {
+		~controlBus.at(controlId).set(value);
 	});
 };
 
@@ -288,10 +291,12 @@
 				~firstTime.put(controlId, true);
 				~autoGuiControl.put(controlId, EZListView(synthWindow, 60@70, controlName, controlSpec, {
 					arg guiControl;
-					if (instance.isSymbol,
-						{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
-						{ instance.set(controlNameSymb, guiControl.value); }
-					);
+					{
+						if (instance.isSymbol,
+							{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
+							{ instance.set(controlNameSymb, guiControl.value); }
+						);
+					}.defer;
 					~active.put(controlId, false);
 				}));
 
@@ -328,10 +333,12 @@
 				~firstTime.put(controlId, true);
 				~autoGuiControl.put(controlId, EZSlider(synthWindow, 60@70, controlName, controlSpec, {
 					arg guiControl;
-					if (instance.isSymbol,
-						{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
-						{ instance.set(controlNameSymb, guiControl.value); }
-					);
+					{
+						if (instance.isSymbol,
+							{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
+							{ instance.set(controlNameSymb, guiControl.value); }
+						);
+					}.defer;
 					~active.put(controlId, false);
 				}, layout: \vert, gap: 6@6));
 
@@ -375,10 +382,12 @@
 					])
 					.action = {
 						arg guiControl;
-						if (instance.isSymbol,
-							{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
-							{ instance.set(controlNameSymb, guiControl.value); }
-						);
+						{
+							if (instance.isSymbol,
+								{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
+								{ instance.set(controlNameSymb, guiControl.value); }
+							);
+						}.defer;
 					}
 				);
 
@@ -403,10 +412,12 @@
 				~firstTime.put(controlId, true);
 				~autoGuiControl.put(controlId, EZKnob(synthWindow, 60@70, controlName, controlSpec, {
 					arg guiControl;
-					if (instance.isSymbol,
-						{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
-						{ instance.set(controlNameSymb, guiControl.value); }
-					);
+					{
+						if (instance.isSymbol,
+							{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
+							{ instance.set(controlNameSymb, guiControl.value); }
+						);
+					}.defer;
 					~active.put(controlId, false);
 				}));
 
@@ -443,7 +454,7 @@
 		if (instance.isSymbol, {
 			// removes all the children of the view and destroys them then remove the composite view
 			Button(synthWindow, Rect(10,110,20,20)).states_([["X", Color.white, Color.new255(255, 48, 48)]]).action = {
-				~removePrev.value(id);
+				{ ~removePrev.value(id); }.defer;
 			};
 		});
 		pdefName;

@@ -20,7 +20,7 @@ s.options.inDevice_("Fireface UCX (23732051)");
 s.options.outDevice_("Fireface UCX (23732051)");
 // s.options.device_("name your sound card");
 s.options.numInputBusChannels_(3);
-s.options.numOutputBusChannels_(4);
+s.options.numOutputBusChannels_(2);
 
 // o.memSize_(2.pow(20)); // real time memory size (used by delay like CombN)
 s.options.memSize_(2.pow(20));

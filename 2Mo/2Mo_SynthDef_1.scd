@@ -26,7 +26,7 @@ SynthDef(\MasterStrip, { arg in = 0, out = 0, hpfreq = 20, lpfreq = 20000, level
 	sig = sig * level.curvelin(0, 1, 0, 1, log(10));
 	sig = Limiter.ar(sig);
 	Out.ar(out, sig);
-	Out.ar(out+2, sig); // use it to feed external gear with signal
+	// Out.ar(out+2, sig); // use it to feed external gear with signal
 }).add;
 
 ///////////////////////////////////////  Fx
@@ -695,7 +695,7 @@ SynthDef(\kicknoise,{arg out = 0, amp = 0.5, pan = 0;
 	OffsetOut.ar(out, sig);
 }).add;
 
-~t1kick2SynthDef = SynthDef(\t1kick2, {arg out = 0, amp = 0.5, pan = 0, envaT1 = 0, envaL1 = 1, envaT2 = 0.6, envaL2 = 1, envaT3 = 0.2, envaL3 = 0.5, envaT4 = 0.2, envaL4 = 0, envaCurve = \exp, envfT1 = 0, envfL1 = 10000, envfT2 = 0.002, envfL2 = 20, envfT3 = 0.1, envfL3 = 0, envfT4 = 1, envfL4 = 4, envfCurve = \exp, pitch = 0.1, hpfFreq = 1200, hpfRq = 1, verbMix = 1, verbRoom = 1, verbTime = 3, verbDamp = 0.5, doneAction = 2;
+~t1kick2SynthDef = SynthDef(\t1kick2, {arg out = 0, amp = 0.5, pan = 0, envaT1 = 0, envaL1 = 1, envaT2 = 0.6, envaL2 = 1, envaT3 = 0.2, envaL3 = 0.5, envaT4 = 0.2, envaL4 = 0, envaCurve = \exp, envfT1 = 0, envfL1 = 10000, envfT2 = 0.002, envfL2 = 20, envfT3 = 0.1, envfL3 = 0, envfT4 = 1, envfL4 = 4, envfCurve = \exp, pitch = 0.1, hpfFreq = 1200, hpfRq = 1, verbMix = 1, verbRoom = 1, verbDamp = 0.5, doneAction = 2;
 	var revSig;
 	var enva = EnvGen.kr(Env.pairs([[envaT1, envaL1], [envaT2, envaL2], [envaT3, envaL3], [envaT4, envaL4]], envaCurve), doneAction: doneAction);
 	//var envf = EnvGen.kr(Env([10000,20,00,4],[0.002,0.1,1,1]));
@@ -703,8 +703,8 @@ SynthDef(\kicknoise,{arg out = 0, amp = 0.5, pan = 0;
 	var sig = SinOsc.ar(envf+50*pitch, 0, enva);
 	//sig = PitchShift.ar(sig,0.001,pitch,0.1);
 	sig = BHiPass4.ar(sig.distort, hpfFreq, hpfRq);
-	//sig = FreeVerb.ar(sig, verbMix, verbRoom.max(0.01), verbDamp);
-	revSig = GVerb.ar(sig, Lag3.kr(verbRoom).max(0.01), verbTime, verbDamp);
+	revSig = FreeVerb.ar(sig, verbMix, verbRoom.max(0.01), verbDamp);
+	//revSig = GVerb.ar(sig, 12, verbTime, verbDamp); // don't change room there's a bug in Gverb
 	sig = SelectX.ar(verbMix, [sig, revSig]);
 	sig = Pan2.ar(sig, pan, amp*enva);
 	OffsetOut.ar(out, sig);

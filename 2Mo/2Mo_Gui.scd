@@ -365,7 +365,7 @@ routingSection.decorator.nextLine;
 	busList = Array.fill(~channelBus.size, { arg j;
 		var channelName;
 		channelName = ("channel" ++ j).asSymbol;
-		channelName -> { ~dirt.orbits[i].outBus_(~channelBus[j]); };
+		channelName -> { { ~dirt.orbits[i].outBus_(~channelBus[j]); }.defer; };
 	});
 
 	name = ("orbit" ++ i).asSymbol;
@@ -634,14 +634,16 @@ pdefGuiView.layout = HLayout();
 			["unmute " ++ pdefNameString, Color.white, Color.new255(48, 48, 48)]
 		])
 		.action = { arg guiControl;
-			if(guiControl.value > 0,
-				{
-					~muteState.put(pdefNameSymbol, 1);
-				},
-				{
-					~muteState.put(pdefNameSymbol, 0);
-				}
-			);
+			{
+				if(guiControl.value > 0,
+					{
+						~muteState.put(pdefNameSymbol, 1);
+					},
+					{
+						~muteState.put(pdefNameSymbol, 0);
+					}
+				);
+			}.defer;
 		}
 	);
 

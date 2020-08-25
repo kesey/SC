@@ -2021,7 +2021,6 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 	\hpfRq, 1,
 	\verbMix, 0.5,
 	\verbRoom, 6.27,
-	\verbTime, 4.75,
 	\verbDamp, 0.65,
 	\out, ~channelBus[1],
 	\function, Pfunc({ arg event;
@@ -2061,8 +2060,7 @@ Pdefn(\durIkedaClick, Pseq([1/8, 1/4], inf)).quant_(~globalQuant);
 					"hpfFreq", ["knob", ControlSpec(20, 20000, step: 1, default: event.at(\hpfFreq)), true],
 					"hpfRq", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\hpfRq)), true],
 					"verbMix", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\verbMix)), true],
-					"verbRoom", ["knob", ControlSpec(0, 100, step: 0.01, default: event.at(\verbRoom)), true],
-					"verbTime", ["slider", ControlSpec(0, 10, step: 0.01, default: event.at(\verbTime)), true],
+					"verbRoom", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\verbRoom)), true],
 					"verbDamp", ["knob", ControlSpec(0, 1, step: 0.01, default: event.at(\verbDamp)), true]
 				]));
 			}.defer;
