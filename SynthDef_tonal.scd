@@ -1159,7 +1159,7 @@ SynthDef(\pm4, {
     sig = sig.softclip;
     DetectSilence.ar(sig, doneAction: \doneAction.ir(2));
 
-    Out.ar(\out.kr(0), sig);
+    OffsetOut.ar(\out.kr(0), sig);
 
 }).add;
 
@@ -1171,7 +1171,19 @@ SynthDef(\sawFiltKyma, { |out = 0, amp = 0.1, freq = 440, cf = 100, wobble = 3, 
     var sd = tanh(Ringz.ar(LPF.ar(Trig.ar(t_sd,SampleDur.ir),1000),120,0.75,PinkNoise.ar(2!2)).sin*2);
     sd = HPF.ar(sd,60);
     sig = tanh(GVerb.ar(HPF.ar(base * env,30), 70, 11, 0.15)*0.5 + sig + bd + sd);
-    Out.ar(out, sig*amp*env);
+    OffsetOut.ar(out, sig*amp*env);
+}).add;
+
+SynthDef(\s1, {
+    var freq = \freq.kr(220);
+    var cutoff = \cutoff.kr(100);
+    var fvel = \fvel.kr(8);
+    var res = \res.kr(0.5).linlin(0, 1, 1, 0.001);
+    var aeg = Env.asr.ar(doneAction:Done.freeSelf, gate:\gate.kr(1));
+    var sig = RLPF.ar(Saw.ar(freq), aeg.linlin(0, 1, cutoff, cutoff * fvel), res);
+    sig = sig * aeg * \amp.kr(0.3);
+    sig = Splay.ar(sig);
+    OffsetOut.ar(\out.kr(0), sig);
 }).add;
 
 )

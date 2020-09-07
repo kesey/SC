@@ -425,7 +425,7 @@ SynthDef(\benjolis,{ |out = 0, amp = 1, fadeTime, 0.01, freq1= 40, freq2=4, scal
 	]);
 
 
-	output = Select.ar(outSignal, [
+	output = SelectX.ar(outSignal, [
 		tri1, osc1, tri2, osc2, pwm, sh0, filt
 
 	]);

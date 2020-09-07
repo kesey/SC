@@ -67,11 +67,10 @@ MIDIClient.initialized.not.if {
 
 	// MIDIClient.destinations; // list avalaible midi destinations
 	if (MIDIClient.destinations[2].notNil, {
-		~midiOut = MIDIOut.new(2).latency_(s.latency); // 2 for MIDIClient.destinations[2]
+		~midiOut = MIDIOut.new(2, MIDIClient.destinations[2].uid).latency_(s.latency);
 	});
 
 	// start controlling Tidal with Midi
-
 	osc = NetAddr.new("127.0.0.1", 6010);
 
 	tidalMidiChan = 13;
