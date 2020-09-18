@@ -558,7 +558,7 @@
 	});
 };
 
-// ~patternCodeGen.value(~resSynthDef); // generates pattern with synthDef default values
+// ~patternCodeGen.value(~t1kick2SynthDef); // generates pattern with synthDef default values
 // ~patternCodeGen.value(~feedbackOscSynthDef, "unit1"); // generates pattern with actual view values
 
 ~synthSetCodeGen = { arg synthDef = nil, fromDefault = false;

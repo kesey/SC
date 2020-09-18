@@ -23,31 +23,32 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 ////////////////////  Channel
 
 ~channelNumber.do { arg i;
-	var bgColor;
+	var bgColor, viewName;
+	viewName = (\channel ++ i ++ \View).asSymbol;
 	switch(i,
 		2, { bgColor = ~aux1Color; },
 		3, { bgColor = ~aux2Color; },
 		{ bgColor = Color.white; }
 	);
-	~channel[\channelView] = CompositeView(w, 118@720);
-	~channel[\channelView].background_(bgColor);
-	~channel[\channelView].decorator_(FlowLayout(~channel[\channelView].bounds, 3@3, 3@3));
+	~channel[viewName] = CompositeView(w, 118@720);
+	~channel[viewName].background_(bgColor);
+	~channel[viewName].decorator_(FlowLayout(~channel[viewName].bounds, 3@3, 3@3));
 
 	// Channel name
-	StaticText(~channel[\channelView], 118@10)
+	StaticText(~channel[viewName], 118@10)
 	    .string_("Channel " ++ i)
 	    .stringColor_(Color.black)
 	    .align_(\center);
-	~channel[\channelView].decorator.nextLine;
+	~channel[viewName].decorator.nextLine;
 
 	// lpf
 	~channel[(\activeLpf ++ i).asSymbol] = false;
-	~channel[(\lpfreq ++ i).asSymbol] = EZKnob(~channel[\channelView], 124@70, 'lpfreq', ControlSpec(20, 20000, step: 1, default: 20000, units: 'hz'), {
+	~channel[(\lpfreq ++ i).asSymbol] = EZKnob(~channel[viewName], 124@70, 'lpfreq', ControlSpec(20, 20000, step: 1, default: 20000, units: 'hz'), {
 		arg lpfreq;
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\lpfreq, lpfreq.value);
 		~channel[(\activeLpf ++ i).asSymbol] = false;
 	}, margin: 39@0);
-	~channel[\channelView].decorator.nextLine;
+	~channel[viewName].decorator.nextLine;
 
 	// lpf midi map
 	MIDIFunc.cc({ arg val, num, chan, src;
@@ -80,7 +81,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 		j = j + 1;
 		// freq
 		~channel[(\activeBand ++ j ++ \Freq ++ i).asSymbol] = false;
-		~channel[(\band ++ j ++ \freq ++ i).asSymbol] = EZKnob(~channel[\channelView], 35@70, 'freq' ++ j, ControlSpec(20, 20000, step: 1, default: default, units: 'hz'), {
+		~channel[(\band ++ j ++ \freq ++ i).asSymbol] = EZKnob(~channel[viewName], 35@70, 'freq' ++ j, ControlSpec(20, 20000, step: 1, default: default, units: 'hz'), {
 			arg freq;
 			currentEnvironment.at((\channel ++ i).asSymbol).set((\band ++ j ++ \freq).asSymbol, freq.value);
 			~channel[(\activeBand ++ j ++ \Freq ++ i).asSymbol] = false;
@@ -108,7 +109,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 
 		// rq
 		~channel[(\activeBand ++ j ++ \Rq ++ i).asSymbol] = false;
-		~channel[(\band ++ j ++ \rq ++ i).asSymbol] = EZKnob(~channel[\channelView], 35@70, 'rq' ++ j, ControlSpec(0, 1, step: 0.01, default: 1), {
+		~channel[(\band ++ j ++ \rq ++ i).asSymbol] = EZKnob(~channel[viewName], 35@70, 'rq' ++ j, ControlSpec(0, 1, step: 0.01, default: 1), {
 			arg rq;
 			currentEnvironment.at((\channel ++ i).asSymbol).set((\band ++ j ++ \rq).asSymbol, rq.value);
 			~channel[(\activeBand ++ j ++ \Rq ++ i).asSymbol] = false;
@@ -136,7 +137,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 
 		// db
 		~channel[(\activeBand ++ j ++ \Db ++ i).asSymbol] = false;
-		~channel[(\band ++ j ++ \db ++ i).asSymbol] = EZKnob(~channel[\channelView], 35@70, 'db' ++ j, ControlSpec(-60, 60, step: 1, default: 0, units: 'db'), {
+		~channel[(\band ++ j ++ \db ++ i).asSymbol] = EZKnob(~channel[viewName], 35@70, 'db' ++ j, ControlSpec(-60, 60, step: 1, default: 0, units: 'db'), {
 			arg db;
 			currentEnvironment.at((\channel ++ i).asSymbol).set((\band ++ j ++ \db).asSymbol, db.value);
 			~channel[(\activeBand ++ j ++ \Db ++ i).asSymbol] = false;
@@ -165,12 +166,12 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 
 	// hpf
 	~channel[(\activeHpf ++ i).asSymbol] = false;
-	~channel[(\hpfreq ++ i).asSymbol] = EZKnob(~channel[\channelView], 120@70, 'hpfreq', ControlSpec(20, 20000, step: 1, default: 20, units: 'hz'), {
+	~channel[(\hpfreq ++ i).asSymbol] = EZKnob(~channel[viewName], 120@70, 'hpfreq', ControlSpec(20, 20000, step: 1, default: 20, units: 'hz'), {
 		arg hpfreq;
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\hpfreq, hpfreq.value);
 		~channel[(\activeHpf ++ i).asSymbol] = false;
 	}, margin: 39@0);
-	~channel[\channelView].decorator.nextLine;
+	~channel[viewName].decorator.nextLine;
 
 	// hpf midi map
 	MIDIFunc.cc({ arg val, num, chan, src;
@@ -203,7 +204,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 		j = j + 1;
 
 		~channel[(\activeAux ++ j ++ i).asSymbol] = false;
-		~channel[(\aux ++ j ++ i).asSymbol] = EZKnob(~channel[\channelView], 35@70, 'aux' ++ j, ControlSpec(0, 1, step: 0.01, default: 0), {
+		~channel[(\aux ++ j ++ i).asSymbol] = EZKnob(~channel[viewName], 35@70, 'aux' ++ j, ControlSpec(0, 1, step: 0.01, default: 0), {
 			arg aux;
 			currentEnvironment.at((\channel ++ i).asSymbol).set((\auxsend ++ j).asSymbol, aux.value);
 			~channel[(\activeAux ++ j ++ i).asSymbol] = false;
@@ -231,14 +232,14 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 		~ccStart = ~ccStart + 1;
 
 		if (j == 1, {
-			StaticText(~channel[\channelView], 35@65)
+			StaticText(~channel[viewName], 35@65)
 			    .string_("Send")
 	            .align_(\center);
 		});
 	});
 
 	// mute
-	~channel[(\mute ++ i).asSymbol] = Button(~channel[\channelView], Rect(10,110,112,35)).states_([["Mute", Color.black, Color.white],["Active", Color.white, Color.grey]]).action = {
+	~channel[(\mute ++ i).asSymbol] = Button(~channel[viewName], Rect(10,110,112,35)).states_([["Mute", Color.black, Color.white],["Active", Color.white, Color.grey]]).action = {
 		arg mute;
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\mute, mute.value.linlin(0, 1, 1, 0));
 	};
@@ -254,12 +255,12 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 
 	// pan
 	~channel[(\activePan ++ i).asSymbol] = false;
-	~channel[(\pan ++ i).asSymbol] = EZSlider(~channel[\channelView], 112@60, 'pan', ControlSpec(-1, 1, step: 0.01, default: 0), {
+	~channel[(\pan ++ i).asSymbol] = EZSlider(~channel[viewName], 112@60, 'pan', ControlSpec(-1, 1, step: 0.01, default: 0), {
 		arg pan;
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\pan, pan.value);
 		~channel[(\activePan ++ i).asSymbol] = false;
 	}, layout: 'vert');
-	~channel[\channelView].decorator.nextLine;
+	~channel[viewName].decorator.nextLine;
 
 	// pan midi map
 	MIDIFunc.cc({ arg val, num, chan, src;
@@ -283,7 +284,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 
 	// level
 	~channel[(\activeLevel ++ i).asSymbol] = false;
-	~channel[(\level ++ i).asSymbol] = EZSlider(~channel[\channelView], 110@160, 'level', ControlSpec(0, 1, step: 0.01, default: 0.5), {
+	~channel[(\level ++ i).asSymbol] = EZSlider(~channel[viewName], 110@160, 'level', ControlSpec(0, 1, step: 0.01, default: 0.5), {
 		arg level;
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\level, level.value);
 		~channel[(\activeLevel ++ i).asSymbol] = false;
@@ -439,7 +440,7 @@ u.canvas.layout = VLayout();
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
 			"eqFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 3200), false],
 			"eqRq", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
-			"eqDb", ["knob", ControlSpec(-60, 60, step: 0.01, default: 0), false],
+			"eqDb", ["knob", ControlSpec(-60, 60, step: 0.1, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 		]
 	)).asString;
@@ -582,6 +583,7 @@ v.canvas.layout = VLayout();
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],
 			"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: 1.34), true],
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
+			"bhpf", ["knob", ControlSpec(20, 2000, step: 1, default: 0), true],
 			"loopNode", ["knob", ControlSpec(0, 4, step: 1, default: 0), true],
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.2), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 4), true],
