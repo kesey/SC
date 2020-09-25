@@ -1347,6 +1347,23 @@ SynthDef(\kik3Br, { arg out = 0, amp = 1, pan = 0, freq = 66, att = 0.01, dec = 
 	OffsetOut.ar(out, sig * env * amp);
 }).add;
 
+SynthDef(\rc808Kick, {
+    arg out = 0, pan = 0, decay = 30, amp = 2, gate = 0, tone = 56, doneAction = 2;
+    var fenv, env, trienv, sig, sub, punch, pfenv;
+    env = EnvGen.kr(Env.new([0.11, 1, 0], [0, decay], -225), doneAction:2);
+    trienv = EnvGen.kr(Env.new([0.11, 0.6, 0], [0, decay], -230), doneAction:0);
+    fenv = Env([tone*7, tone*1.35, tone], [0.05, 0.6], -14).kr;
+    pfenv = Env([tone*7, tone*1.35, tone], [0.03, 0.6], -10).kr;
+    sig = SinOsc.ar(fenv, pi/2) * env;
+    sub = LFTri.ar(fenv, pi/2) * trienv * 0.05;
+    punch = SinOsc.ar(pfenv, pi/2) * env * 2;
+    punch = HPF.ar(punch, 350);
+    sig = (sig + sub + punch) * 2.5;
+    sig = Limiter.ar(sig, 0.5) * amp;
+    sig = Pan2.ar(sig, pan);
+    OffsetOut.ar(out, sig);
+}).add;
+
 ///////////////////////////////////////  Snare
 
 ~sdSynthDef = SynthDef(\sd, { | out = 0, amp = 1, att = 0, rel = 0.05, freq = 200, ffreq = 12000 |
@@ -4256,6 +4273,60 @@ SynthDef(\s1, {
     sig = sig * aeg * \amp.kr(0.3);
     sig = Splay.ar(sig);
     OffsetOut.ar(\out.kr(0), sig);
+}).add;
+
+SynthDef(\fakeRes, {
+    arg  out = 0, freq = 200, peamount = 900,
+    pitchAtt = 0.001, pitchDec = 0.13,
+    ampAtt = 0.03, ampDec = 1.0, level = 0.5, doneAction = 2;
+
+    var sig, sig1, sig2, ampenv, pitchenv, sig2Phase;
+
+    pitchenv = EnvGen.ar(
+        // Env([0, 1, 0], [pitchAtt, pitchDec], [0, 0])  // original
+        Env([0, 1, 0], [pitchAtt, pitchDec],  \squared)
+        // Env([0, 1, 0], [pitchAtt, pitchDec],  \cubed)
+    );
+
+    ampenv = EnvGen.ar(
+        Env([0, 1, 0], [ampAtt, ampDec], [0, 0]),
+        levelScale: level,
+        doneAction: doneAction
+    );
+
+    sig1 = SinOsc.ar(
+        freq,
+        mul:-0.53,
+        add:0.5
+    );
+
+    sig2Phase = Sweep.ar(sig1, (freq + (pitchenv * peamount)));
+
+    sig2 = SinOsc.ar(
+        freq + (pitchenv * peamount),
+        phase: 2pi * sig2Phase
+    );
+
+    // sig = (sig1 * sig2)**2;  // orig
+    // sig = (sig1 * sig2).pow(2);  // same sound as orig
+    sig = (sig1 * sig2).squared;  // sounds different
+
+    sig = OnePole.ar(sig, -0.22); // added
+    sig = sig * ampenv ! 2;
+    OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\windowsync, { |out, freq = 65.40639132515, amp = 0.1,
+    syncEgTop = 20, syncRatio = 2, syncDcy = 0.5, gate = 1, doneAction = 2|
+    var syncEg = EnvGen.kr(Env([syncEgTop / syncRatio, 1], [syncDcy], \exp));
+    var eg = EnvGen.kr(Env.adsr(0.01, 0.3, 0.6, 0.1), gate, doneAction: doneAction);
+    var fundamental = LFTri.ar(freq);
+    var syncFreq = freq * syncRatio * syncEg;
+    // note, Phasor here is behaving like the Sweep above (retrigger behavior)
+    // but Phasor loops around its range, eliminating the need for '% 1'
+    var syncPhase = Phasor.ar(fundamental, syncFreq * SampleDur.ir, 0, 1, 0);
+    var sig = SinOsc.ar(0, syncPhase * 2pi) * fundamental;
+    OffsetOut.ar(out, (sig * (amp * eg)).dup);
 }).add;
 
 ///////////////////////////////////////  Sequence

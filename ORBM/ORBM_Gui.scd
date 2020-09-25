@@ -553,7 +553,7 @@ v.canvas.layout = VLayout();
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],
 			"amp", ["knob", ControlSpec(0, 10, step: 0.01, default: 1.34), true],
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
-			"bhpf", ["knob", ControlSpec(20, 2000, step: 1, default: 0), true],
+			"bhpf", ["knob", ControlSpec(20, 2000, step: 1, default: 80), true],
 			"loopNode", ["knob", ControlSpec(0, 4, step: 1, default: 0), true],
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.2), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 4), true],
