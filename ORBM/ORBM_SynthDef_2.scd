@@ -136,4 +136,60 @@ SynthDef(\triangleWaveBells,{ arg out = 0, amp = 1.0, pan = 0.0, att = 0.01, dec
 	OffsetOut.ar(out, Pan2.ar(filter * env, pan));
 }).add;
 
+///////////////////////////////////////  Tonal
+
+SynthDef(\fakeRes, {
+    arg  out = 0, freq = 200, peamount = 900,
+    pitchAtt = 0.001, pitchDec = 0.13,
+    ampAtt = 0.03, ampDec = 1.0, level = 0.5, doneAction = 2;
+
+    var sig, sig1, sig2, ampenv, pitchenv, sig2Phase;
+
+    pitchenv = EnvGen.ar(
+        // Env([0, 1, 0], [pitchAtt, pitchDec], [0, 0])  // original
+        Env([0, 1, 0], [pitchAtt, pitchDec],  \squared)
+        // Env([0, 1, 0], [pitchAtt, pitchDec],  \cubed)
+    );
+
+    ampenv = EnvGen.ar(
+        Env([0, 1, 0], [ampAtt, ampDec], [0, 0]),
+        levelScale: level,
+        doneAction: doneAction
+    );
+
+    sig1 = SinOsc.ar(
+        freq,
+        mul:-0.53,
+        add:0.5
+    );
+
+    sig2Phase = Sweep.ar(sig1, (freq + (pitchenv * peamount)));
+
+    sig2 = SinOsc.ar(
+        freq + (pitchenv * peamount),
+        phase: 2pi * sig2Phase
+    );
+
+    // sig = (sig1 * sig2)**2;  // orig
+    // sig = (sig1 * sig2).pow(2);  // same sound as orig
+    sig = (sig1 * sig2).squared;  // sounds different
+
+    sig = OnePole.ar(sig, -0.22); // added
+    sig = sig * ampenv ! 2;
+    OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\windowsync, { |out, freq = 65.40639132515, amp = 0.1,
+    syncEgTop = 20, syncRatio = 2, syncDcy = 0.5, gate = 1, doneAction = 2|
+    var syncEg = EnvGen.kr(Env([syncEgTop / syncRatio, 1], [syncDcy], \exp));
+    var eg = EnvGen.kr(Env.adsr(0.01, 0.3, 0.6, 0.1), gate, doneAction: doneAction);
+    var fundamental = LFTri.ar(freq);
+    var syncFreq = freq * syncRatio * syncEg;
+    // note, Phasor here is behaving like the Sweep above (retrigger behavior)
+    // but Phasor loops around its range, eliminating the need for '% 1'
+    var syncPhase = Phasor.ar(fundamental, syncFreq * SampleDur.ir, 0, 1, 0);
+    var sig = SinOsc.ar(0, syncPhase * 2pi) * fundamental;
+    OffsetOut.ar(out, (sig * (amp * eg)).dup);
+}).add;
+
 )

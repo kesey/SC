@@ -155,6 +155,7 @@ s.waitForBoot({
 		s.sync;
 
 		~dirt.start(57120, 0 ! 12/*, senderAddr*/);   // start listening on port 57120, create twelve stereo busses each sending audio to channel 0 & 1
+		s.sync;
 
 		// Sync sclang to SuperDirt
 		~syncSCtoSD.value(t, true);
