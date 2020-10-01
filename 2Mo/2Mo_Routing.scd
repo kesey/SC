@@ -28,8 +28,8 @@ masterBus = Bus.audio(s, 2);
 };
 
 // Permanent Synth
-s.bind { ~inputMic = Synth(\inputSig, [\in, 0, \out, ~channelBus[1], \amp, 4, \gate, 0, \doneAction, 0], synthGroup) }; // s.bind consider server latency
-s.bind { ~inputSoftPop = Synth(\inputSig, [\in, 2, \out, ~channelBus[1], \amp, 0.5, \gate, 0, \doneAction, 0], synthGroup) };
+s.bind { ~inputMic = Synth(\inputSig, [\in, 0, \out, ~channelBus[1], \amp, 1, \gate, 0, \doneAction, 0], synthGroup) }; // s.bind consider server latency
+s.bind { ~inputSoftPop = Synth(\inputSig, [\in, 2, \out, ~channelBus[1], \amp, 1, \gate, 0, \doneAction, 0], synthGroup) };
 s.bind { ~samplerStereo = Synth(\samplerStereo, [\out, ~channelBus[1], \gate, 0, \buffer, b[\sampler_stereo][15].bufnum, \amp, 0.23, \doneAction, 0], synthGroup) };
 s.bind { ~sinBass = Synth(\sinBass, [\out, ~channelBus[0], \amp, 1.34, \gate, 0, \doneAction, 0], synthGroup) };
 

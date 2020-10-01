@@ -517,7 +517,7 @@ v.canvas.layout = VLayout();
 	~autoGui.value(v, ~inputSigSynthDef, ~inputSoftPop, 100/*cc start*/, 14/*midi channel*/, Color.new255(189, 183, 107, 240), Dictionary.newFrom(
 		List[
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
-			"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: 0.5), true],
+			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 1), true],
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.5), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), false],
@@ -538,7 +538,7 @@ v.canvas.layout = VLayout();
 	~autoGui.value(v, ~inputSigSynthDef, ~inputMic, 100, 15, Color.new255(205, 198, 115, 255), Dictionary.newFrom(
 		List[
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
-			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 4), true],
+			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 1), true],
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.5), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), false],
