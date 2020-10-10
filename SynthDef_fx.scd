@@ -29,6 +29,43 @@ SynthDef(\MasterStrip, { arg in = 0, out = 0, hpfreq = 20, lpfreq = 20000, level
 
 ///////////////////////////////////////  Fx
 
+///////////////////////////////////////  Pitch
+
+SynthDef(\pitchShifter, { arg in = 0, out = 0, drywet = 0.5, pitchRatio = 1, pitchDisper = 0, timeDisper = 0;
+	var input, sig, windowSize;
+	windowSize = 0.2;
+	input = InFeedback.ar(in, 2);
+	sig = PitchShift.ar(input, windowSize, pitchRatio, pitchDisper, timeDisper.min(windowSize));
+	sig = XFade2.ar(input, sig, drywet);
+	ReplaceOut.ar(out, sig);
+	//XOut.ar(out, drywet, sig);
+}).add;
+
+SynthDef(\vocoder_synth, {
+    |
+    out=0, in=2, amp=1.0, freq=440,
+    atk=0.1, dcy=0.1, sus=0.7, rel=1,
+    width=0.5, pan=0.0
+    |
+    var sig, env, chainMod, chainCarr, chain, input;
+    env = EnvGen.ar(Env.perc(atk, rel), doneAction:2);
+    sig = VarSaw.ar(freq, width:width);
+    input = In.ar(in,1) * env;
+
+    chainMod = FFT(LocalBuf(1024), input);
+    // uncomment the line below if you want a gate-like effect
+    //chainMod = PV_MagAbove(chainMod, 0.2);
+    chainCarr = FFT(LocalBuf(1024), sig);
+    chain  = PV_MagMul(chainCarr, chainMod);
+
+    chain = PV_MagClip(chain, 50);
+
+    sig = IFFT(chain);
+    sig = sig * amp;
+
+    Out.ar(out, Pan2.ar(sig, pan));
+}).add;
+
 ///////////////////////////////////////  Distortion
 
 SynthDef(\DistoInsideOut, { arg in = 0, out = 0, drywet = 0.5, level = 1;
@@ -630,6 +667,18 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 
 	6.do({ y = AllpassN.ar(y, 0.050, rrand(0.03, 0.05), allpassdecay) });
 	XOut.ar(out, drywet, sig + (y * revVol)); // as fxlevel is 1 then I lower the vol a bit
+}).add;
+
+///////////////////////////////////////  Eq
+
+SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, eqFreq = 3200, eqRq = 1, eqDb = 0, lpfInFreq = 20000;
+	var input, inputFilt, sig;
+	input = InFeedback.ar(in, 2);
+	inputFilt = LPF.ar(HPF.ar(input, Lag3.kr(hpfInFreq)), Lag3.kr(lpfInFreq));
+	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(eqFreq.max(20).min(20000), 0.5), eqRq, eqDb);
+	sig = XFade2.ar(input, inputFilt, drywet);
+	ReplaceOut.ar(out, sig);
+	//XOut.ar(out, drywet, effect);
 }).add;
 
 )
