@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////  Mixer
 
-SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0, hpfreq = 20, band1freq = 8000, band1rq = 1, band1db = 0, band2freq = 1200, band2rq = 1, band2db = 0, band3freq = 80, band3rq = 1, band3db = 0, lpfreq = 20000, mute = 1, auxsend1 = 0, auxsend2 = 0, level = 0.5;
+SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0, hpfreq = 20, band1freq = 8000, band1rq = 1, band1db = 0, band2freq = 1200, band2rq = 1, band2db = 0, band3freq = 80, band3rq = 1, band3db = 0, lpfreq = 20000, mute = 1, auxsend1 = 0, auxsend2 = 0, level = 0.5, delaytime = 0;
 	var input, sig;
 	input = InFeedback.ar(in, 2);
 	sig = BHiPass4.ar(input, Lag2.kr(hpfreq.max(20).min(20000), 0.5)); // HPF
@@ -15,6 +15,7 @@ SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0
 	Out.ar(outAux1, sig * auxsend1.curvelin(0, 1, 0, 1, log(10))); // Aux 1 pre fader / pre mute / post eq
 	Out.ar(outAux2, sig * auxsend2.curvelin(0, 1, 0, 1, log(10))); // Aux 2 pre fader / pre mute / post eq
 	sig = sig * Lag2.kr(mute, 0.1); // Mute
+	sig = DelayN.ar(sig, 0.5, delaytime); // Delay
 	Out.ar(out, Balance2.ar(sig[0], sig[1], pan, level.curvelin(0, 1, 0, 1, log(10)))); // curvelin(blabla) to have a logarithmic scale
 }).add;
 

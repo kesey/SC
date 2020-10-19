@@ -15,9 +15,8 @@ mixerMidiChan = mixerMidiChan.max(0).min(15);
 
 ~channel = IdentityDictionary.new;
 
-w = Window("Mixer",Rect(0, 8, 850, 725), scroll: true);
+w = Window("Mixer", Rect(0, 0, 850, 750), scroll: true);
 w.front;
-//w.alwaysOnTop_(true);
 w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 
 ////////////////////  Channel
@@ -30,7 +29,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 		3, { bgColor = ~aux2Color; },
 		{ bgColor = Color.white; }
 	);
-	~channel[viewName] = CompositeView(w, 118@720);
+	~channel[viewName] = CompositeView(w, 118@745);
 	~channel[viewName].background_(bgColor);
 	~channel[viewName].decorator_(FlowLayout(~channel[viewName].bounds, 3@3, 3@3));
 
@@ -289,6 +288,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\level, level.value);
 		~channel[(\activeLevel ++ i).asSymbol] = false;
 	}, layout: 'vert', margin: 39@0);
+	~channel[viewName].decorator.nextLine;
 
 	// level midi map
 	MIDIFunc.cc({ arg val, num, chan, src;
@@ -309,11 +309,17 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 	}, ~ccStart, mixerMidiChan);
 	(~ccStart).debug("channel " ++ i ++ " level cc number");
 	~ccStart = ~ccStart + 1;
+
+	// delay
+	~channel[(\delay ++ i).asSymbol] = EZNumber(~channel[viewName], 95@20, 'delay', ControlSpec(0, 0.5, step: 0.01, default: 0), {
+		arg delay;
+		currentEnvironment.at((\channel ++ i).asSymbol).set(\delaytime, delay.value);
+	});
 };
 
 ////////////////////  Master
 
-channelMaster = CompositeView(w, 118@720);
+channelMaster = CompositeView(w, 118@745);
 channelMaster.background_(Color.grey);
 channelMaster.decorator_(FlowLayout(channelMaster.bounds, 3@3, 3@3));
 
@@ -349,7 +355,7 @@ channelMaster.decorator.nextLine;
 ~orbitNumber = ~dirt.orbits.size;
 ~routingControl = Dictionary.new;
 
-routingSection = CompositeView(w, 236@720);
+routingSection = CompositeView(w, 236@745);
 routingSection
 .background_(Color.white)
 .decorator_(FlowLayout(routingSection.bounds, 25@3, 25@3));
