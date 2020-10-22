@@ -732,4 +732,89 @@ SynthDef(\sosSnare, { arg out = 0, amp = 0.8, pan = 0, freq = 405, att = 0.005, 
     OffsetOut.ar(out, Pan2.ar(snd, pan));
 }).add;
 
+SynthDef(\squareDrum, {
+    arg
+    // Standard values
+    out = 0, freq = 180, amp = 0.6, pan = 0,
+    // Stick Controls
+    att = 0.001, dec = 0.01,
+    // Head Controls
+    headAmp = 0.5, decCoef = 0.175, ampSlope = 3, rel = 0.2,
+    // Snares Controls (thresh goes from 0 to 1)
+    snaresAmp = 0.65, followAtt = 0.005, followRel = 0.075, thresh = 0.25,
+    snareGate = 0.6, rq = 0.5,
+	doneAction = 2;
+
+    var freqarray, amparray, decarray, stick, head, snares, snd;
+
+    // Setting up arrays for Klank
+    freqarray = Array.fill(8, {
+        arg i = 1;
+        (
+            Array.fill((i + 1), {
+                arg j;
+                (j + 1).pow(2)
+            }) +
+            (i + 1).pow(2)
+        ).sqrt
+
+    });
+    freqarray = freqarray.flatten/(2.sqrt);
+
+    amparray = Array.fill(36, {
+        arg i;
+        if (freqarray[i] > 20000)
+            { 0 }
+            {
+                (ampSlope * (freqarray[i]).log2).dbamp
+            }
+    });
+    amparray = amparray/amparray.max;
+
+    decarray = Array.fill(36, {
+        arg i;
+        exp(-1 * i * decCoef)
+    });
+    decarray = decarray/decarray[0];
+
+    // Drumstick
+    stick = Decay2.ar(
+        in: Impulse.ar(0),
+        attackTime: att,
+        decayTime: dec,
+        mul: 0.005); // This keeps the volume at a sane level
+
+    // Drum Head
+    head = Klank.ar(
+        specificationsArrayRef:
+            Ref.new([freqarray, amparray, decarray]),
+        input: stick,
+        freqscale: freq,
+        decayscale: rel);
+
+    // Snares
+    snares = PinkNoise.ar(
+        Amplitude.ar(
+            in: head,
+            attackTime: followAtt,
+            releaseTime: followRel));
+    snares = CompanderD.ar(
+        in: snares,
+        thresh: thresh,
+        slopeBelow: 1 + snareGate.clip(0, inf));
+    snares = BRF.ar(
+        in: snares,
+        freq: freqarray[1..6],
+        rq: rq);
+
+    //Output Stuff
+    snd = (head * headAmp) + (snares * snaresAmp);
+    snd = Mix.ar(snd * amp);
+    snd = Limiter.ar(snd);
+
+    DetectSilence.ar(in: snd, doneAction: doneAction);
+
+    OffsetOut.ar(out, Pan2.ar(snd, pan));
+}).add;
+
 )
