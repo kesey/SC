@@ -15,7 +15,7 @@ SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0
 	Out.ar(outAux1, sig * auxsend1.curvelin(0, 1, 0, 1, log(10))); // Aux 1 pre fader / pre mute / post eq
 	Out.ar(outAux2, sig * auxsend2.curvelin(0, 1, 0, 1, log(10))); // Aux 2 pre fader / pre mute / post eq
 	sig = sig * Lag2.kr(mute, 0.1); // Mute
-	sig = DelayN.ar(sig, 0.5, delaytime / 100); // Delay
+	sig = DelayN.ar(sig, 0.01, delaytime / 100); // Delay
 	Out.ar(out, Balance2.ar(sig[0], sig[1], pan, level.curvelin(0, 1, 0, 1, log(10)))); // curvelin(blabla) to have a logarithmic scale
 }).add;
 

@@ -311,7 +311,7 @@ w.view.decorator = FlowLayout(w.view.bounds, 3@3, 3@3);
 	~ccStart = ~ccStart + 1;
 
 	// delay
-	~channel[(\delay ++ i).asSymbol] = EZNumber(~channel[viewName], 95@20, 'delay', ControlSpec(0, 0.5, step: 0.01, default: 0), {
+	~channel[(\delay ++ i).asSymbol] = EZNumber(~channel[viewName], 95@20, 'delay', ControlSpec(0, 1, step: 0.01, default: 0), {
 		arg delay;
 		currentEnvironment.at((\channel ++ i).asSymbol).set(\delaytime, delay.value);
 	});

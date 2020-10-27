@@ -3454,7 +3454,7 @@
 		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "lpfInFreq").valueAction_(20000);
 
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "drywet").valueAction_(-1);
-		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.55);
+		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "feedBack").valueAction_(0.52);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "sync1").valueAction_(1);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "time1").valueAction_(0.25);
 		~autoGuiControl.at("quadDelay" ++ ~nodeId.at("quadDelay") ++ "division1").valueAction_(1);
