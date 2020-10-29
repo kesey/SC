@@ -372,7 +372,7 @@ routingSection.decorator.nextLine;
 	busList = Array.fill(~channelBus.size, { arg j;
 		var channelName;
 		channelName = ("channel" ++ j).asSymbol;
-		channelName -> { { ~dirt.orbits[i].outBus_(~channelBus[j]); }.defer; };
+		channelName -> { { ~dirt.orbits[i].outBus = ~channelBus[j]; }.defer; };
 	});
 
 	name = ("orbit" ++ i).asSymbol;
