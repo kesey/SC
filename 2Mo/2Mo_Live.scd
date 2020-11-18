@@ -109,7 +109,7 @@ h = h.normalize;
 h = h.asWavetableNoWrap;*/
 
 // h = Buffer.alloc(s, 1024, 1);
-h.cheby({ rrand(0, 1.0) }!rrand(3, 16));
+// h.cheby({ rrand(0, 1.0) }!rrand(3, 16));
 
 // h.sine3({ rrand(20, 2000) }!6, { rrand(0, 1.0) }!6, { rrand(pi, 8*pi) }!6);
 
@@ -117,7 +117,7 @@ h.cheby({ rrand(0, 1.0) }!rrand(3, 16));
 
 // h.sine1({ rrand(0, 1.0) }!7);
 
-// h.cheby([1, 0.5, 1, 0.125]); // default values
+h.cheby([1, 0.5, 1, 0.125]); // default values
 
 h.plot;
 

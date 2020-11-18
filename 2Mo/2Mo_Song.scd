@@ -1373,7 +1373,7 @@
 
 	// Synth + Fx Preset
 
-	{
+	/*{
 		// Synth
 
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(0.14);
@@ -1449,7 +1449,7 @@
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
 
 		~channel.at(\level2).valueAction_(0.17);
-	}.defer;
+	}.defer;*/
 
 	~songInit.value;
 
@@ -3413,7 +3413,7 @@
 		// aux 1
 
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "drywet").valueAction_(-1);
-		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "hpfInFreq").valueAction_(319);
+		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "hpfInFreq").valueAction_(222);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqFreq").valueAction_(20000);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqRq").valueAction_(0);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "eqDb").valueAction_(0);
@@ -3427,7 +3427,7 @@
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impFreq").valueAction_(52);
 		~autoGuiControl.at("noiseInjection" ++ ~nodeId.at("noiseInjection") ++ "impLevel").valueAction_(8.9);
 
-		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-0.46);
+		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "drywet").valueAction_(-1);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "hpfInFreq").valueAction_(20);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "lpfInFreq").valueAction_(20000);
 		~autoGuiControl.at("distoCrossOver" ++ ~nodeId.at("distoCrossOver") ++ "amp").valueAction_(0.27);
@@ -3437,7 +3437,7 @@
 		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "drywet").valueAction_(-1);
 		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "hpfInFreq").valueAction_(20);
 		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "lpfInFreq").valueAction_(20000);
-		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0);
+		~autoGuiControl.at("distoInsideOut" ++ ~nodeId.at("distoInsideOut") ++ "level").valueAction_(0.1);
 
 		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "mix").valueAction_(0.17);
 		~autoGuiControl.at("waveShape" ++ ~nodeId.at("waveShape") ++ "hpfInFreq").valueAction_(20);
@@ -3447,7 +3447,7 @@
 		// aux 2
 
 		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "drywet").valueAction_(-1);
-		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "hpfInFreq").valueAction_(122);
+		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "hpfInFreq").valueAction_(222);
 		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "eqFreq").valueAction_(2824);
 		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "eqRq").valueAction_(0.5);
 		~autoGuiControl.at("filterBus" ++ ~nodeId.at("filterBus") ++ "eqDb").valueAction_(11);
@@ -3491,11 +3491,30 @@
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "damp").valueAction_(0);
 		~autoGuiControl.at("verb" ++ ~nodeId.at("verb") ++ "amount").valueAction_(1);
 
+		// mixer
+
 		~channel.at(\level0).valueAction_(1);
 		~channel.at(\delay0).valueAction_(0.15);
 		~channel.at(\level1).valueAction_(1);
 		~channel.at(\delay1).valueAction_(0.15);
+		~channel.at(\level2).valueAction_(0.5);
+		~channel.at(\delay2).valueAction_(0);
+		~channel.at(\level3).valueAction_(0.5);
+		~channel.at(\delay3).valueAction_(0);
 		~channel.at(\levelMaster).valueAction_(1);
+
+		// mute unit
+
+		~mute.at("unit1").valueAction_(1);
+		~mute.at("unit2").valueAction_(1);
+		~mute.at("unit3").valueAction_(1);
+		~mute.at("unit4").valueAction_(1);
+		~mute.at("unit5").valueAction_(1);
+		~mute.at("unit6").valueAction_(1);
+
+		// routing
+
+		~routingControl.at(\orbit0).valueAction_(1);
 	}.defer;
 };
 

@@ -16,8 +16,8 @@ aux2Group = Group.new(aux1Group, \addAfter);
 masterBus = Bus.audio(s, 2);
 ~master = Synth(\MasterStrip, [\in, masterBus], mixGroup, addAction: 'addToTail');
 
-~channelNumber = 4; // number of channels
-~channelNumber = ~channelNumber.max(1).min(16); // limit number of channels
+~channelNumber = 4; // number of mixer channels
+~channelNumber = ~channelNumber.max(1).min(16); // limit number of mixer channels
 
 ~channelBus = Array.newClear(~channelNumber);
 

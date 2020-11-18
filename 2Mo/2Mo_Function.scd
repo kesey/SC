@@ -59,7 +59,10 @@
 				prevCycle = cycle;
 			});
 			if ((cps.notNil and: cps != prevCps), {
-				tempoDefault.tempo = cps;
+				tempoDefault.schedAbs(tempoDefault.nextTimeOnGrid, {
+					tempoDefault.tempo = cps;
+					nil;
+				});
 				prevCps = cps;
 			});
 			if ((latency.notNil and: latency != prevLatency), {

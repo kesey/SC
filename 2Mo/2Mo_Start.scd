@@ -29,7 +29,7 @@ s.options.maxNodes = 1024 * 32;
 
 // rec options
 s.options.recChannels = 2;
-s.options.recSampleFormat = "int24"; // 24 bit
+s.options.recSampleFormat = "int32"; // 32 bit
 s.options.recHeaderFormat = "aiff";
 
 // s.options.blockSize = 64;
