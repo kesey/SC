@@ -127,14 +127,10 @@ ServerBoot.add(~initAllocators, s);
 
 ServerQuit.add(~cleanup, s);
 
-////////////////////////////////// 8. boot
+////////////////////////////////// 8. actions to perform once boot is completed
 
-s.serverRunning.not.if({ s.boot });
-
-////////////////////////////////// 9. actions to perform once boot is completed
-
-s.waitForBoot({
-	if (~init.isNil, {
+s.serverRunning.not.if({
+	s.waitForBoot({
 		"server boot complete".postln;
 		// s.plotTree; // node tree
 
@@ -196,7 +192,7 @@ s.waitForBoot({
 	});
 });
 
-////////////////////////////////// 10. utilities
+////////////////////////////////// 9. utilities
 
 // GUI.current; // Test which GUI library you are using by default
 // UGen.browse; // another kind of documentation
