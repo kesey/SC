@@ -3174,6 +3174,24 @@ SynthDef(\LiljedRain, { arg out = 0, amp = 0.6, attack = 0.01, release = 2, nFrq
 	OffsetOut.ar(out, sig);
 }).add;
 
+SynthDef(\lcm2, { arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls = 0.2, sustain = 1, mod1 = 3.09431, mod2 = 54.0487, gate = 1, doneAction = 2;
+    var sig, sig1, sig2, env;
+
+    env = EnvGen.kr(Env.asr(atk, 1, rls), gate, timeScale: sustain, doneAction: doneAction);
+
+    mod1 = mod1.min(1000).max(1);
+    mod2 = mod2.min(1000).max(1);
+
+    sig1 = Saw.ar(mod1).range(-100,100).round(1);
+    sig2 = LFCub.ar(mod2).range(-100,100).round(1);
+
+    sig = tanh(lcm(sig1, sig2) * 0.001);
+
+    sig = sig * env;
+    sig = Pan2.ar(sig, pan, amp);
+    OffsetOut.ar(out, sig);
+}).add;
+
 ///////////////////////////////////////  Sampler
 
 ~samplerStereoSynthDef = SynthDef(\samplerStereo,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001, release = 1, curve = (-4), buffer = 0, rate = 1, startPos = 0, loop = 0, doneAction = 2;
