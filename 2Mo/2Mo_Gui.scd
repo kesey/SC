@@ -562,7 +562,7 @@ v.canvas.layout = VLayout();
 );
 
 ~nodeId.put(~paulstretchMonoSynthDef.name.asString,
-	~autoGui.value(v, ~paulstretchMonoSynthDef, ~paulstretch, 100, 13, Color.new255(215, 202, 90), Dictionary.newFrom(
+	~autoGui.value(v, ~paulstretchMonoSynthDef, ~paulstretch, 100, 13, Color.new255(215, 210, 90, 240), Dictionary.newFrom(
 		List[
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
 			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 0.23), true],
