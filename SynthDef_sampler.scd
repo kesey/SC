@@ -125,12 +125,12 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     sig[1] = DelayC.ar(sig[1], trigPeriod/2, trigPeriod/2);
     // Panned output
 	sig = Mix.new(sig) * envVca;
-    Out.ar(out, Pan2.ar(sig, pan));
+    OffsetOut.ar(out, Pan2.ar(sig, pan));
 }).add;
 
-/* \paulstretchMono example:
+// \paulstretchMono example:
 
-{
+/*{
     var envBuf, envSignal, buffer;
     buffer = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav");
     // The grain envelope
@@ -139,7 +139,7 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     envBuf.loadCollection(envSignal);
     s.sync();
     // Runs indefinitely
-    Synth(\paulstretchMono, [\bufnum, buffer.bufnum, \envBufnum, envBuf.bufnum]);
+	Synth(\paulstretchMono, [\bufnum, buffer.readChannel(buffer.path, channels: [0]).bufnum, \envBufnum, envBuf.bufnum]);
 }.fork;*/
 
 ///////////////////////////////////////  Input

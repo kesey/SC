@@ -555,6 +555,25 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	XOut.ar(out, drywet, sig + (y * revVol)); // as fxlevel is 1 then I lower the vol a bit
 }).add;
 
+SynthDef(\JPverb, { arg in = 0, out = 0, drywet = 0.85, amp = 1, feedback = 0, t60 = 1, damp = 0, size = 1, earlyDiff = 0.707, modDepth = 0.1, modFreq = 2, low = 1, mid = 1, high = 1, lowcut = 500, highcut = 2000;
+	var sig, input;
+	input = InFeedback.ar(in, 2);
+	sig = input + LocalIn.ar(2);
+	sig = JPverb.ar(sig, t60, damp, size, earlyDiff, modDepth, modFreq, low, mid, high, lowcut, highcut);
+	LocalOut.ar(feedback.min(0.25) * sig);
+	// sig = SelectX.ar(drywet, [input, sig]);
+	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
+	ReplaceOut.ar(out, sig);
+}).add;
+
+SynthDef(\greyHole, { arg in = 0, out = 0, drywet = 0.85, amp = 1, delayTime = 2, damp = 0, size = 1, diff = 0.707, feedback = 0.9, modDepth = 0.1, modFreq = 2;
+	var sig, input;
+	input = InFeedback.ar(in, 2);
+	sig = Greyhole.ar(input, delayTime, damp, size, diff, feedback, modDepth, modFreq);
+	// sig = SelectX.ar(drywet, [input, sig]);
+	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
+	ReplaceOut.ar(out, sig);
+}).add;
 
 ///////////////////////////////////////  Eq
 
@@ -3263,12 +3282,12 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     sig[1] = DelayC.ar(sig[1], trigPeriod/2, trigPeriod/2);
     // Panned output
 	sig = Mix.new(sig) * envVca;
-    Out.ar(out, Pan2.ar(sig, pan));
+    OffsetOut.ar(out, Pan2.ar(sig, pan));
 }).add;
 
-/* \paulstretchMono example:
+// \paulstretchMono example:
 
-{
+/*{
     var envBuf, envSignal, buffer;
     buffer = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav");
     // The grain envelope
@@ -3277,7 +3296,7 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     envBuf.loadCollection(envSignal);
     s.sync();
     // Runs indefinitely
-    Synth(\paulstretchMono, [\bufnum, buffer.bufnum, \envBufnum, envBuf.bufnum]);
+	Synth(\paulstretchMono, [\bufnum, buffer.readChannel(buffer.path, channels: [0]).bufnum, \envBufnum, envBuf.bufnum]);
 }.fork;*/
 
 ///////////////////////////////////////  Input

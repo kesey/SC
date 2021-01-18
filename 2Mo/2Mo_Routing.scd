@@ -30,6 +30,16 @@ masterBus = Bus.audio(s, 2);
 // Permanent Synth
 s.bind { ~inputMic = Synth(\inputSig, [\in, 0, \out, ~channelBus[1], \amp, 1, \gate, 0, \doneAction, 0], synthGroup) }; // s.bind consider server latency
 s.bind { ~inputSoftPop = Synth(\inputSig, [\in, 2, \out, ~channelBus[1], \amp, 1, \gate, 0, \doneAction, 0], synthGroup) };
+s.bind {
+	var envBuf, envSignal;
+	// The grain envelope
+	envBuf = Buffer.alloc(s, s.sampleRate, 1);
+	envSignal = Signal.newClear(s.sampleRate).waveFill({|x| (1 - x.pow(2)).pow(1.25)}, -1.0, 1.0);
+	envBuf.loadCollection(envSignal);
+	s.sync;
+
+	~paulstretch = Synth(\paulstretchMono, [\out, ~channelBus[1], \gate, 0, \buffer, Buffer.readChannel(s, b[\sampler_stereo][15].path, channels: [0]).bufnum, \envBufnum, envBuf.bufnum, \amp, 0.23, \doneAction, 0], synthGroup);
+};
 s.bind { ~samplerStereo = Synth(\samplerStereo, [\out, ~channelBus[1], \gate, 0, \buffer, b[\sampler_stereo][15].bufnum, \amp, 0.23, \doneAction, 0], synthGroup) };
 s.bind { ~sinBass = Synth(\sinBass, [\out, ~channelBus[0], \amp, 1.34, \gate, 0, \doneAction, 0], synthGroup) };
 

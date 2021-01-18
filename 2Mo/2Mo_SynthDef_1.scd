@@ -550,6 +550,26 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	XOut.ar(out, drywet, sig + (y * revVol)); // as fxlevel is 1 then I lower the vol a bit
 }).add;
 
+SynthDef(\JPverb, { arg in = 0, out = 0, drywet = 0.85, amp = 1, feedback = 0, t60 = 1, damp = 0, size = 1, earlyDiff = 0.707, modDepth = 0.1, modFreq = 2, low = 1, mid = 1, high = 1, lowcut = 500, highcut = 2000;
+	var sig, input;
+	input = InFeedback.ar(in, 2);
+	sig = input + LocalIn.ar(2);
+	sig = JPverb.ar(sig, t60, damp, size, earlyDiff, modDepth, modFreq, low, mid, high, lowcut, highcut);
+	LocalOut.ar(feedback.min(0.25) * sig);
+	// sig = SelectX.ar(drywet, [input, sig]);
+	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
+	ReplaceOut.ar(out, sig);
+}).add;
+
+SynthDef(\greyHole, { arg in = 0, out = 0, drywet = 0.85, amp = 1, delayTime = 2, damp = 0, size = 1, diff = 0.707, feedback = 0.9, modDepth = 0.1, modFreq = 2;
+	var sig, input;
+	input = InFeedback.ar(in, 2);
+	sig = Greyhole.ar(input, delayTime, damp, size, diff, feedback, modDepth, modFreq);
+	// sig = SelectX.ar(drywet, [input, sig]);
+	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
+	ReplaceOut.ar(out, sig);
+}).add;
+
 ///////////////////////////////////////  Eq
 
 ~filterBusSynthDef = SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, eqFreq = 3200, eqRq = 1, eqDb = 0, lpfInFreq = 20000;
@@ -3223,7 +3243,7 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12, curve = (-4), bufnum, envBufnum, stretch = 50, window = 0.25, gate = 1, doneAction = 2|
+~paulstretchMonoSynthDef = SynthDef(\paulstretchMono, { |out = 0, gate = 1, amp = 1, pan = 0, atk = 0.001, rls = 0.12, curve = (-4), buffer, envBufnum, channel = 0, rate = 1, stretch = 50, window = 0.25, doneAction = 2|
     // Paulstretch for SuperCollider
     // Based on the Paul's Extreme Sound Stretch algorithm by Nasca Octavian PAUL
     // https://github.com/paulnasca/paulstretch_python/blob/master/paulstretch_steps.png
@@ -3234,7 +3254,7 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     //
     // Arguments:
     // out: output bus (stereo output)
-    // bufnum: the sound buffer. Must be Mono. (Use 2 instances with Buffer.readChannel for stereo)
+    // buffer: the sound buffer. Must be Mono. (Use 2 instances with Buffer.readChannel for stereo)
     // envBufnum: The grain envelope buffer created as follows:
     //// envBuf = Buffer.alloc(s, s.sampleRate, 1);
     //// envSignal = Signal.newClear(s.sampleRate).waveFill({|x| (1 - x.pow(2)).pow(1.25)}, -1.0, 1.0);
@@ -3243,20 +3263,21 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     // stretch: stretch factor (modulatable)
     // window: the suggested grain size, will be resized to closest fft window size
     // amp: amplification
-    var trigPeriod, sig, envVca, env, delayTimeEnv, chain, trig, pos, fftSize;
+    var rateScale, trigPeriod, sig, envVca, env, delayTimeEnv, chain, trig, pos, fftSize;
 
 	envVca = EnvGen.kr(Env.asr(atk, 1, rls, curve), gate, doneAction: doneAction);
+	rateScale = BufRateScale.kr(buffer);
     // Calculating fft buffer size according to suggested window size
     fftSize = 2**floor(log2(window*SampleRate.ir));
     // Grain parameters
     // The grain is the exact length of the FFT window
     trigPeriod = fftSize/SampleRate.ir;
-    trig = Impulse.ar(1/trigPeriod);
-    pos = Demand.ar(trig, 0, demandUGens: Dseries(0, trigPeriod/stretch));
+    trig = Impulse.ar(1/trigPeriod) * gate;
+    pos = Demand.ar(trig, gate, demandUGens: Dseries(0, trigPeriod/stretch));
     // Extraction of 2 consecutive grains
     // Both grains need to be treated together for superposition afterwards
-    sig = [GrainBuf.ar(1, trig, trigPeriod, bufnum, 1, pos, envbufnum: envBufnum),
-        GrainBuf.ar(1, trig, trigPeriod, bufnum, 1, pos + (trigPeriod/(2*stretch)), envbufnum: envBufnum)]*amp;
+	sig = [GrainBuf.ar(1, trig, trigPeriod, buffer, rate * rateScale, pos, envbufnum: envBufnum),
+        GrainBuf.ar(1, trig, trigPeriod, buffer, rate * rateScale, pos + (trigPeriod/(2*stretch)), envbufnum: envBufnum)]*amp;
     // FFT magic
     sig = sig.collect({ |item, i|
         chain = FFT(LocalBuf(fftSize), item, hop: 1.0, wintype: -1);
@@ -3267,14 +3288,14 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
     });
     // Reapply the grain envelope because the FFT phase randomization removes it
     env = PlayBuf.ar(1, envBufnum, 1/(trigPeriod), loop:1);
-    // delayTimeEnv = (fftSize - BlockSize.ir) / SampleRate.ir; // fix by Sam Pluta
-    // env = DelayN.ar(env, delayTimeEnv, delayTimeEnv); // fix by Sam Pluta
+    delayTimeEnv = (fftSize - BlockSize.ir) / SampleRate.ir; // fix by Sam Pluta
+    env = DelayN.ar(env, delayTimeEnv, delayTimeEnv); // fix by Sam Pluta
     sig = sig * env;
     // Delay second grain by half a grain length for superposition
     sig[1] = DelayC.ar(sig[1], trigPeriod/2, trigPeriod/2);
     // Panned output
 	sig = Mix.new(sig) * envVca;
-    Out.ar(out, Pan2.ar(sig, pan));
+    OffsetOut.ar(out, Pan2.ar(sig, pan));
 }).add;
 
 // \paulstretchMono example:
@@ -3282,13 +3303,14 @@ SynthDef(\paulstretchMono, { |out = 0, amp = 1, pan = 0, atk = 0.001, rls = 0.12
 /*{
     var envBuf, envSignal, buffer;
     buffer = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav");
+	// buffer = Buffer.readChannel(s, b[\sampler_stereo][15].path, channels: [0]);
     // The grain envelope
     envBuf = Buffer.alloc(s, s.sampleRate, 1);
     envSignal = Signal.newClear(s.sampleRate).waveFill({|x| (1 - x.pow(2)).pow(1.25)}, -1.0, 1.0);
     envBuf.loadCollection(envSignal);
     s.sync();
     // Runs indefinitely
-    Synth(\paulstretchMono, [\bufnum, buffer.bufnum, \envBufnum, envBuf.bufnum]);
+	Synth(\paulstretchMono, [\bufnum, buffer.bufnum, \envBufnum, envBuf.bufnum]);
 }.fork;*/
 
 ///////////////////////////////////////  Input

@@ -1839,4 +1839,175 @@ SynthDef(\gcdFunc, { arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls = 0.2, su
     OffsetOut.ar(out, sig);
 }).add;
 
+/*SynthDef(\duryGene, { arg out = 0, amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, impFreq1 = 0.02, impFreq2 = 0.04, smooth1 = 4, smooth2 = 1.7, smooth3 = 0.9, gate = 1, doneAction = 2;
+    var snd, rep, repCh, randNum, fac, fac1, fac2, fac3;
+
+    rep = [4, 8, 16, 24, 32];
+    repCh = TChoose.kr(Impulse.kr(impFreq1), rep);
+    randNum = [
+
+        54, 60, 66, 72, 81, 90, 96, 102,
+        108, 128, 132, 144, 162, 180, 192, 204,
+        216, 240, 264, 288, 324, 360, 384, 408,
+        432, 480, 528, 576, 648, 720, 768, 816,
+        864, 960, 1056, 1152, 1296, 1440, 1536, 1632,
+        1728, 1920, 2112, 2304, 2592, 2880, 3072, 3264,
+        3456, 3840, 4224, 4608, 5184, 5760, 6144, 6528,
+        6912, 7680, 8448, 9216, 10368, 11520, 12288, 528
+
+    ];
+    fac = [1, 10, 100, 1000];
+    fac1 = Lag2.kr(TChoose.kr(Impulse.kr(impFreq2), fac), smooth1);
+    fac2 = Lag3.kr(TChoose.kr(Impulse.kr(impFreq1 * 0.76), fac), smooth2);
+    fac3 = Lag2.kr(TChoose.kr(Impulse.kr(impFreq2 * 0.86), fac), smooth3);
+
+    snd = Mix.fill(8, { arg i;
+        var detune;
+        var saw;
+        var tri;
+        var sig;
+        detune = LFNoise1.kr(0.003 + Rand(0, 0.9)).range(0.1, 1 + Rand(0, 250.0)) * Rand(0, 2.0) * TChoose.kr(Impulse.kr(0), [1,-1]);
+        tri = LFTri.ar(TChoose.kr(Impulse.kr(0), randNum) * ( 1 + ( SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac1) * TChoose.kr(Impulse.kr(0), randNum) / fac2 )) + detune, Rand(0, 1)/*, 0.25*/);
+        saw = RLPF.ar(Saw.ar(TChoose.kr(Impulse.kr(0), randNum) * 0.01 + detune, 0.75), TChoose.kr(Impulse.kr(0), randNum), Rand(0, 2));
+        saw = TChoose.kr(Impulse.kr(0), [
+            saw,
+            saw.fold2( SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3).range(0.1, 1) ),
+            saw.wrap2( SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3).range(0.1, 1) ),
+            saw *  SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / 2),
+            ( saw *  SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3).range(1, 20) ).tanh / 2
+        ]);
+        sig = (tri + saw) * EnvGen.kr(Env.asr(rrand(4,20), 1, 1/repCh), gate, doneAction: doneAction);
+        sig = Limiter.ar(sig * 1/(i + 0.1));
+        sig = Pan2.ar(sig, Rand(-1, 1));
+    });
+
+    OffsetOut.ar(out, snd * amp);
+}).add;*/
+
+/*SynthDef(\west, {
+    arg out, pan=0, killGate=1, freq = 220, pitchBendRatio = 1, glide = 0, fm1Ratio = 0.66, fm2Ratio = 3.3, fm1Amount = 0.0, fm2Amount = 0.0,
+    vel = 0.7, pressure = 0, timbre = 0, waveShape = 0, waveFolds = 0, envType = 0, attack = 0.04, peak = 10000, decay = 1, amp = 1, lfoShape = 0, lfoFreq = 0.5,
+    lfoToFreqAmount = 0, lfoToWaveShapeAmount = 0, lfoToWaveFoldsAmount = 0, lfoToFm1Amount = 0, lfoToFm2Amount = 0,
+    lfoToAttackAmount = 0, lfoToPeakAmount = 0, lfoToDecayAmount = 0, lfoToReverbMixAmount = 0, drift = 0, dur=10, t_gate=1, gate=1, doneAction=2;
+
+    var i_nyquist = SampleRate.ir * 0.5, signal, controlLag = 0.005, i_numHarmonics = 44,
+    modFreq, mod1, mod2, mod1Index, mod2Index, mod1Freq, mod2Freq, sinOsc, triOsc, additiveOsc, additivePhase,
+    filterEnvVel, filterEnvLow, lpgEnvelope, lpgSignal, asrEnvelope, asrFilterFreq, asrSignal, killEnvelope, i_driftRate = 0.15, maxDecay=8;
+
+    // Make lfos
+    var lfo = Select.kr(lfoShape, [
+        LFTri.kr(lfoFreq),
+        LFSaw.kr(lfoFreq),
+        LFPulse.kr(lfoFreq),
+        LFDNoise0.kr(lfoFreq * 2)
+    ]);
+
+    var lfoArray = Array.fill(9, 0);
+    lfoArray[0] = (lfo * lfoToFreqAmount * 18).midiratio; // Freq ratio
+    lfoArray[1] = (lfo * lfoToWaveShapeAmount) + LFNoise1.kr(freq: i_driftRate, mul: drift); // Wave Shape
+    lfoArray[2] = ((lfo * lfoToWaveFoldsAmount) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 2; // Wave Folds
+    lfoArray[3] = ((lfo * lfoToFm1Amount) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 0.5; // FM1 Amount
+    lfoArray[4] = ((lfo * lfoToFm2Amount) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 0.5; // FM2 Amount
+    lfoArray[5] = ((lfo * lfoToAttackAmount) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 2.2; // Attack
+    lfoArray[6] = (((lfo * lfoToPeakAmount) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 24).midiratio; // Peak multiplier
+    lfoArray[7] = ((lfo * lfoToDecayAmount) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 2.2; // Decay
+    lfoArray[8] = (lfo * lfoToReverbMixAmount) + LFNoise1.kr(freq: i_driftRate, mul: drift); // Reverb Mix
+
+
+    // LFO ins
+    freq = (freq * lfoArray[0]).clip(0, i_nyquist);
+    waveShape = (waveShape + lfoArray[1]).clip(0, 1);
+    waveFolds = (waveFolds + lfoArray[2]).clip(0, 3);
+    fm1Amount = (fm1Amount + lfoArray[3]).clip(0, 1);
+    fm2Amount = (fm2Amount + lfoArray[4]).clip(0, 1);
+    attack = (attack + lfoArray[5]).clip(0.003, 8);
+    peak = (peak * lfoArray[6]).clip(100, 10000);
+    decay = (decay + lfoArray[7]).clip(0.01, maxDecay);
+
+    // Lag inputs
+    freq = Lag.kr(freq * pitchBendRatio, 0.007 + glide);
+    fm1Ratio = Lag.kr(fm1Ratio, controlLag);
+    fm2Ratio = Lag.kr(fm2Ratio, controlLag);
+    fm1Amount = Lag.kr(fm1Amount.squared, controlLag);
+    fm2Amount = Lag.kr(fm2Amount.squared, controlLag);
+
+    vel = Lag.kr(vel, controlLag);
+    waveShape = Lag.kr(waveShape, controlLag);
+    waveFolds = Lag.kr(waveFolds, controlLag);
+    attack = Lag.kr(attack, controlLag);
+    peak = Lag.kr(peak, controlLag);
+    decay = Lag.kr(decay, controlLag);
+
+    // Modulators
+    mod1Index = fm1Amount * 22;
+    mod1Freq = freq * fm1Ratio * LFNoise2.kr(freq: 0.1, mul: 0.001, add: 1);
+    mod1 = SinOsc.ar(freq: mod1Freq, phase: 0, mul: mod1Index * mod1Freq, add: 0);
+    mod2Index = fm2Amount * 12;
+    mod2Freq = freq * fm2Ratio * LFNoise2.kr(freq: 0.1, mul: 0.005, add: 1);
+    mod2 = SinOsc.ar(freq: mod2Freq, phase: 0, mul: mod2Index * mod2Freq, add: 0);
+    modFreq = freq + mod1 + mod2;
+
+    // Sine and triangle
+    sinOsc = SinOsc.ar(freq: modFreq, phase: 0, mul: 0.5);
+    triOsc = VarSaw.ar(freq: modFreq, iphase: 0, width: 0.5, mul: 0.5);
+
+    // Additive square and saw
+    additivePhase = LFSaw.ar(freq: modFreq, iphase: 1, mul: pi, add: pi);
+    additiveOsc = Mix.fill(i_numHarmonics, {
+        arg index;
+        var harmonic, harmonicFreq, harmonicCutoff, attenuation;
+
+        harmonic = index + 1;
+        harmonicFreq = freq * harmonic;
+        harmonicCutoff = i_nyquist - harmonicFreq;
+
+        // Attenuate harmonics that will go over nyquist once FM is applied
+        attenuation = Select.kr(index, [1, // Save the fundamental
+            (harmonicCutoff - (harmonicFreq * 0.25) - harmonicFreq).expexp(0.000001, harmonicFreq * 0.5, 0.000001, 1)]);
+
+            (sin(additivePhase * harmonic % 2pi) / harmonic) * attenuation * (harmonic % 2 + waveShape.linlin(0.666666, 1, 0, 1)).min(1);
+        }
+    );
+
+    // Mix carriers
+    signal = LinSelectX.ar(waveShape * 3, [sinOsc, triOsc, additiveOsc]);
+
+    // Fold
+    signal = Fold.ar(in: signal * (1 + (timbre * 0.5) + (waveFolds * 2)), lo: -0.5, hi: 0.5);
+
+    // Hack away some aliasing
+    signal = LPF.ar(in: signal, freq: 12000);
+
+    // Noise
+    signal = signal + PinkNoise.ar(mul: 0.003);
+
+    // LPG
+    filterEnvVel = vel.linlin(0, 1, 0.5, 1);
+    filterEnvLow = (peak * filterEnvVel).min(300);
+
+    lpgEnvelope = EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [0.003, decay], curve: [4, -20]), gate: t_gate, timeScale: dur);
+    lpgSignal = RLPF.ar(in: signal, freq: lpgEnvelope.linlin(0, 1, filterEnvLow, peak * filterEnvVel), rq: 0.9);
+    lpgSignal = lpgSignal * EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [0.002, decay], curve: [4, -10]), gate: t_gate, timeScale: dur);
+
+    // ASR with 4-pole filter
+    asrEnvelope = EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [attack, decay], curve: -4, releaseNode: 1), gate: gate);
+    asrFilterFreq = asrEnvelope.linlin(0, 1, filterEnvLow, peak * filterEnvVel);
+    asrSignal = RLPF.ar(in: signal, freq: asrFilterFreq, rq: 0.95);
+    asrSignal = RLPF.ar(in: asrSignal, freq: asrFilterFreq, rq: 0.95);
+    asrSignal = asrSignal * EnvGen.ar(envelope: Env.asr(attackTime: attack, sustainLevel: 1, releaseTime: decay, curve: -4), gate: gate, doneAction: doneAction);
+
+    signal = Select.ar(envType, [lpgSignal, asrSignal]);
+
+    signal = signal * vel.linlin(0, 1, 0.2, 1) ;
+
+    // Saturation amp
+    signal = tanh(signal * pressure.linlin(0, 1, 1.5, 3) * amp).softclip;
+
+    // Pan
+    signal = Pan2.ar(signal, pan);
+
+    OffsetOut.ar(out, signal);
+
+}).add;*/
+
 )

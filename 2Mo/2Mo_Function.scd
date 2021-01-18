@@ -83,6 +83,15 @@
 	});
 };
 
+~removeControlBus = { arg targetKey;
+	~controlBus.keysDo({ arg key;
+		if(key.contains(targetKey), {
+			~controlBus.at(key).free;
+			~controlBus.removeAt(key);
+		});
+	});
+};
+
 ~removePrev = { arg synthWindowKey; // use it inside a defer function
 	var synthView;
 	if (~synthWindow.includesKey(synthWindowKey), {
@@ -95,12 +104,7 @@
 		~cleanDict.value(~active, synthWindowKey);
 		~cleanDict.value(~firstTime, synthWindowKey);
 
-		~controlBus.keysDo({ arg key; // remove control bus no longer in use
-			if(key.contains(synthWindowKey), {
-				~controlBus.at(key).free;
-				~controlBus.removeAt(key);
-			});
-		});
+		~removeControlBus.value(synthWindowKey);
 
 		MIDIdef.all.keysDo({ arg key; // remove mididef no longer in use
 			if(key.contains(synthWindowKey), {
@@ -153,17 +157,24 @@
 			});
 		});
 
-	});
-
-	if (controlId.isString, {
-		~controlBus.keysDo({ arg key;
-			if(key.contains(controlId), {
-				~controlBus.at(key).free;
-				~controlBus.removeAt(key);
+		~active.keysValuesDo({ arg key, value;
+			if((controlId.includesEqual(key) and: value), {
+				~active.put(key, false);
 			});
 		});
 
+	});
+
+	if (controlId.isString, {
+		~removeControlBus.value(controlId);
+
 	    ~resetFirstTime.value(controlId);
+
+		~active.keysValuesDo({ arg key, value;
+			if((controlId.contains(key) and: value), {
+				~active.put(key, false);
+			});
+		});
 
 	});
 };
@@ -290,37 +301,14 @@
 			{ controlType == "list" and: caseFind.not }
 			{
 				// list creation
-				~active.put(controlId, false);
-				~firstTime.put(controlId, true);
-				~autoGuiControl.put(controlId, EZListView(synthWindow, 60@70, controlName, controlSpec, {
-					arg guiControl;
-					{
-						if (instance.isSymbol,
-							{ ~pdefUpdate.value(controlId, instance, controlNameSymb, guiControl.value); },
-							{ instance.set(controlNameSymb, guiControl.value); }
-						);
-					}.defer;
-					~active.put(controlId, false);
-				}));
+				~autoGuiControl.put(controlId, EZListView(synthWindow, 60@70, controlName, controlSpec));
 
 				if (midiMap, { // list midi map
 					MIDIdef.cc(controlId, { arg val, num, chan, src;
-						var guiControl, midiControl, threshold;
-						threshold = 0.5;
+						var guiControl, midiControl;
 						midiControl = val.linlin(0, 127, 0, ~autoGuiControl.at(controlId).items.size - 1);
 						{
-							guiControl = ~autoGuiControl.at(controlId).value;
-							if ( // soft takeover
-								(~active.at(controlId) or: ((midiControl > (guiControl - threshold)) and: (midiControl < (guiControl + threshold)))),
-								{
-									~active.put(controlId, true);
-									if (instance.isSymbol,
-										{ ~pdefUpdate.value(controlId, instance, controlNameSymb, midiControl); },
-										{ instance.set(controlNameSymb, midiControl); }
-									);
-									~autoGuiControl.at(controlId).value_(midiControl);
-								}
-							);
+							~autoGuiControl.at(controlId).valueAction_(midiControl);
 						}.defer;
 					}, ccStart, midiChan);
 					(ccStart).debug(synthDefName ++ " " ++ pdefName ++ " " ++ controlName ++ " cc number");

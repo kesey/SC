@@ -561,6 +561,31 @@ v.canvas.layout = VLayout();
 	)).asString;
 );
 
+~nodeId.put(~paulstretchMonoSynthDef.name.asString,
+	~autoGui.value(v, ~paulstretchMonoSynthDef, ~paulstretch, 100, 13, Color.new255(215, 202, 90), Dictionary.newFrom(
+		List[
+			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
+			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 0.23), true],
+			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],
+			"atk", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.001), true],
+			"rls", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.12), true],
+			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), true],
+			"buffer", ["list", Array.fill(b[\sampler_stereo].size, { arg i;
+				var filePath, fileName;
+				filePath = PathName.new(b[\sampler_stereo][i].path);
+				fileName = filePath.fileName.asSymbol;
+				fileName -> { ~paulstretch.set(\buffer, Buffer.readChannel(s, filePath, channels: [0]).bufnum); }
+			}), true],
+
+			"envBufnum", ["none"],
+			"channel", ["none"],
+			"rate", ["knob", ControlSpec(0.01, 24, step: 0.01, default: 1), true],
+			"stretch", ["knob", ControlSpec(0.01, 100, step: 0.01, default: 50), true],
+			"window", ["none"]
+		]
+	)).asString;
+);
+
 ~nodeId.put(~samplerStereoSynthDef.name.asString,
 	~autoGui.value(v, ~samplerStereoSynthDef, ~samplerStereo, 85, 0, Color.new255(205, 205, 0), Dictionary.newFrom(
 		List[
@@ -570,13 +595,14 @@ v.canvas.layout = VLayout();
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.001), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), true],
-			"buffer", ["List", Array.fill(b[\sampler_stereo].size, { arg i;
-				var filePath;
+			"buffer", ["list", Array.fill(b[\sampler_stereo].size, { arg i;
+				var filePath, fileName;
 				filePath = PathName.new(b[\sampler_stereo][i].path);
-				filePath.fileName.asString;
+				fileName = filePath.fileName.asSymbol;
+				fileName -> { ~samplerStereo.set(\buffer, b[\sampler_stereo][i].bufnum); }
 			}), true],
 
-			"rate", ["knob", ControlSpec(0.01, 24, step: 0.01, default: 0.21), true],
+			"rate", ["knob", ControlSpec(0.01, 24, step: 0.01, default: 1), true],
 			"startPos", ["slider", ControlSpec(0, 1, step: 0.01, default: 0), true],
 			"loop", ["button", ControlSpec(0, 1, step: 1, default: 0), false]
 		]
