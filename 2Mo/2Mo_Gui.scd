@@ -393,12 +393,46 @@ u.canvas.layout = VLayout();
 
 // Aux 2
 
-~nodeId.put(~verbSynthDef.name.asString,
+~nodeId.put(~jpverbSynthDef.name.asString,
+	~autoGui.value(u, ~jpverbSynthDef, ~jpverb, 111, 0, ~aux2Color, Dictionary.newFrom(
+		List[
+			"amp", ["none"],
+			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
+			"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
+			"feedback", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), true],
+			"t60", ["slider", ControlSpec(0.1, 60, step: 0.1, default: 1), true],
+			"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), true],
+			"size", ["knob", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
+			"earlyDiff", ["knob", ControlSpec(0, 1, step: 0.01, default: 0.707), false],
+			"modDepth", ["knob", ControlSpec(0, 1, step: 0.01, default: 0.1), false],
+			"modFreq",  ["knob", ControlSpec(0, 10, step: 0.01, default: 2), false],
+			"low", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
+			"mid", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
+			"high", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
+			"lowcut", ["knob", ControlSpec(100, 6000, step: 1, default: 500), false],
+			"hicut", ["knob", ControlSpec(1000, 10000, step: 1, default: 2000), false]
+		]
+	)).asString;
+);
+
+/*~nodeId.put(~verbSynthDef.name.asString,
 	~autoGui.value(u, ~verbSynthDef, ~verb, 111, 0, ~aux2Color, Dictionary.newFrom(
 		List[
 			"amp", ["none"],
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: 1), true],
 			"amount", ["slider", ControlSpec(0, 1, step: 0.01, default: 1), false]
+		]
+	)).asString;
+);*/
+
+~nodeId.put(~greyHoleSynthDef.name.asString,
+	~autoGui.value(u, ~greyHoleSynthDef, ~greyhole, 666, 0, ~aux2Color, Dictionary.newFrom(
+		List[
+			"amp", ["none"],
+			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), false],
+			"delayTime", ["slider", ControlSpec(0.1, 60, step: 0.1, default: 2), false],
+			"size", ["knob", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
+			"modFreq",  ["knob", ControlSpec(0, 10, step: 0.01, default: 2), false]
 		]
 	)).asString;
 );
@@ -562,7 +596,7 @@ v.canvas.layout = VLayout();
 );
 
 ~nodeId.put(~paulstretchMonoSynthDef.name.asString,
-	~autoGui.value(v, ~paulstretchMonoSynthDef, ~paulstretch, 100, 13, Color.new255(215, 210, 90, 240), Dictionary.newFrom(
+	~autoGui.value(v, ~paulstretchMonoSynthDef, ~paulstretch, 100, 13, Color.new255(205, 205, 80, 230), Dictionary.newFrom(
 		List[
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
 			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 0.23), true],
@@ -574,13 +608,13 @@ v.canvas.layout = VLayout();
 				var filePath, fileName;
 				filePath = PathName.new(b[\sampler_stereo][i].path);
 				fileName = filePath.fileName.asSymbol;
-				fileName -> { ~paulstretch.set(\buffer, Buffer.readChannel(s, filePath, channels: [0]).bufnum); }
+				fileName -> { ~paulstretch.set(\buffer, Buffer.readChannel(s, b[\sampler_stereo][i].path, channels: [0]).bufnum); }
 			}), true],
 
 			"envBufnum", ["none"],
 			"channel", ["none"],
 			"rate", ["knob", ControlSpec(0.01, 24, step: 0.01, default: 1), true],
-			"stretch", ["knob", ControlSpec(0.01, 100, step: 0.01, default: 50), true],
+			"stretch", ["knob", ControlSpec(1, 10000, step: 0.01, default: 50), true],
 			"window", ["none"]
 		]
 	)).asString;

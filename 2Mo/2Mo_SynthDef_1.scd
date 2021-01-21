@@ -550,7 +550,7 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	XOut.ar(out, drywet, sig + (y * revVol)); // as fxlevel is 1 then I lower the vol a bit
 }).add;
 
-SynthDef(\JPverb, { arg in = 0, out = 0, drywet = 0.85, amp = 1, feedback = 0, t60 = 1, damp = 0, size = 1, earlyDiff = 0.707, modDepth = 0.1, modFreq = 2, low = 1, mid = 1, high = 1, lowcut = 500, highcut = 2000;
+~jpverbSynthDef = SynthDef(\JPverb, { arg in = 0, out = 0, drywet = (-1), amp = 1, feedback = 0, t60 = 1, damp = 0, size = 1, earlyDiff = 0.707, modDepth = 0.1, modFreq = 2, low = 1, mid = 1, high = 1, lowcut = 500, highcut = 2000;
 	var sig, input;
 	input = InFeedback.ar(in, 2);
 	sig = input + LocalIn.ar(2);
@@ -561,7 +561,7 @@ SynthDef(\JPverb, { arg in = 0, out = 0, drywet = 0.85, amp = 1, feedback = 0, t
 	ReplaceOut.ar(out, sig);
 }).add;
 
-SynthDef(\greyHole, { arg in = 0, out = 0, drywet = 0.85, amp = 1, delayTime = 2, damp = 0, size = 1, diff = 0.707, feedback = 0.9, modDepth = 0.1, modFreq = 2;
+~greyHoleSynthDef = SynthDef(\greyHole, { arg in = 0, out = 0, drywet = (-1), amp = 1, delayTime = 2, damp = 0, size = 1, diff = 0.707, feedback = 0.9, modDepth = 0.1, modFreq = 2;
 	var sig, input;
 	input = InFeedback.ar(in, 2);
 	sig = Greyhole.ar(input, delayTime, damp, size, diff, feedback, modDepth, modFreq);
@@ -3272,8 +3272,8 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
     // Grain parameters
     // The grain is the exact length of the FFT window
     trigPeriod = fftSize/SampleRate.ir;
-    trig = Impulse.ar(1/trigPeriod) * gate;
-    pos = Demand.ar(trig, gate, demandUGens: Dseries(0, trigPeriod/stretch));
+    trig = Impulse.ar(1/trigPeriod);
+    pos = Demand.ar(trig, 0, demandUGens: Dseries(0, trigPeriod/stretch));
     // Extraction of 2 consecutive grains
     // Both grains need to be treated together for superposition afterwards
 	sig = [GrainBuf.ar(1, trig, trigPeriod, buffer, rate * rateScale, pos, envbufnum: envBufnum),

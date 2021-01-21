@@ -62,7 +62,9 @@ s.bind { ~quadDelay = Synth(\quadDelay, [\in, ~aux2, \out, ~aux2], ~filterBus, a
 };
 s.bind { ~pitchShifter = Synth(\pitchShifter, [\in, ~aux2, \out, ~aux2], ~quadDelay, addAction: 'addAfter'); };
 s.bind { ~flanging = Synth(\flanging, [\in, ~aux2, \out, ~aux2], ~pitchShifter, addAction: 'addAfter'); };
-s.bind { ~verb = Synth(\verb, [\in, ~aux2, \out, ~channelBus[3], \amp, 0.75], aux2Group, addAction: 'addToTail'); };
+s.bind { ~greyhole = Synth(\greyHole, [\in, ~aux2, \out, ~aux2], ~flanging, addAction: 'addAfter'); };
+/*s.bind { ~verb = Synth(\verb, [\in, ~aux2, \out, ~channelBus[3], \amp, 0.75], aux2Group, addAction: 'addToTail'); };*/
+s.bind { ~jpverb = Synth(\JPverb, [\in, ~aux2, \out, ~channelBus[3], \amp, 0.75], aux2Group, addAction: 'addToTail'); };
 
 // s.meter.window.alwaysOnTop_(true); // level meter
 
