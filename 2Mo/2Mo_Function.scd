@@ -114,24 +114,6 @@
 	});
 };
 
-~resetFirstTime = { arg pdefNameString;
-	~firstTime.keysValuesDo({ arg key, value; // reset control bus creation
-		if((key.contains(pdefNameString) and: value.not), {
-			~firstTime.put(key, true);
-		});
-	});
-};
-
-~changePattern = { arg pdef, pattern;
-	var pdefNameSymbol, pdefNameString;
-	pdefNameSymbol = pdef.key.asSymbol;
-	pdefNameString = pdefNameSymbol.asString;
-
-	~resetFirstTime.value(pdefNameString);
-
-	Pdef(pdefNameSymbol, pattern).quant_(~globalQuant);
-};
-
 // use it with SynthDef sync on a clock like sync delay
 ~updateTempo = { arg synth, tempoClock;
 	var updater;
@@ -168,14 +150,17 @@
 	if (controlId.isString, {
 		~removeControlBus.value(controlId);
 
-	    ~resetFirstTime.value(controlId);
-
-		~active.keysValuesDo({ arg key, value;
-			if((controlId.contains(key) and: value), {
-				~active.put(key, false);
+		~firstTime.keysValuesDo({ arg key, value;
+			if((key.contains(controlId) and: value.not), {
+				~firstTime.put(key, true);
 			});
 		});
 
+		~active.keysValuesDo({ arg key, value;
+			if((key.contains(controlId) and: value), {
+				~active.put(key, false);
+			});
+		});
 	});
 };
 
@@ -187,6 +172,16 @@
 	});
 };
 
+~changePattern = { arg pdef, pattern;
+	var pdefNameSymbol, pdefNameString;
+	pdefNameSymbol = pdef.key.asSymbol;
+	pdefNameString = pdefNameSymbol.asString;
+
+	~resetControlBus.value(pdefNameString);
+
+	Pdef(pdefNameSymbol, pattern).quant_(~globalQuant);
+};
+
 ~songInit = {
 	var unit;
 	~pdefNumber.do({ arg i;
@@ -195,7 +190,7 @@
 	});
 };
 
-// remove previous Pdef, use it when you reset sequencer
+// remove previous Pdef view, use it when you reset sequencer
 ~resetPdefView = {
 	~synthWindow.keysValuesDo({ arg key, value;
 		if(key.contains("unit"), {
@@ -584,7 +579,7 @@
 
 		Post << code;
 	}, {
-		"staticSynthCodeGen wrong arguments".postln;
+		"synthSetCodeGen wrong arguments".postln;
 	});
 };
 

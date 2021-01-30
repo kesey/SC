@@ -342,7 +342,7 @@ SynthDef(\delayeffect, { arg in = 0, out = 0, delTime = 0.25, decTime = 2.0, t_g
 	tempoClock = \tempoClock.kr(TempoClock.default.tempo);
 
 	// delay 1
-	time1 = Select.kr(\sync1.kr(0), [\time1.kr(0.25), \division1.kr(2/3) / tempoClock]);
+	time1 = Select.kr(\sync1.kr(0), [\time1.kr(0.25), \division1.kr(0.625) / tempoClock]);
 	delay1 = XFadeDelay.ar(delay, 1, time1);
 	delay1 = Balance2.ar(delay1[0], delay1[1], \pan1.kr(0), \amp1.kr(1));
 
@@ -561,7 +561,7 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	ReplaceOut.ar(out, sig);
 }).add;
 
-~greyHoleSynthDef = SynthDef(\greyHole, { arg in = 0, out = 0, drywet = (-1), amp = 1, delayTime = 2, damp = 0, size = 1, diff = 0.707, feedback = 0.9, modDepth = 0.1, modFreq = 2;
+~greyHoleSynthDef = SynthDef(\greyHole, { arg in = 0, out = 0, drywet = (-1), amp = 1, delayTime = 2, damp = 0, size = 1, diff = 0.707, feedback = 0, modDepth = 0.1, modFreq = 2;
 	var sig, input;
 	input = InFeedback.ar(in, 2);
 	sig = Greyhole.ar(input, delayTime, damp, size, diff, feedback, modDepth, modFreq);
@@ -3324,7 +3324,7 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
 	sig = BPeakEQ.ar(sig, Lag2.kr(band3freq.max(20).min(20000), 0.5), band3rq, band3db); // Band 3
 	sig = BLowPass4.ar(sig, Lag2.kr(lpfreq.max(20).min(20000), 0.5)); // LPF
 	sig = sig * EnvGen.kr(Env.asr(attack, 1, release, curve), gate, gate, doneAction: doneAction);
-	sig = DelayL.ar(sig, 1, delaytime);
+	sig = DelayN.ar(sig, 1, delaytime);
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 

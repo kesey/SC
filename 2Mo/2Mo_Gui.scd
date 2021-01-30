@@ -399,11 +399,11 @@ u.canvas.layout = VLayout();
 			"amp", ["none"],
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
 			"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
-			"feedback", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), true],
+			"feedback", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), true],
 			"t60", ["slider", ControlSpec(0.1, 60, step: 0.1, default: 1), true],
 			"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), true],
-			"size", ["knob", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
-			"earlyDiff", ["knob", ControlSpec(0, 1, step: 0.01, default: 0.707), false],
+			"size", ["slider", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
+			"earlyDiff", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.707), false],
 			"modDepth", ["knob", ControlSpec(0, 1, step: 0.01, default: 0.1), false],
 			"modFreq",  ["knob", ControlSpec(0, 10, step: 0.01, default: 2), false],
 			"low", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
@@ -431,7 +431,8 @@ u.canvas.layout = VLayout();
 			"amp", ["none"],
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), false],
 			"delayTime", ["slider", ControlSpec(0.1, 60, step: 0.1, default: 2), false],
-			"size", ["knob", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
+			"size", ["slider", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
+			"diff", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.707), false],
 			"modFreq",  ["knob", ControlSpec(0, 10, step: 0.01, default: 2), false]
 		]
 	)).asString;
@@ -440,7 +441,7 @@ u.canvas.layout = VLayout();
 ~nodeId.put(~flangingSynthDef.name.asString,
 	~autoGui.value(u, ~flangingSynthDef, ~flanging, 115, 0, ~aux2Color, Dictionary.newFrom(
 		List[
-			"fgfreq", ["slider", ControlSpec(0.01, 1000, step: 0.1, default: 0.1), true],
+			"fgfreq", ["knob", ControlSpec(0.01, 1000, step: 0.1, default: 0.1), true],
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: 0.5), true]
 		]
 	)).asString;
@@ -449,7 +450,7 @@ u.canvas.layout = VLayout();
 ~nodeId.put(~pitchShifterSynthDef.name.asString,
 	~autoGui.value(u, ~pitchShifterSynthDef, ~pitchShifter, 118, 0, ~aux2Color, Dictionary.newFrom(
 		List[
-			"pitchRatio", ["slider", ControlSpec(0, 4, step: 0.01, default: 1), true],
+			"pitchRatio", ["knob", ControlSpec(0, 4, step: 0.01, default: 1), true],
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: 0.5), true]
 		]
 	)).asString;
@@ -460,6 +461,14 @@ u.canvas.layout = VLayout();
 		List[
 			"tempoClock", ["none"],
 			"amp", ["none"],
+			"time1", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.25), true],
+			"time2", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.4), true],
+			"time3", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.15), true],
+			"time4", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.3), true],
+			"division1", ["slider", ControlSpec(0, 1, step: 0.125, default: 0.625), true],
+			"division2", ["slider", ControlSpec(0, 1, step: 0.125, default: 0.25), true],
+			"division3", ["slider", ControlSpec(0, 1, step: 0.125, default: 0.5), true],
+			"division4", ["slider", ControlSpec(0, 1, step: 0.125, default: 0.75), true],
 			"sync1", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
 			"sync2", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
 			"sync3", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
@@ -561,6 +570,7 @@ v.canvas.layout = VLayout();
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.5), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), false],
+			"delaytime", ["slider", ControlSpec(0, 1, step: 0.01, default: 0), false],
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), true],
 			"lpfreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), true],
 			"band1freq", ["knob", ControlSpec(20, 20000, step: 1, default: 8000), true],
@@ -582,6 +592,7 @@ v.canvas.layout = VLayout();
 			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.5), true],
 			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), false],
+			"delaytime", ["slider", ControlSpec(0, 1, step: 0.01, default: 0), false],
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), true],
 			"lpfreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), true],
 			"band1freq", ["knob", ControlSpec(20, 20000, step: 1, default: 8000), true],
@@ -614,7 +625,7 @@ v.canvas.layout = VLayout();
 			"envBufnum", ["none"],
 			"channel", ["none"],
 			"rate", ["knob", ControlSpec(0.01, 24, step: 0.01, default: 1), true],
-			"stretch", ["knob", ControlSpec(1, 10000, step: 0.01, default: 50), true],
+			"stretch", ["slider", ControlSpec(1, 10000, step: 1, default: 50), true],
 			"window", ["none"]
 		]
 	)).asString;
@@ -660,11 +671,11 @@ v.canvas.layout = VLayout();
 			"envLevel4", ["knob", ControlSpec(0, 200, step: 0.1, default: 50), true],
 			"envLevel5", ["knob", ControlSpec(0, 200, step: 0.1, default: 0), true],
 			"envLevel6", ["knob", ControlSpec(0, 200, step: 0.1, default: 60), true],
-			"envTime1", ["knob", ControlSpec(0, 10, step: 0.01, default: 0.5), true],
-			"envTime2", ["knob", ControlSpec(0, 10, step: 0.01, default: 0.3), true],
-			"envTime3", ["knob", ControlSpec(0, 10, step: 0.01, default: 0.25), true],
-			"envTime4", ["knob", ControlSpec(0, 10, step: 0.01, default: 1), true],
-			"envTime5", ["knob", ControlSpec(0, 10, step: 0.01, default: 0.5), true]
+			"envTime1", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.5), true],
+			"envTime2", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.3), true],
+			"envTime3", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.25), true],
+			"envTime4", ["slider", ControlSpec(0, 10, step: 0.01, default: 1), true],
+			"envTime5", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.5), true]
 		]
 	)).asString;
 );

@@ -89,7 +89,47 @@ Pbindef(\unit4, \dur, Pseq([1, 1.25, Rest(1), 1.5, Rest(2)], inf)).quant_(~globa
 
 (
 
-/*h = Signal.newClear(1025).waveFill({
+
+
+)
+
+/////////////////////////////////////// WaveShape Fun Park //////////////////////////////////////////
+
+(
+/////////////////////////////////////// Aaron Lanterman’s buchla700 clone ///////////////////////////
+
+var coeff;
+
+h.free;
+
+// coeff = [1,0] / ((1..32).squared); // truetriangle
+
+// coeff = [1,0,-1,0] / ((1..32).squared); // squarecompatible triangle
+
+// coeff = [1,1,1]; // jimmysmithpositive
+
+// coeff = [1,1,-1]; // jimmyshith
+
+// coeff = [1,1,-1,-1,0,1,0,-1,0,1,0,-1,0,0,0,1]; // fulltonewheel
+
+// coeff = [1,0,-1,0] / (1..32); // truesquare
+
+// coeff = [1,0] / (1..32); // trianglecompatible square
+
+// coeff = 0.25*[1,-1,-1,1] / (1..32); // altsaw
+
+// coeff = 0.1 * [1,-1,-1,1] * Array.fill(32,1); // altimpulsetrain
+
+coeff = 0.1 * [1,0,-1,0] * Array.fill(32,1); // altsignflipping impulse train
+
+h = Buffer.loadCollection(s, Signal.chebyFill(4096, coeff, normalize: true, zeroOffset: false).asWavetableNoWrap);
+)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(
+h.free;
+h = Signal.newClear(1025).waveFill({
 	arg x, old, i;
 	sin(x);
 }, -pi/2, pi/2);
@@ -97,18 +137,28 @@ h = h.waveFill({
 	arg x, old, i;
 	old * ((cos(x * 0.08) / 4) + 0.3);
 }, 0, 50pi).normalize;
-h = h.asWavetableNoWrap;*/
+h = h.asWavetableNoWrap;
+)
 
-/*h = Env([-1,1], [1], [0]).asSignal(1025);
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(
+h.free;
+h = Env([-1,1], [1], [0]).asSignal(1025);
 h = h + (Signal.sineFill(
 	1025,
 	(0!3) ++ [0, 0, 0, 1, 1, 1].scramble,
 	{ rrand(0, 2pi) }!9
 ))/4;
 h = h.normalize;
-h = h.asWavetableNoWrap;*/
+h = h.asWavetableNoWrap;
+)
 
-// h = Buffer.alloc(s, 1024, 1);
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(
+h.free;
+h = Buffer.alloc(s, 1024, 1);
 // h.cheby({ rrand(0, 1.0) }!rrand(3, 16));
 
 // h.sine3({ rrand(20, 2000) }!6, { rrand(0, 1.0) }!6, { rrand(pi, 8*pi) }!6);
@@ -118,6 +168,11 @@ h = h.asWavetableNoWrap;*/
 // h.sine1({ rrand(0, 1.0) }!7);
 
 h.cheby([1, 0.5, 1, 0.125]); // default values
+)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+( // visualize and apply the new transfer function
 
 h.plot;
 
