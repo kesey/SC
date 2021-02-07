@@ -410,7 +410,7 @@ u.canvas.layout = VLayout();
 			"mid", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
 			"high", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
 			"lowcut", ["knob", ControlSpec(100, 6000, step: 1, default: 500), false],
-			"hicut", ["knob", ControlSpec(1000, 10000, step: 1, default: 2000), false]
+			"highcut", ["knob", ControlSpec(1000, 10000, step: 1, default: 2000), false]
 		]
 	)).asString;
 );
@@ -433,7 +433,10 @@ u.canvas.layout = VLayout();
 			"delayTime", ["slider", ControlSpec(0.1, 60, step: 0.1, default: 2), false],
 			"size", ["slider", ControlSpec(0.5, 5, step: 0.01, default: 1), false],
 			"diff", ["slider", ControlSpec(0, 1, step: 0.01, default: 0.707), false],
-			"modFreq",  ["knob", ControlSpec(0, 10, step: 0.01, default: 2), false]
+			"modFreq",  ["knob", ControlSpec(0, 10, step: 0.01, default: 2), false],
+			"damp", ["knob", ControlSpec(0.5, 5, step: 0.01, default: 0), false],
+			"feedback", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), false],
+			"modDepth", ["knob", ControlSpec(0, 1, step: 0.01, default: 0.1), false]
 		]
 	)).asString;
 );
