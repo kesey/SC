@@ -689,6 +689,390 @@ SynthDef(\greyHole, { arg in = 0, out = 0, drywet = 0.85, amp = 1, delayTime = 2
 	ReplaceOut.ar(out, sig);
 }).add;
 
+SynthDef(\lexicon224stereo, { arg
+    out = 0,
+    in = 0,
+    drywet = 1,
+    predelay = 0.0,
+    input_diff_1 = 1,
+    input_diff_2 = 1,
+    bandwidth = 0.1,        // input bandwidth
+    tdelscale = 1,
+    decay = 0.9,    // tank decay
+    decay_diff_1 = 1,
+    decay_diff_2 = 1,
+    damping = 0.999; // tank bandwidth
+
+
+    var sigL, sigR, src, srcL, srcR, input, local;
+    var input_diff = [ input_diff_1, input_diff_2 ];
+    var dltimes;
+    var tank0L, tank0R, tank1L, tank1R, tankdelays0, tankdelays1, outdelaysL, outdelaysR;
+    var n_out_0L, n_out_0R, n_out_1L, n_out_1R, n_out_2L, n_out_2R, n_out_3L, n_out_3R, n_out_4L, n_out_4R, n_out_5L, n_out_5R, n_out_6L, n_out_6R;
+
+    // src = SoundIn.ar([0,1]);
+    // src = Impulse.ar(0.5).dup;
+    src = InFeedback.ar(in, 2);
+    srcL = src[0];
+    srcR = src[1];
+
+    // input = OnePole.ar(
+    //     DelayC.ar(src.mean, 0.08, predelay),
+    //     coef:(bandwidth - 1).abs
+    // );
+
+    input = Integrator.ar(
+        DelayC.ar(src * bandwidth, 0.08, predelay),
+        coef: 1 - bandwidth
+    );
+
+    // [142,107,379,277]/29761;
+    dltimes = [ 0.0047713450488895, 0.0035953092974026, 0.012734787137529, 0.0093074829474816 ];
+
+
+    dltimes.do { |it i|
+        input = AllpassN.ar(input, it, it, decaytime: input_diff[ i.trunc(2) / 2 ]);
+    };
+    ///////////////////////////////////Tank///////////
+
+    // [ 672, 4453, 1800, 3720  ]/ 27961
+    tankdelays0 = [
+        0.022579886428547,
+        0.1496253486106 * tdelscale,
+        0.060481838647895,
+        0.12499579987232 * tdelscale
+    ];
+
+    // [908, 4217, 2656, 3163] / 27961
+    tankdelays1 = [
+        0.030509727495716,
+        0.14169550754343 * tdelscale,
+        0.089244313027116,
+        0.10628003091294 * tdelscale
+    ];
+
+    local = LocalIn.ar(4);
+    ////////////////////////// 0L //////////////////
+
+    n_out_1L = AllpassL.ar(
+        input[0] + local[1],
+        0.4,
+        // (tankdelays0[0] + SinOsc.ar(0.7,mul:0.00025)),
+        (tankdelays0[0] + LFNoise2.ar(0.7,mul:0.00025)),
+        decaytime: decay_diff_1
+    );
+
+    tank0L = DelayC.ar(
+        n_out_1L,
+        tankdelays0[1],
+        tankdelays0[1]
+    );
+
+    // n_out_2 = OnePole.ar(tank0, 1 - damping);
+    n_out_2L = Integrator.ar(tank0L * ( 1 - damping ), damping) * decay;
+
+    n_out_3L = AllpassL.ar(
+        n_out_2L,
+        tankdelays0[2],
+        tankdelays0[2],
+        decaytime: decay_diff_2
+    );
+
+    tank0L = DelayC.ar(
+        n_out_3L,
+        tankdelays0[3],
+        tankdelays0[3] - ControlDur.ir
+    ) * decay;
+
+    ////////////////////////////// 1L ///////////////
+
+    n_out_4L = AllpassL.ar(
+        input[0] + local[0],
+        0.4,
+        // (tankdelays1[0] + SinOsc.ar(0.71, mul:0.00018)),
+        (tankdelays1[0] + LFNoise2.kr(0.71, mul:0.00018)),
+        decaytime: decay_diff_1
+    );
+
+    tank1L = DelayC.ar(
+        n_out_4L,
+        tankdelays1[1],
+        tankdelays1[1]
+    );
+
+    n_out_5L = Integrator.ar(tank1L * ( 1 - damping ), damping) * decay;
+
+    n_out_6L = AllpassL.ar(
+        n_out_5L,
+        tankdelays1[2],
+        tankdelays1[2],
+        decaytime: decay_diff_2
+    );
+
+    tank1L = DelayC.ar(
+        n_out_6L,
+        tankdelays1[3],
+        tankdelays1[3] - ControlDur.ir
+
+    ) * decay;
+
+    ////////////////////////// 0R //////////////////
+
+    n_out_1R = AllpassL.ar(
+        input[1] + local[2],
+        0.4,
+        // (tankdelays0[0] + SinOsc.ar(0.7,mul:0.00025)),
+        (tankdelays0[0] + LFNoise2.ar(0.7,mul:0.00025)),
+        decaytime: decay_diff_1
+    );
+
+    tank0R = DelayC.ar(
+        n_out_1R,
+        tankdelays0[1],
+        tankdelays0[1]
+    );
+
+    // n_out_2 = OnePole.ar(tank0, 1 - damping);
+    n_out_2R = Integrator.ar(tank0R * ( 1 - damping ), damping) * decay;
+
+    n_out_3R = AllpassL.ar(
+        n_out_2R,
+        tankdelays0[2],
+        tankdelays0[2],
+        decaytime: decay_diff_2
+    );
+
+    tank0R = DelayC.ar(
+        n_out_3R,
+        tankdelays0[3],
+        tankdelays0[3] - ControlDur.ir
+    ) * decay;
+
+    ////////////////////////////// 1R ///////////////
+
+    n_out_4R = AllpassL.ar(
+        input[1] + local[3],
+        0.4,
+        // (tankdelays1[0] + SinOsc.ar(0.71, mul:0.00018)),
+        (tankdelays1[0] + LFNoise2.kr(0.71, mul:0.00018)),
+        decaytime: decay_diff_1
+    );
+
+    tank1R = DelayC.ar(
+        n_out_4R,
+        tankdelays1[1],
+        tankdelays1[1]
+    );
+
+    n_out_5R = Integrator.ar(tank1R * ( 1 - damping ), damping) * decay;
+
+    n_out_6R = AllpassL.ar(
+        n_out_5R,
+        tankdelays1[2],
+        tankdelays1[2],
+        decaytime: decay_diff_2
+    );
+
+    tank1R = DelayC.ar(
+        n_out_6R,
+        tankdelays1[3],
+        tankdelays1[3] - ControlDur.ir
+
+    ) * decay;
+
+    LocalOut.ar([
+        tank0L * -1,
+        tank1L * -1,
+        tank0R * -1,
+        tank1R * -1
+    ]);
+
+    // [266,  2974, 1913, 1996, 1990, 187,  1066] / 29761
+    outdelaysL = [ 0.0089378717113, 0.099929437854911, 0.064278754074124, 0.067067638856221, 0.066866032727395, 0.0062833910150869, 0.035818688888142 ];
+
+    // [353, 3627, 1228, 2673, 2111, 335, 121] / 29761
+    outdelaysR = [ 0.011861160579282, 0.12187090487551, 0.041262054366453, 0.089815530392124, 0.070931756325392, 0.011256342192803, 0.0040657235979974 ];
+
+    sigL = Mix([
+        [
+            Mix([
+                DelayN.ar( n_out_4L, outdelaysL[0] ),
+                DelayN.ar( n_out_4L, outdelaysL[1] ),
+                DelayN.ar( n_out_5L, outdelaysL[2] ).neg,
+                DelayN.ar( n_out_6L, outdelaysL[3] ),
+                DelayN.ar( n_out_1L, outdelaysL[4] ).neg,
+                DelayN.ar( n_out_2L, outdelaysL[5] ).neg,
+                DelayN.ar( n_out_3L, outdelaysL[6] ).neg
+            ])
+            ,
+            Mix([
+                DelayN.ar( n_out_1L, outdelaysR[0] ),
+                DelayN.ar( n_out_1L, outdelaysR[1] ),
+                DelayN.ar( n_out_2L, outdelaysR[2] ).neg,
+                DelayN.ar( n_out_3L, outdelaysR[3] ),
+                DelayN.ar( n_out_4L, outdelaysR[4] ).neg,
+                DelayN.ar( n_out_5L, outdelaysR[5] ).neg,
+                DelayN.ar( n_out_6L, outdelaysR[6] ).neg
+            ])
+        ] * drywet,
+        srcL * (1 - drywet)
+    ]);
+
+    sigR = Mix([
+        [
+            Mix([
+                DelayN.ar( n_out_4R, outdelaysL[0] ),
+                DelayN.ar( n_out_4R, outdelaysL[1] ),
+                DelayN.ar( n_out_5R, outdelaysL[2] ).neg,
+                DelayN.ar( n_out_6R, outdelaysL[3] ),
+                DelayN.ar( n_out_1R, outdelaysL[4] ).neg,
+                DelayN.ar( n_out_2R, outdelaysL[5] ).neg,
+                DelayN.ar( n_out_3R, outdelaysL[6] ).neg
+            ])
+            ,
+            Mix([
+                DelayN.ar( n_out_1R, outdelaysR[0] ),
+                DelayN.ar( n_out_1R, outdelaysR[1] ),
+                DelayN.ar( n_out_2R, outdelaysR[2] ).neg,
+                DelayN.ar( n_out_3R, outdelaysR[3] ),
+                DelayN.ar( n_out_4R, outdelaysR[4] ).neg,
+                DelayN.ar( n_out_5R, outdelaysR[5] ).neg,
+                DelayN.ar( n_out_6R, outdelaysR[6] ).neg
+            ])
+        ] * drywet,
+        srcR * (1 - drywet)
+    ]);
+
+    ReplaceOut.ar(out, Mix([sigL + sigR]));
+}).add;
+
+SynthDef(\revAlesisLike, { arg
+    inAmp=0.8,
+    scaleDelays=1,
+    inDiffusion=0.05,
+    feedback=0.5,
+    decay_sec=0.5,
+    decay1_sec=0.5,
+    peakgain=0,
+    rqscale=1;
+
+    var signal, signalIn = InFeedback.ar(\in.kr(0), 2) * inAmp;
+    var tank;
+    var    ndelaylines = 2;
+    var sr = SampleRate.ir, sz = 4;
+    var src, localin;
+    var  times, dtimes, b;
+    var l,r;
+    var earlyDiffDTimes = [], earlyDiffSize = 4;
+    var apc;
+    var tankIns;
+
+    src = HPF.ar(signalIn, \inputHPF.kr(150));
+    src = OnePole.ar(src, \inputLPF.kr(0.5));
+
+    src = DelayN.ar(src, 0.1, \predelay.kr(0.0));
+
+    times = [ 1447, 727, 613, 673, 1439, 2083, 2011, 1511, 1493, 1277, 2437, 2383, 2341, 997, 1061, 2039, 1997, 1481, 1627, 1129, 743, 983, 1091, 907, 541, 2393, 1801, 2081, 1787, 1453, 977, 2311, 691, 479, 2377, 1693, 1013, 1931, 1049, 2243, 839, 739, 1747, 601, 1823, 1123, 2467, 1297, 1613, 1361, 2207, 593, 619, 1709, 449, 937 ];
+
+    // Keith Barr dtimes
+
+    /*l = nil ! ( sz * 3  ) ;
+    l.size.div(3).do { |i|
+        i = i * 3;
+        // l[i] = rrand(300,700) * 2.pow(i/3);
+        // l[i+1] = rrand(300,700) * 2.pow(i/3);
+        l[i] = rrand(2500,5000) / 3.pow(i/3);
+        l[i+1] = rrand(2500,5000) / 3.pow(i/3);
+        l[i+2] = ( l[i] + l[i+1] * rrand(0.8,1.0) ).round(1);
+    };
+
+    l = l * scaleDelays;
+
+    r = nil ! ( sz * 3  ) ;
+    r.size.div(3).do { |i|
+        i = i * 3;
+        // r[i] = rrand(300,700) * 2.pow(i/3);
+        // r[i+1] = rrand(300,700) * 2.pow(i/3);
+        r[i] = rrand(2500,5000) / 3.pow(i/3);
+        r[i+1] = rrand(2500,5000) / 3.pow(i/3);
+        r[i+2] = ( r[i] + r[i+1] * rrand(0.8,1.0) ).round(1);
+    };
+
+    r = r * scaleDelays;*/
+
+    l = times.size.div(2).collect({|i| times[i*2]}) * scaleDelays;
+    r = times.size.div(2).collect({|i| times[i*2 + 1]}) * scaleDelays;
+
+    earlyDiffDTimes = { times.removeAt(times.minIndex) } ! ( earlyDiffSize * src.size );
+
+    dtimes = Routine{(earlyDiffDTimes ++ l ++ r).do { |it| it.yield }};
+
+    src.do { |it j|
+        earlyDiffSize.do { |i|
+            var dt = dtimes.next / sr;
+            src[j] = AllpassN.ar(src[j], dt, dt, inDiffusion);
+        };
+
+    };
+
+    localin = LocalIn.ar(ndelaylines);
+
+    tankIns = [nil!src.size.div(ndelaylines), nil!src.size.div(ndelaylines)];
+
+    tankIns.do { |it j|
+        tankIns[j].do { |item i|
+            tankIns[j]/*[i]*/ = src[i*2+j];
+        };
+    };
+
+    tank =
+    ndelaylines.collect({|j|
+        var processed;
+
+        processed = localin[j];
+
+        sz.collect { |i|
+            var dtsec;
+            var dt0, dt1;
+            processed = processed + tankIns[j]/*[i]*/;
+
+
+            dt0 = dtimes.next / sr;
+            dt1 = dtimes.next / sr;
+
+            processed = AllpassC.ar(processed, dt0, dt0, decay_sec );
+            processed = AllpassC.ar(processed, dt1, dt1, decay1_sec);
+
+            dtsec = dtimes.next / sr;
+            processed = DelayC.ar(processed, dtsec, dtsec * LFNoise2.kr(0.3).range(0.9,1));
+
+            processed = BPeakEQ.ar(processed, \peakfreq.kr(1200).lag(0.6) * Rand(0.7,1.3), Rand(0.9,1.2) * rqscale, db:peakgain);
+            processed = OnePole.ar(processed, \damping.kr(0.3) * Rand(0.8,1.1));
+
+        }
+    });
+
+    LocalOut.ar(
+        [
+            tank[0].last,
+            tank[1].last
+        ]//.reverse
+        * feedback
+    );
+
+    tank = LeakDC.ar(tank);
+
+    signal = tank.collect({|item i|
+        tank[i].collect({|it j|
+            tank[i][j] * ( "level_" ++ i ++ j ).asSymbol.kr(rrand(0.5, 1))
+        })
+    });
+
+    signal = signal.collect({|item| item.sum });
+
+    ReplaceOut.ar(\out.kr(0), signal * \tail.kr(1));
+}).add;
+
 ///////////////////////////////////////  Eq
 
 SynthDef(\filterBus, { arg in = 0, out = 0, drywet = -1, hpfInFreq = 20, eqFreq = 3200, eqRq = 1, eqDb = 0, lpfInFreq = 20000;
