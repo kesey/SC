@@ -29,7 +29,7 @@ s.options.maxNodes = 1024 * 32;
 
 // rec options
 s.options.recChannels = 2;
-s.options.recSampleFormat = "int32"; // 32 bit
+s.options.recSampleFormat = "float32"; // 32 bit "int32"
 s.options.recHeaderFormat = "aiff";
 
 // s.options.blockSize = 64;
@@ -174,7 +174,7 @@ s.serverRunning.not.if({
 			~sequencer.add(
 				Penvir(
 					(pdefName: name, pdefPrevInstr: nil, pdefCcStart: 21, pdefMidiChan: i + 2, muteState: ~muteState),
-					Pdef(name, ~initPattern)
+					Pdef(name, ~initPattern).quant_(~globalQuant);
 				)
 			);
 		});

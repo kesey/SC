@@ -6,19 +6,32 @@
 ~initAllocators = { arg server;
 	server.newBusAllocators;
 	server.newBufferAllocators;
+	server.newNodeAllocators;
 };
 
 // call on server quit
 ~cleanup = { arg server;
-	~stopMidiToOsc.value;
+	~stopMidiToOsc.value; // stop controlling Tidal with Midi
+	~updater.remove; // remove registered action in Controller
 	Window.closeAll;
 	MIDIdef.freeAll;
 	currentEnvironment.removeAll;
 	Pdef.removeAll;
+	Pdefn.removeAll;
 	Tdef.removeAll;
-	server.freeAll;
+	server.freeAll; // free all Nodes
+
+	~aux1.free;
+	~aux2.free;
+	~channelNumber.do {
+		arg i;
+		~channelBus[i].free;
+	};
+	~masterBus.free;
+	~resetAllControlBus.value;
+
 	{
-		Buffer.freeAll;
+		Buffer.freeAll(server);
 		server.sync;
 	}.fork;
 };
@@ -75,6 +88,13 @@
 	});
 };
 
+// use it with SynthDef sync on a clock like sync delay
+~updateTempo = { arg synth, tempoClock;
+	~updater = SimpleController(tempoClock).put(\tempo, {
+		synth.set(\tempoClock, tempoClock.tempo);
+	});
+};
+
 ~cleanDict = { arg dict, synthWindowKey;
 	dict.keysDo({ arg key;
 		if(key.contains(synthWindowKey), {
@@ -112,16 +132,6 @@
 			});
 		});
 	});
-};
-
-// use it with SynthDef sync on a clock like sync delay
-~updateTempo = { arg synth, tempoClock;
-	var updater;
-	updater = SimpleController(tempoClock).put(\tempo, {
-		synth.set(\tempoClock, tempoClock.tempo);
-	})
-	// clean up garbage when the clock is stopped
-	.put(\stop, { updater.remove; });
 };
 
 ~resetControlBus = { arg controlId;

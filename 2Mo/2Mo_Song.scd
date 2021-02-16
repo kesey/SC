@@ -374,8 +374,8 @@
 };
 
 ~song3 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
-	t.tempo = 142 / 60;
-	//t.beatsPerBar = 7;
+	/*t.tempo = 142 / 60;
+	t.beatsPerBar = 7;*/
 	{
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "amp").valueAction_(1);
 		~autoGuiControl.at("samplerStereo" ++ ~nodeId.at("samplerStereo") ++ "attack").valueAction_(2.11);
@@ -749,8 +749,8 @@
 };
 
 ~song4 = {// ~globalQuant = 5; // !!! change globalQuant before song !!!
-	t.tempo = 80 / 60;
-	t.beatsPerBar = 5;
+	/*t.tempo = 80 / 60;
+	t.beatsPerBar = 5;*/
 
 	// Part
 
@@ -1463,8 +1463,8 @@
 };
 
 ~song6 = {// ~globalQuant = 5; // !!! change globalQuant before song !!!
-	// t.tempo = 68 / 60;
-	// t.beatsPerBar = 5;
+	/*t.tempo = 68 / 60;
+	t.beatsPerBar = 5;*/
 
 	// Part
 
@@ -1712,8 +1712,8 @@
 };
 
 ~song7 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
-	t.tempo = 118 / 60;
-	t.beatsPerBar = 7;
+	/*t.tempo = 118 / 60;
+	t.beatsPerBar = 7;*/
 
 	// Part
 
@@ -1974,8 +1974,8 @@
 
 
 ~song8 = {// ~globalQuant = 7; // !!! change globalQuant before song !!!
-	t.tempo = 58 / 60;
-	t.beatsPerBar = 7;
+	/*t.tempo = 58 / 60;
+	t.beatsPerBar = 7;*/
 
 	// Part /4
 
@@ -2352,8 +2352,8 @@
 };
 
 ~song8Bis = {// ~globalQuant = 9; // !!! change globalQuant before song !!!
-	t.tempo = 199 / 60; // 212 / 60
-	t.beatsPerBar = 9;
+	/*t.tempo = 199 / 60; // 212 / 60
+	t.beatsPerBar = 9;*/
 
 	// Part
 

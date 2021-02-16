@@ -2,20 +2,20 @@
 
 ///////////////////////////////////////  Routing
 
-var mixGroup, synthGroup, fxGroup, aux1Group, aux2Group, masterBus, permanentSynthDa;
+var mixGroup, synthGroup, fxGroup, aux1Group, aux2Group, permanentSynthDa;
+permanentSynthDa = 0; // doneAction
 
 mixGroup = Group.new(s, \addToTail);
 synthGroup = Group.new(mixGroup, \addBefore);
 fxGroup = Group.new(mixGroup);
 aux1Group = Group.new(fxGroup);
 aux2Group = Group.new(aux1Group, \addAfter);
-permanentSynthDa = 0; // doneAction
 
 ~aux1 = Bus.audio(s, 2);
 ~aux2 = Bus.audio(s, 2);
 
-masterBus = Bus.audio(s, 2);
-~master = Synth(\MasterStrip, [\in, masterBus], mixGroup, addAction: 'addToTail');
+~masterBus = Bus.audio(s, 2);
+~master = Synth(\MasterStrip, [\in, ~masterBus], mixGroup, addAction: 'addToTail');
 
 ~channelNumber = 4; // number of mixer channels
 ~channelNumber = ~channelNumber.max(1).min(16); // limit number of mixer channels
@@ -25,7 +25,7 @@ masterBus = Bus.audio(s, 2);
 ~channelNumber.do {
 	arg i;
 	~channelBus[i] = Bus.audio(s, 2);
-	currentEnvironment.put((\channel ++ i).asSymbol, Synth(\ChannelStrip, [\in, ~channelBus[i], \outAux1, ~aux1, \outAux2, ~aux2, \out, masterBus], mixGroup));
+	currentEnvironment.put((\channel ++ i).asSymbol, Synth(\ChannelStrip, [\in, ~channelBus[i], \outAux1, ~aux1, \outAux2, ~aux2, \out, ~masterBus], mixGroup));
 };
 
 // Permanent Synth

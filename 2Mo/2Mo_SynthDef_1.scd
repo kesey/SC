@@ -5,18 +5,19 @@
 ///////////////////////////////////////  Mixer
 
 SynthDef(\ChannelStrip, { arg in = 0, out = 0, outAux1 = 3, outAux2 = 4, pan = 0, hpfreq = 20, band1freq = 8000, band1rq = 1, band1db = 0, band2freq = 1200, band2rq = 1, band2db = 0, band3freq = 80, band3rq = 1, band3db = 0, lpfreq = 20000, mute = 1, auxsend1 = 0, auxsend2 = 0, level = 0.5, delaytime = 0;
-	var input, sig;
+	var input, sig, bad;
 	input = InFeedback.ar(in, 2);
 	sig = BHiPass4.ar(input, Lag2.kr(hpfreq.max(20).min(20000), 0.5)); // HPF
 	sig = BPeakEQ.ar(sig, Lag2.kr(band1freq.max(20).min(20000), 0.5), band1rq, band1db); // Band 1
 	sig = BPeakEQ.ar(sig, Lag2.kr(band2freq.max(20).min(20000), 0.5), band2rq, band2db); // Band 2
 	sig = BPeakEQ.ar(sig, Lag2.kr(band3freq.max(20).min(20000), 0.5), band3rq, band3db); // Band 3
 	sig = BLowPass4.ar(sig, Lag2.kr(lpfreq.max(20).min(20000), 0.5)); // LPF
+	sig = Select.ar(CheckBadValues.ar(sig, post: 2) > 0, [sig, DC.ar(0)]); // test for infinity, NaN and denormals before sending to Aux and MasterStrip
 	Out.ar(outAux1, sig * auxsend1.curvelin(0, 1, 0, 1, log(10))); // Aux 1 pre fader / pre mute / post eq
 	Out.ar(outAux2, sig * auxsend2.curvelin(0, 1, 0, 1, log(10))); // Aux 2 pre fader / pre mute / post eq
 	sig = sig * Lag2.kr(mute, 0.1); // Mute
 	sig = DelayN.ar(sig, 0.01, delaytime / 100); // Delay
-	Out.ar(out, Balance2.ar(sig[0], sig[1], pan, level.curvelin(0, 1, 0, 1, log(10)))); // curvelin(blabla) to have a logarithmic scale
+	Out.ar(out, Balance2.ar(sig[0], sig[1], pan, level.curvelin(0, 1, 0, 1, log(10)))); // curvelin to have a logarithmic scale
 }).add;
 
 SynthDef(\MasterStrip, { arg in = 0, out = 0, hpfreq = 20, lpfreq = 20000, level = 0.5;
@@ -1944,7 +1945,7 @@ SynthDef(\snareAw, {arg out = 0, amp = 0.1, sinfreq = 180, att = 0.01, rel = 0.2
 	OffsetOut.ar(out, Pan2.ar(sum * env, pan));
 }).add;
 
-SynthDef(\snarey,{ arg out = 0, amp=0.75, attack = 0.001, release = 0.3, freq=120, gain=0.5, doneAction = 2;
+SynthDef(\snarey,{ arg out = 0, amp=0.25, attack = 0.001, release = 0.3, freq=120, gain=0.5, doneAction = 2;
 	var env, sig, snare;
 	env = EnvGen.kr(Env.perc(attack, release, 1, -9), 1, doneAction: doneAction);
 	sig = {(SinOsc.ar(freq) - WhiteNoise.ar(0.5, 0.5))!2};
@@ -3627,7 +3628,7 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
 	OffsetOut.ar(out, sig);
 }).add;
 
-~paulstretchMonoSynthDef = SynthDef(\paulstretchMono, { |out = 0, gate = 1, amp = 1, pan = 0, atk = 0.001, rls = 0.12, curve = (-4), buffer, envBufnum, channel = 0, rate = 1, stretch = 50, window = 0.25, doneAction = 2|
+~paulstretchMonoSynthDef = SynthDef(\paulstretchMono, { |out = 0, gate = 1, amp = 1, pan = 0, atk = 0.19, rls = 1.12, curve = (-4), buffer, envBufnum, channel = 0, rate = 1, stretch = 50, window = 0.25, doneAction = 2|
     // Paulstretch for SuperCollider
     // Based on the Paul's Extreme Sound Stretch algorithm by Nasca Octavian PAUL
     // https://github.com/paulnasca/paulstretch_python/blob/master/paulstretch_steps.png
