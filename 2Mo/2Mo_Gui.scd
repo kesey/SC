@@ -615,8 +615,8 @@ v.canvas.layout = VLayout();
 			"gate", ["button", ControlSpec(0, 1, step: 1, default: 0), true],
 			"amp", ["knob", ControlSpec(0, 4, step: 0.01, default: 0.23), true],
 			"pan", ["knob", ControlSpec(-1, 1, step: 0.01, default: 0), false],
-			"atk", ["slider", ControlSpec(0, 10, step: 0.01, default: 0.19), true],
-			"rls", ["slider", ControlSpec(0, 10, step: 0.01, default: 1.12), true],
+			"attack", ["slider", ControlSpec(0, 10, step: 0.01, default: 1.19), true],
+			"release", ["slider", ControlSpec(0, 10, step: 0.01, default: 2), true],
 			"curve", ["knob", ControlSpec(-20, 20, step: 0.01, default: -4), true],
 			"buffer", ["list", Array.fill(b[\sampler_stereo].size, { arg i;
 				var filePath, fileName;

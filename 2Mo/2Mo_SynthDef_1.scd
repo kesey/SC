@@ -3628,7 +3628,7 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
 	OffsetOut.ar(out, sig);
 }).add;
 
-~paulstretchMonoSynthDef = SynthDef(\paulstretchMono, { |out = 0, gate = 1, amp = 1, pan = 0, atk = 0.19, rls = 1.12, curve = (-4), buffer, envBufnum, channel = 0, rate = 1, stretch = 50, window = 0.25, doneAction = 2|
+~paulstretchMonoSynthDef = SynthDef(\paulstretchMono, { |out = 0, gate = 1, amp = 1, pan = 0, attack = 1.19, release = 2, curve = (-4), buffer, envBufnum, channel = 0, rate = 1, stretch = 50, window = 0.25, doneAction = 2|
     // Paulstretch for SuperCollider
     // Based on the Paul's Extreme Sound Stretch algorithm by Nasca Octavian PAUL
     // https://github.com/paulnasca/paulstretch_python/blob/master/paulstretch_steps.png
@@ -3650,7 +3650,7 @@ SynthDef(\samplerMono,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001,
     // amp: amplification
     var rateScale, trigPeriod, sig, envVca, env, delayTimeEnv, chain, trig, pos, fftSize;
 
-	envVca = EnvGen.kr(Env.asr(atk, 1, rls, curve), gate, doneAction: doneAction);
+	envVca = EnvGen.kr(Env.asr(attack, 1, release, curve), gate, doneAction: doneAction);
 	rateScale = BufRateScale.kr(buffer);
     // Calculating fft buffer size according to suggested window size
     fftSize = 2**floor(log2(window*SampleRate.ir));
