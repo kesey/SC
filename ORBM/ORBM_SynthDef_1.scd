@@ -3595,6 +3595,90 @@ SynthDef(\lcm2, { arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls = 0.2, susta
     OffsetOut.ar(out, sig);
 }).add;
 
+/*SynthDef(\danScar, { arg out = 0, amp = 0.1, pan = 0, attack = 0, release = 1.2, sustain = 1.5, curve = 4, sinFreq = 30, noiseFreq = 1, lpfFreq = 15000, doneAction = 2;
+    var sig, globalEnv, inSig, lfo;
+
+    globalEnv = EnvGen.kr(Env.perc(attack, release, curve: curve), timeScale: sustain, doneAction: doneAction);
+
+    inSig = SinOsc.ar(sinFreq + [0, 0.1]);
+    lfo = LFDNoise1.kr(noiseFreq).linexp(-1, 1, 0.5, 1);
+
+    sig = LPF.ar(
+        Fb1.ar(
+            { |in, out| in[0] - (out[1] % lfo) },
+            inSig, 2, blockSize: s.options.blockSize
+        ),
+        lpfFreq
+    ) * amp;
+
+    sig = Pan2.ar(sig, pan);
+
+    OffsetOut.ar(out, sig * globalEnv);
+}).add;
+
+SynthDef(\danScar1, { arg out = 0, amp = 0.1, pan = 0, attack = 0, release = 1.2, sustain = 1.5, curve = 4, sinFreq = 30, noiseFreq = 1, lpfFreq = 15000, doneAction = 2;
+    var sig, globalEnv, inSig, lfo;
+
+    globalEnv = EnvGen.kr(Env.perc(attack, release, curve: curve), timeScale: sustain, doneAction: doneAction);
+
+    inSig = SinOsc.ar(sinFreq + [0, 0.1]);
+    lfo = LFDNoise1.ar(noiseFreq).linexp(-1, 1, 0.5, 1);
+
+    sig = LPF.ar(
+         Fb1.ar(
+            // in[0][0] is the current stereo sample of inSig
+            // in[0][1] is the current mono sample of lfo
+            { |in, out| in[0][0] - (out[1] % in[0][1]) },
+            [inSig, lfo], 2, blockSize: s.options.blockSize
+        ),
+        lpfFreq
+    ) * amp;
+
+    sig = Pan2.ar(sig, pan);
+
+    OffsetOut.ar(out, sig * globalEnv);
+}).add;
+
+SynthDef(\danScar2, { arg out = 0, amp = 0.1, attack = 0, release = 1.2, sustain = 1.5, curve = 4, triFreq = 60, noiseFreq = 0.5, doneAction = 2;
+    var sig, globalEnv, inSig, lfo;
+
+    globalEnv = EnvGen.kr(Env.perc(attack, release, curve: curve), timeScale: sustain, doneAction: doneAction);
+
+    inSig = LFTri.ar(triFreq);
+    lfo = { LFDNoise3.ar(0.5).linexp(-1, 1, 0.1, 150) } ! 2;
+
+    sig = Fb1.ar(
+        // in[0][0] is the current stereo sample of inSig
+        // in[0][1] is the current mono sample of lfo
+        { |in, out| in[0][0] - (out[1] % in[0][1]) },
+        [inSig, lfo], 2, blockSize: s.options.blockSize
+    ) * amp;
+
+    OffsetOut.ar(out, sig * globalEnv);
+}).add;*/
+
+SynthDef(\natwich, { arg out = 0, amp = 0.3, pan = 0, attack = 0, release = 1.2, sustain = 1.5, curve = 4, modFreq = 0.4, modAmount = 0.8, sawFreq = 2100, rlpfFreq = 4000, rlpfRq = 0.1, doneAction = 2;
+    var snd, fb, sig, globalEnv, mod1, mod2;
+
+    globalEnv = EnvGen.kr(Env.perc(attack, release, curve: curve), timeScale: sustain, doneAction: doneAction);
+
+    mod1 = LFDNoise3.kr(modFreq, modAmount).range(0.1, 1.5);
+    mod2 = LFDNoise0.kr(modFreq, modAmount).range(0.1, 1.5);
+
+    fb = LocalIn.ar(1);
+    snd = Saw.ar(sawFreq * mod1 * (fb * 48).midiratio);
+    snd = RLPF.ar(snd, rlpfFreq * mod2 * (48 * (1 - fb)).midiratio, rlpfRq);
+    snd = (snd * 3).fold2;
+    sig = snd;
+    snd = Amplitude.ar(ToggleFF.ar(PulseDivider.ar(snd, 3 * (1 + (100 * fb)))), 0.03, 0.3);
+    LocalOut.ar(snd);
+    snd = Pan2.ar(sig, pan) * amp * globalEnv;
+    snd = Sanitize.ar(snd);
+    snd = snd + (NHHall.ar(snd, 3) * -10.dbamp);
+
+    OffsetOut.ar(out, snd);
+}).add;
+
 ///////////////////////////////////////  Sampler
 
 ~samplerStereoSynthDef = SynthDef(\samplerStereo,{ arg out = 0, gate = 1, amp = 1, pan = 0, attack = 0.001, release = 1, curve = (-4), buffer = 0, rate = 1, startPos = 0, loop = 0, doneAction = 2;
