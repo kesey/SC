@@ -556,7 +556,7 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	input = InFeedback.ar(in, 2);
 	sig = input + LocalIn.ar(2);
 	sig = JPverb.ar(sig, t60, damp, size, earlyDiff, modDepth, modFreq, low, mid, high, lowcut, highcut);
-	LocalOut.ar(feedback.min(0.25) * sig);
+	LocalOut.ar(feedback.min(0.5) * sig);
 	// sig = SelectX.ar(drywet, [input, sig]);
 	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
 	ReplaceOut.ar(out, sig);
@@ -1550,7 +1550,7 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	var snd, env, trig, envf, mod;
 	mod = LFNoise2.kr(lfnFrq, lfnAmt).range(1, lfnAmt);
 	env = EnvGen.kr(Env.linen(attack, 1, decay), doneAction: doneAction);
-	envf = EnvGen.kr(Env([envfL1, envfL2, envfL3, envfL4, envfL5], [envfT1, envfT2, envfT3, envfT4], [curve, curve/2, curve]), levelScale: envfAmt * mod, doneAction: doneAction);
+	envf = EnvGen.kr(Env([envfL1, envfL2, envfL3, envfL4, envfL5], [envfT1, envfT2, envfT3, envfT4], [curve, curve/2, curve]), levelScale: envfAmt * mod);
 	trig = Impulse.ar(0);
 	snd = Ringz.ar(
 		in: LPF.ar(
@@ -1574,7 +1574,7 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	var snd, env, envp;
 
 	env = EnvGen.kr(Env([envL1, envL2, envL3, envL4, envL5], [envT1, envT2, envT3, envT4], [curve, curve/2, curve]), doneAction: doneAction);
-	envp = EnvGen.kr(Env([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3], [curvep, curvep*1.25, curvep].midicps), doneAction: doneAction);
+	envp = EnvGen.kr(Env([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3], [curvep, curvep*1.25, curvep].midicps));
 	snd = Ringz.ar(
 		    in: LPF.ar(in: Impulse.ar(0), freq: ffreq),
 		    freq: freq * envp,
@@ -2889,7 +2889,7 @@ var sig = LatoocarfianL.ar(
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);
 	// inputFilt = BRF.ar(inputFilt, brfInFreq, Lag2.kr(brfInRq.max(0.01)));
 	inputFilt = BPeakEQ.ar(inputFilt, Lag2.kr(eqFreq.max(20).min(20000), 0.5), eqRq, eqDb);
-	// inputFilt = inputFilt * (inputFilt > 0.002); // Threshold
+	inputFilt = inputFilt * (inputFilt > 0.002); // Threshold
 	inputAmp = Amplitude.kr(inputFilt, attack, release);
 	noiseType = noiseType.max(0).min(5);
 	sig = Select.ar(noiseType, [

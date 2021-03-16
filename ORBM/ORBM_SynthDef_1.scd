@@ -1554,7 +1554,7 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	var snd, env, trig, envf, mod;
 	mod = LFNoise2.kr(lfnFrq, lfnAmt).range(1, lfnAmt);
 	env = EnvGen.kr(Env.linen(attack, 1, decay), doneAction: doneAction);
-	envf = EnvGen.kr(Env([envfL1, envfL2, envfL3, envfL4, envfL5], [envfT1, envfT2, envfT3, envfT4], [curve, curve/2, curve]), levelScale: envfAmt * mod, doneAction: doneAction);
+	envf = EnvGen.kr(Env([envfL1, envfL2, envfL3, envfL4, envfL5], [envfT1, envfT2, envfT3, envfT4], [curve, curve/2, curve]), levelScale: envfAmt * mod);
 	trig = Impulse.ar(0);
 	snd = Ringz.ar(
 		in: LPF.ar(
@@ -1578,7 +1578,7 @@ SynthDef(\kick_oto309, { arg out=0, amp=0.5, pan=0, env0L1 = 0.5, env0L2 = 1, en
 	var snd, env, envp;
 
 	env = EnvGen.kr(Env([envL1, envL2, envL3, envL4, envL5], [envT1, envT2, envT3, envT4], [curve, curve/2, curve]), doneAction: doneAction);
-	envp = EnvGen.kr(Env([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3], [curvep, curvep*1.25, curvep].midicps), doneAction: doneAction);
+	envp = EnvGen.kr(Env([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3], [curvep, curvep*1.25, curvep].midicps));
 	snd = Ringz.ar(
 		    in: LPF.ar(in: Impulse.ar(0), freq: ffreq),
 		    freq: freq * envp,

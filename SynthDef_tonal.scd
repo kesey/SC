@@ -1240,4 +1240,19 @@ SynthDef(\windowsync, { |out, freq = 65.40639132515, amp = 0.1,
     OffsetOut.ar(out, (sig * (amp * eg)).dup);
 }).add;
 
+SynthDef(\danUk, { arg out = 0, amp = 0.3, attack = 0, release = 1.3, sustain = 1, curve = (-4), envPow = 1, globalEnvNoise = 0.3, globalEnvInv = 0, sawFreq = 50, r = 12, doneAction = 2;
+	var phi, x, y, sig, globalEnv;
+	globalEnv = EnvGen.kr(Env.perc(attack, release, 1, curve), timeScale: sustain, doneAction: doneAction).pow(envPow);
+	globalEnv = globalEnv * PinkNoise.ar(globalEnvNoise).range(0.1, 1).lag(0.02);
+
+	globalEnv = Select.ar(globalEnvInv, [globalEnv, globalEnv.neg]);
+
+    phi = LFSaw.ar([sawFreq, sawFreq + 0.1], -1).range(0, 2pi);
+    x = r * cos(phi);
+    y = r * sin(phi);
+    sig = sin(x) - (sin(y) * log(x * x + 1)) / 10;
+    sig = Limiter.ar(sig * globalEnv, 0.2);
+	OffsetOut.ar(out, sig * amp);
+}).add;
+
 )

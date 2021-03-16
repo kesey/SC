@@ -196,7 +196,7 @@ s.serverRunning.not.if({
 
 // GUI.current; // Test which GUI library you are using by default
 // UGen.browse; // another kind of documentation
-// Class.browse;
+// Object.browse;
 // Help.gui; // open a dedicated help window
 // Filter.dumpSubclassList; // <ClassName>.dumpSubClassList post all the class whose inherit from ClassName
 
