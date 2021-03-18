@@ -556,7 +556,7 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	input = InFeedback.ar(in, 2);
 	sig = input + LocalIn.ar(2);
 	sig = JPverb.ar(sig, t60, damp, size, earlyDiff, modDepth, modFreq, low, mid, high, lowcut, highcut);
-	LocalOut.ar(feedback.min(0.5) * sig);
+	LocalOut.ar(feedback.min(0.45) * sig);
 	// sig = SelectX.ar(drywet, [input, sig]);
 	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
 	ReplaceOut.ar(out, sig);
