@@ -540,7 +540,7 @@ u.canvas.layout = VLayout();
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -0.6), true],
 			"hpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20), false],
 			"eqFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
-			"eqRq", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), false],
+			"eqRq", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
 			"eqDb", ["knob", ControlSpec(-60, 60, step: 0.1, default: 0), false],
 			"lpfInFreq", ["knob", ControlSpec(20, 20000, step: 1, default: 20000), false],
 			"attack", ["slider", ControlSpec(0.01, 10, step: 0.01, default: 0.01), true],

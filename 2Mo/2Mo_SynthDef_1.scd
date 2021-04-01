@@ -2883,7 +2883,7 @@ var sig = LatoocarfianL.ar(
     OffsetOut.ar(0,sig*amp);
 }).add;*/
 
-~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, hpfInFreq = 20, eqFreq = 20000, eqRq = 0, eqDb = 0, lpfInFreq = 20000, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
+~noiseInjectionSynthDef = SynthDef(\noiseInjection, { arg in = 0, out = 0, drywet = -0.6, hpfInFreq = 20, eqFreq = 20000, eqRq = 1, eqDb = 0, lpfInFreq = 20000, attack = 0.01, release = 0.01, noiseType = 0, nType5Chaos = 1.5, noiseLevel = 1, impSource = 0, impFreq = 52.9, impLevel = 0;
 	var input, inputFilt, sig, inputAmp, imp;
 	input = InFeedback.ar(in, 2);
 	inputFilt = LPF.ar(HPF.ar(input, hpfInFreq), lpfInFreq);

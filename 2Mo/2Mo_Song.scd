@@ -3504,6 +3504,16 @@
 		// routing
 
 		~routingControl.at(\orbit0).valueAction_(1);
+		~routingControl.at(\orbit2).valueAction_(1);
+		~routingControl.at(\orbit3).valueAction_(1);
+		~routingControl.at(\orbit4).valueAction_(1);
+		~routingControl.at(\orbit5).valueAction_(1);
+		~routingControl.at(\orbit6).valueAction_(1);
+		~routingControl.at(\orbit7).valueAction_(1);
+		~routingControl.at(\orbit8).valueAction_(1);
+		~routingControl.at(\orbit9).valueAction_(1);
+		~routingControl.at(\orbit10).valueAction_(1);
+		~routingControl.at(\orbit11).valueAction_(1);
 	}.defer;
 };
 
