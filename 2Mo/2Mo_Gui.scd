@@ -399,7 +399,7 @@ u.canvas.layout = VLayout();
 			"amp", ["none"],
 			"drywet", ["slider", ControlSpec(-1, 1, step: 0.01, default: -1), true],
 			"amp", ["knob", ControlSpec(0, 1, step: 0.01, default: 1), false],
-			"feedback", ["knob", ControlSpec(0, 0.45, step: 0.01, default: 0), true],
+			"feedback", ["knob", ControlSpec(0, 0.5, step: 0.01, default: 0), true],
 			"t60", ["slider", ControlSpec(0.1, 60, step: 0.1, default: 1), true],
 			"damp", ["knob", ControlSpec(0, 1, step: 0.01, default: 0), true],
 			"size", ["slider", ControlSpec(0.5, 5, step: 0.01, default: 1), false],

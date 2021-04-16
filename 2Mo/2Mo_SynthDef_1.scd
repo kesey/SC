@@ -556,7 +556,7 @@ SynthDef(\reverbIxi, {arg in = 10, out = 0, drywet = 0.5, predelay=0.048, combde
 	input = InFeedback.ar(in, 2);
 	sig = input + LocalIn.ar(2);
 	sig = JPverb.ar(sig, t60, damp, size, earlyDiff, modDepth, modFreq, low, mid, high, lowcut, highcut);
-	LocalOut.ar(feedback.min(0.45) * sig);
+	LocalOut.ar(feedback.min(0.5) * sig);
 	// sig = SelectX.ar(drywet, [input, sig]);
 	sig = XFade2.ar(input, sig, drywet, Lag2.kr(amp));
 	ReplaceOut.ar(out, sig);
@@ -3690,6 +3690,39 @@ SynthDef(\natwich, { arg out = 0, amp = 0.3, pan = 0, attack = 0, release = 1.2,
     snd = snd + (NHHall.ar(snd, 3) * -10.dbamp);
 
     OffsetOut.ar(out, snd);
+}).add;
+
+SynthDef(\pnoise, {
+    /*:the Perlin noise is sampled on a supertoroid 3d path with
+    given major and minor radius. The shape is controled wit tMajor and sMinor.
+    */
+	/*
+	1 < rMajor < 25
+	1 < rMinor < 10
+	0.25 < tMajor < 2.5
+	0.25 < sMinor < 2.5
+	1 < freq_u < 250
+	1 < freq_v < 250
+	0 < scaleX < 5
+	0 < scaleY < 5
+	0 < scaleZ < 5])
+	*/
+	arg out = 0, amp = 0.3, pan = 0, attack = 0.001, release = 1.2, sustain = 1, curve = (-4), envPow = 1, rMajor = 1, rMinor = 0.25, tMajor = 1, sMinor = 0.5, freq_u = 100, freq_v = 100, scaleX = 1, scaleY = 1, scaleZ = 1, doneAction = 2;
+    var u, v, x, y, z, grey, globalEnv;
+
+	globalEnv = EnvGen.kr(Env.perc(attack, release, 1, curve), timeScale: sustain, doneAction: doneAction).pow(envPow);
+
+    //parametric supertoroid
+    //u -> [  0   , 2*pi];
+    //v -> [  0   , 2*pi];
+    u = Phasor.ar(0, freq_u/SampleRate.ir, start: 0, end: 2*pi);
+    v = Phasor.ar(0, freq_v/SampleRate.ir, start: 0, end: 2*pi);
+    x = cos(u).sign*pow(abs(cos(u)),tMajor)*(rMajor+rMinor*cos(v).sign*pow(abs(cos(v)),sMinor));
+    y = sin(u).sign*pow(abs(sin(u)),tMajor)*(rMajor+rMinor*cos(v).sign*pow(abs(cos(v)),sMinor));
+    z = rMinor*sin(v).sign*pow(abs(sin(v)),sMinor);
+    grey = Perlin3.ar(x/scaleX, y/scaleY, z/scaleZ);
+	grey = Pan2.ar(grey * globalEnv, pan, amp);
+    OffsetOut.ar(out, grey);
 }).add;
 
 ///////////////////////////////////////  Sampler
