@@ -501,12 +501,12 @@ SynthDef(\allreverbif, { arg in = 0, out=0, gate=1, pan=0, freq=200;
 	ReplaceOut.ar(out, sig);
 }).add;
 
-SynthDef(\reverbCraum, { arg in = 0, out = 0, gate = 1, roomsize = 100, revtime = 1, damping = 0.6, inputbw = 0.5, spread = 15, drylevel = 1, earlyreflevel = 0.7, taillevel = 0.5, maxroomsize = 300, amp = 0.5;
+SynthDef(\reverbCraum, { arg in = 0, out = 0, gate = 1, revtime = 1, damping = 0.6, inputbw = 0.5, spread = 15, drylevel = 1, earlyreflevel = 0.7, taillevel = 0.5, maxroomsize = 300, amp = 0.5;
 	var source = In.ar(in, 2);
 	var reverb;
 	var env = Linen.kr(gate, 0.1, 1, 0.1, 2);
 
-	reverb = GVerb.ar(source, roomsize, revtime, damping, inputbw, spread, drylevel, earlyreflevel, taillevel, maxroomsize);
+	reverb = GVerb.ar(source, 100, revtime, damping, inputbw, spread, drylevel, earlyreflevel, taillevel, maxroomsize);
 	reverb = reverb * amp ;
 	XOut.ar(out,env,reverb);
 //By Zé Craum
@@ -3536,7 +3536,7 @@ SynthDef(\werkit2, { arg out = 0, amp = 0.1, att = 0.01, dec = 0, sus = 1, rel =
     Out.ar(0, LPF.ar(sig, 15000))
 }).add;*/
 
-SynthDef(\LiljedMyst, { arg out = 0, amp = 0.6, attack = 0.01, release = 4, pNoiseFreq = 5e-3, hpfFreq = 10, modDur = 9, lfnFreq = 0.05, ringFreq = 55, ringDec = 0.2, revSize = 70, revTime = 99, gate = 1, doneAction = 2;
+SynthDef(\LiljedMyst, { arg out = 0, amp = 0.6, attack = 0.01, release = 4, pNoiseFreq = 5e-3, hpfFreq = 10, modDur = 9, lfnFreq = 0.05, ringFreq = 55, ringDec = 0.2, revTime = 99, gate = 1, doneAction = 2;
 	var sig, env;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
 	sig = HPF.ar(PinkNoise.ar(pNoiseFreq), hpfFreq) * Line.kr(0, 1, modDur);
@@ -3548,14 +3548,14 @@ SynthDef(\LiljedMyst, { arg out = 0, amp = 0.6, attack = 0.01, release = 4, pNoi
 				ringDec
 			)
 		}!44).sum,
-		revSize,
+		70,
 		revTime
 	).tanh;
 	sig = sig * env * amp;
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\LiljedRain, { arg out = 0, amp = 0.6, attack = 0.01, release = 2, nFrqR = 0.08, lfnFrqR1 = 0.3, lfnFrqR2 = 0.2, lpfR = 7000, hpfR = 400, revSizeR = 250, revTimeR = 100, revDampR = 0.25, dryLevR = 0.3, modDurR = 10, lfnFrqT1 = 3, lfnFrqT2 = 2, hpfT = 20, revSizeT = 270, revTimeT = 30, revDampT = 0.7, dryLevT = 0.5, modDurT = 30, gate = 1, doneAction = 2;
+SynthDef(\LiljedRain, { arg out = 0, amp = 0.6, attack = 0.01, release = 2, nFrqR = 0.08, lfnFrqR1 = 0.3, lfnFrqR2 = 0.2, lpfR = 7000, hpfR = 400, revTimeR = 100, revDampR = 0.25, dryLevR = 0.3, modDurR = 10, lfnFrqT1 = 3, lfnFrqT2 = 2, hpfT = 20, revTimeT = 30, revDampT = 0.7, dryLevT = 0.5, modDurT = 30, gate = 1, doneAction = 2;
 	var sig, env, rain, thunder;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
 
@@ -3567,7 +3567,7 @@ SynthDef(\LiljedRain, { arg out = 0, amp = 0.6, attack = 0.01, release = 2, nFrq
 				rain,
 				hpfR
 			),
-			revSizeR,
+			250,
 			revTimeR,
 			revDampR,
 			drylevel: dryLevR
@@ -3580,7 +3580,7 @@ SynthDef(\LiljedRain, { arg out = 0, amp = 0.6, attack = 0.01, release = 2, nFrq
 			thunder,
 			LFNoise1.kr(1).exprange(100, 2500)
 		).tanh,
-		revSizeT,
+		270,
 		revTimeT,
 		revDampT,
 		drylevel: dryLevT
@@ -3994,7 +3994,7 @@ SynthDef(\bozkurt, { arg out = 0, amp = 1, att = 0.01, rel = 10, impFreq = 0.25,
 	OffsetOut.ar(out, sig);
 }).add;
 
-SynthDef(\padovan, { arg out = 0, amp = 1, tridDur = 1, freq = 165, roomSize = 9, gate = 1, doneAction = 2;
+SynthDef(\padovan, { arg out = 0, amp = 1, tridDur = 1, freq = 165, gate = 1, doneAction = 2;
 	var sig, env, input, mod, grainTr, sinMod;
 	env = Linen.kr(gate, 0.1, 1, 5, doneAction);
 	sig = SinOsc;
@@ -4005,7 +4005,7 @@ SynthDef(\padovan, { arg out = 0, amp = 1, tridDur = 1, freq = 165, roomSize = 9
 	grainTr = sig.ar(mod * freq);
 	sinMod = sig.ar(mod);
 	sig = GrainIn.ar(2, grainTr, grainTr / 2, sinMod, mod * sinMod, -1, mul: env);
-	sig = GVerb.ar(sig, roomSize, mul: amp);
+	sig = GVerb.ar(sig, 9, mul: amp);
 	OffsetOut.ar(out, sig);
 }).add;
 
@@ -4090,7 +4090,7 @@ SynthDef(\LiljedKickSeq, { arg out = 0, amp = 1, pan = 0, attack = 0.01, release
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\LiljedMetalic, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, release = 2, rTrgRate = 1, rFreq1 = 40, rFreq2 = 200, rFreq3 = 234, rFreq4 = 889, rDec = 0.7, revSize = 5, revTime = 2, revDamp = 0.7, gate = 1, doneAction = 2;
+SynthDef(\LiljedMetalic, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, release = 2, rTrgRate = 1, rFreq1 = 40, rFreq2 = 200, rFreq3 = 234, rFreq4 = 889, rDec = 0.7, revTime = 2, revDamp = 0.7, gate = 1, doneAction = 2;
 	var sig, env;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
 
@@ -4102,7 +4102,7 @@ SynthDef(\LiljedMetalic, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, rele
 
 	sig = GVerb.ar(
 		sin(sig),
-		revSize,
+		5,
 		revTime,
 		revDamp
 	);
@@ -4111,7 +4111,7 @@ SynthDef(\LiljedMetalic, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, rele
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\LiljedMetalic1, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, release = 2, rTrgRate = 1, rFreq1 = 40, rFreq2 = 200, rFreq3 = 234, rFreq4 = 889, rFreq5 = 1320, rFreq6 = 150, rDec = 0.7, revSize = 5, revTime = 2, revDamp = 0.7, gate = 1, doneAction = 2;
+SynthDef(\LiljedMetalic1, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, release = 2, rTrgRate = 1, rFreq1 = 40, rFreq2 = 200, rFreq3 = 234, rFreq4 = 889, rFreq5 = 1320, rFreq6 = 150, rDec = 0.7, revTime = 2, revDamp = 0.7, gate = 1, doneAction = 2;
 	var sig, env;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
 
@@ -4123,7 +4123,7 @@ SynthDef(\LiljedMetalic1, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, rel
 
 	sig = GVerb.ar(
 		sin(sig),
-		revSize,
+		5,
 		revTime,
 		revDamp
 	)/2;
@@ -4132,14 +4132,14 @@ SynthDef(\LiljedMetalic1, { arg out = 0, amp = 0.05, pan = 0, attack = 0.01, rel
 	OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 }).add;
 
-SynthDef(\LiljedSoftRytm, { arg out = 0, amp = 0.6, pan = 0, attack = 0.01, release = 2, impSigRate = 8, sawFreq = 3, impRevRate = 4, impRevPh = 0.5, blipFreq = 4.9, blipHarm = 7, blipAmp = 0.4, revSize = 1, revTime = 1, gate = 1, doneAction = 2;
+SynthDef(\LiljedSoftRytm, { arg out = 0, amp = 0.6, pan = 0, attack = 0.01, release = 2, impSigRate = 8, sawFreq = 3, impRevRate = 4, impRevPh = 0.5, blipFreq = 4.9, blipHarm = 7, blipAmp = 0.4, revTime = 1, gate = 1, doneAction = 2;
 	var sig, env, imp, rev;
 	env = EnvGen.kr(Env.asr(attack, releaseTime: release), gate, doneAction: doneAction);
 	imp = Impulse;
 	sig = imp.kr(impSigRate).lag * Crackle.ar(LFSaw.kr(sawFreq).abs.lag * 1.8);
 	rev = GVerb.ar(
 		imp.kr(impRevRate, impRevPh).lag * Blip.ar(blipFreq, blipHarm, blipAmp),
-		revSize,
+		1,
 		revTime
 	) * 5;
 	sig = sig + rev;
