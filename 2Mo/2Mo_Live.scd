@@ -173,9 +173,7 @@ h.cheby([1, 0.5, 1, 0.125]); // default values
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ( // visualize and apply the new transfer function
-
 h.plot;
 
 ~waveShape.set(\shaperbuf, h);
-
 )
