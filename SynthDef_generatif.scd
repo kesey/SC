@@ -648,4 +648,13 @@ SynthDef(\west, {
 
 }).add;
 
+SynthDef(\raisonne,{ arg out = 0, amp = 1, pan = 0, atk = 0, dcy = 8, stn = 1, rls = 4, frq = 40, bwr = 0.001, gate = 1, doneAction = 2;
+	var sig, n, env;
+    env = EnvGen.kr(Env.adsr(atk, dcy, stn, rls), gate, doneAction: doneAction);
+	n = 50;
+	sig = Mix.fill(n, {|i| Resonz.ar(Dust2.ar(5), frq * (i + 1), bwr, 300)}) * n.reciprocal; // scale to ensure no clipping
+	sig = Pan2.ar(sig, pan, amp) * env;
+    OffsetOut.ar(out, sig);
+}).add;
+
 )
